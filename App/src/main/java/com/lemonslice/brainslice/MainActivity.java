@@ -96,8 +96,8 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         gestureDec = new ScaleGestureDetector(this.getApplicationContext(), this);
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME);
         Log.d("asdf", "3434");
     }
 
@@ -136,11 +136,11 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
     public boolean onTouchEvent(MotionEvent me) {
 
-        //Gyro g = new Gyro();
-//        float x, y, z;
 
-//        x = axisX;
-//        y = axisY;
+        float x, y;
+
+        x = axisX;
+        y = axisY;
 
 //        Log.d("Turtles are particularly fun", Float.toString(x) + " " + Float.toString(y));
 
@@ -149,6 +149,8 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         if (me.getAction() == MotionEvent.ACTION_DOWN) {
             xpos = me.getX();
             ypos = me.getY();
+            //xpos = x;
+            //ypos = y;
             return true;
         }
 
@@ -161,19 +163,23 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         }
 
         if (me.getAction() == MotionEvent.ACTION_MOVE) {
-            //float xd = x - xpos;
-            //float yd = y - ypos
-            float xd = me.getX() - xpos;
-            float yd = me.getY() - ypos;
+            float xd = x - xpos;
+            float yd = y - ypos;
+            //float xd = me.getX() - xpos;
+            //float yd = me.getY() - ypos;
             //float zd = me.getZ() - zpos;
 
-            xpos = me.getX();
-            ypos = me.getY();
+            //xpos = me.getX();
+            //ypos = me.getY();
             //zpos = me.getZ();
 
-            touchTurn = xd / -200f;
-            touchTurnUp = yd / -200f;
-            touchTurnUp = yd / -200f;
+            xpos = x;
+            ypos = y;
+
+            //touchTurn = xd / -200f;
+            //touchTurnUp = yd / -200f;
+            //touchTurn = xd;
+            //touchTurnUp = yd;
             //touchTurnZ = zd / -100f;
             return true;
         }
@@ -267,6 +273,8 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 plane.build();
                 plane.strip();
 
+                plane.setOrigin(SimpleVector.create(0, 10, 0));
+
                 world.addObject(plane);
                 world.addObjects(objs);
 
@@ -298,6 +306,16 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         }
 
         public void onDrawFrame(GL10 gl) {
+
+            float x, y;
+
+            x = axisX /40.0f;
+            y = axisY /40.0f;
+
+            plane.rotateX(x);
+            plane.rotateY(y);
+
+            /*
             if (touchTurn != 0) {
                 plane.rotateY(touchTurn);
                 touchTurn = 0;
@@ -307,7 +325,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 plane.rotateX(touchTurnUp);
                 touchTurnUp = 0;
             }
-
+            */
             shader.setUniform("heightScale", scale);
 
             fb.clear(back);

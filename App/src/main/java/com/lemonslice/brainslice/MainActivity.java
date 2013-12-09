@@ -284,6 +284,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 light.setIntensity(122, 80, 80);
                 light.setPosition(SimpleVector.create(-10, -50, -100));
 
+
                 world.setAmbientLight(10, 10, 10);
 
                 Camera cam = world.getCamera();
@@ -307,13 +308,15 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
         public void onDrawFrame(GL10 gl) {
 
-            float x, y;
+            float x, y, z;
 
-            x = axisX /40.0f;
-            y = axisY /40.0f;
+            x = axisX /60.0f;
+            y = axisY /60.0f;
+            z = axisZ/-60.0f;
 
             plane.rotateX(x);
             plane.rotateY(y);
+            plane.rotateZ(z);
 
             /*
             if (touchTurn != 0) {

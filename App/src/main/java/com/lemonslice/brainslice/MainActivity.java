@@ -1,11 +1,12 @@
 package com.lemonslice.brainslice;
 
 import android.content.Context;
-import android.hardware.Sensor.*;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
+import org.openintents.sensorsimulator.hardware.Sensor;
+import org.openintents.sensorsimulator.hardware.SensorEvent;
+import org.openintents.sensorsimulator.hardware.SensorEventListener;
+import org.openintents.sensorsimulator.hardware.SensorManagerSimulator;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import java.lang.reflect.Field;
@@ -16,7 +17,6 @@ import javax.microedition.khronos.opengles.GL10;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.opengl.GLSurfaceView;
-import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
@@ -95,10 +95,21 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
         gestureDec = new ScaleGestureDetector(this.getApplicationContext(), this);
 
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mSensorManager = SensorManagerSimulator.getSystemService(this, Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_FASTEST);
-        Log.d("asdf", "3434");
+        mSensorManager.registerListener(this, mSensor, SensorManagerSimulator.SENSOR_DELAY_FASTEST);
+        // this is what you have to do to run the network stuff on a different thread.
+        new AsyncSensorTask().execute(mSensorManager);
+    }
+
+    // why I have to make this as a class I will never know.
+    private static class AsyncSensorTask extends AsyncTask<SensorManagerSimulator, Void, Void>
+    {
+        public Void doInBackground(SensorManagerSimulator... params)
+        {
+            params[0].connectSimulator();
+            return null;
+        }
     }
 
     @Override
@@ -439,7 +450,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             // TODO Auto-generated method stub
         }
     }
-    private SensorManager mSensorManager;
+    private SensorManagerSimulator mSensorManager;
     private Sensor mSensor;
 
     public float axisX, axisY, axisZ;

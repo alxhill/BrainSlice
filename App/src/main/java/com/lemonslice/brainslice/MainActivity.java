@@ -282,14 +282,23 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 light.enable();
 
                 light.setIntensity(122, 80, 80);
-                light.setPosition(SimpleVector.create(-10, -50, -100));
+                light.setPosition(SimpleVector.create(-10, 50, -100));
 
+                /*
+                light2 = new Light(world);
+                light2.enable();
+                light2.setIntensity(122, 80, 80);
+                light2.setPosition(SimpleVector.create(-10, +50, -100));
+                */
 
-                world.setAmbientLight(10, 10, 10);
+                world.setAmbientLight(61, 40, 40);
+
 
                 Camera cam = world.getCamera();
                 cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
                 cam.lookAt(plane.getTransformedCenter());
+
+                //cam.
 
                 MemoryHelper.compact();
 
@@ -306,6 +315,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             Logger.log("onSurfaceCreated");
         }
 
+
         public void onDrawFrame(GL10 gl) {
 
             float x, y, z;
@@ -314,9 +324,13 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             y = axisY /60.0f;
             z = axisZ/-60.0f;
 
-            plane.rotateX(x);
-            plane.rotateY(y);
-            plane.rotateZ(z);
+            Camera cam = world.getCamera();
+            cam.moveCamera(Camera.CAMERA_MOVEIN, 70);
+            cam.rotateCameraX(-x);
+            cam.rotateCameraY(-y);
+            cam.rotateCameraZ(-z);
+            cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
+
 
             /*
             if (touchTurn != 0) {

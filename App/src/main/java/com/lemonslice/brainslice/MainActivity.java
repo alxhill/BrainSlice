@@ -70,6 +70,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
     private Object3D plane;
     private Light light;
+    private Light light2;
 
     private GLSLShader shader = null;
 
@@ -284,14 +285,14 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 light.setIntensity(122, 80, 80);
                 light.setPosition(SimpleVector.create(-10, 50, -100));
 
-                /*
+
                 light2 = new Light(world);
                 light2.enable();
                 light2.setIntensity(122, 80, 80);
-                light2.setPosition(SimpleVector.create(-10, +50, -100));
-                */
+                light2.setPosition(SimpleVector.create(10, -50, 100));
 
-                world.setAmbientLight(61, 40, 40);
+
+                world.setAmbientLight(-61, -40, -40);
 
 
                 Camera cam = world.getCamera();

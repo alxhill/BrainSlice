@@ -137,18 +137,18 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
     public boolean onTouchEvent(MotionEvent me) {
 
         //Gyro g = new Gyro();
-        float x, y, z;
+//        float x, y, z;
 
-        x = axisX;
-        y = axisY;
+//        x = axisX;
+//        y = axisY;
 
-        Log.d("Turtles are particularly fun", Float.toString(x) + " " + Float.toString(y));
+//        Log.d("Turtles are particularly fun", Float.toString(x) + " " + Float.toString(y));
 
         gestureDec.onTouchEvent(me);
 
         if (me.getAction() == MotionEvent.ACTION_DOWN) {
-            xpos = x;
-            ypos = y;
+            xpos = me.getX();
+            ypos = me.getY();
             return true;
         }
 
@@ -161,16 +161,19 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         }
 
         if (me.getAction() == MotionEvent.ACTION_MOVE) {
-            float xd = x - xpos;
-            float yd = y - ypos;
+            //float xd = x - xpos;
+            //float yd = y - ypos
+            float xd = me.getX() - xpos;
+            float yd = me.getY() - ypos;
             //float zd = me.getZ() - zpos;
 
-            xpos = x;
-            ypos = y;
+            xpos = me.getX();
+            ypos = me.getY();
             //zpos = me.getZ();
 
-            touchTurn = xd;
-            touchTurnUp = yd;
+            touchTurn = xd / -200f;
+            touchTurnUp = yd / -200f;
+            touchTurnUp = yd / -200f;
             //touchTurnZ = zd / -100f;
             return true;
         }
@@ -266,7 +269,6 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
                 world.addObject(plane);
                 world.addObjects(objs);
-
 
                 light = new Light(world);
                 light.enable();

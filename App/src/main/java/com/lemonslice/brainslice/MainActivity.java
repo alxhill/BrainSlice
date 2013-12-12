@@ -1,11 +1,12 @@
 package com.lemonslice.brainslice;
 
 import android.content.Context;
-import android.hardware.Sensor.*;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import java.lang.reflect.Field;
@@ -16,7 +17,6 @@ import javax.microedition.khronos.opengles.GL10;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.opengl.GLSurfaceView;
-import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
@@ -99,7 +99,6 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME);
-        Log.d("asdf", "3434");
     }
 
     @Override

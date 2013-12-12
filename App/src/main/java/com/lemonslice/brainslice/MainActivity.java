@@ -56,7 +56,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
     private MyRenderer renderer = null;
     private FrameBuffer fb = null;
     private World world = null;
-    private RGBColor back = new RGBColor(50, 50, 100);
+    private RGBColor back = new RGBColor(0, 0, 0);
 
     private float touchTurn = 0;
     private float touchTurnUp = 0;
@@ -465,7 +465,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         axisX = event.values[0];
         axisY = event.values[1];
         axisZ = event.values[2];
-        Log.d("dfdf", Float.toString(axisX) + " " + Float.toString(axisY));
+        //Log.d("dfdf", Float.toString(axisX) + " " + Float.toString(axisY));
     }
 
     @Override

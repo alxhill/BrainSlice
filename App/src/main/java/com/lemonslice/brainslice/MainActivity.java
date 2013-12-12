@@ -299,8 +299,6 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
                 cam.lookAt(plane.getTransformedCenter());
 
-                //cam.
-
                 MemoryHelper.compact();
 
                 world.compileAllObjects();
@@ -316,14 +314,31 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             Logger.log("onSurfaceCreated");
         }
 
+        long oldtime = System.currentTimeMillis();
 
         public void onDrawFrame(GL10 gl) {
 
             float x, y, z;
 
-            x = axisX /60.0f;
-            y = axisY /60.0f;
-            z = axisZ/-60.0f;
+            long newtime = System.currentTimeMillis();
+
+            long tdif = newtime - oldtime;
+
+            if(tdif == 0)
+            {
+                oldtime = newtime;
+                return;
+            }
+
+            float timedif = (float)tdif;
+
+            x = axisX *timedif/1000.0f;
+            y = axisY *timedif/1000.0f;
+            z = axisZ *-timedif/1000.0f;
+
+
+            oldtime = newtime;
+
 
             Camera cam = world.getCamera();
             cam.moveCamera(Camera.CAMERA_MOVEIN, 70);

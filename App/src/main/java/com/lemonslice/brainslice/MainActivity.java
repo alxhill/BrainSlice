@@ -1,10 +1,10 @@
 package com.lemonslice.brainslice;
 
 import android.content.Context;
-import org.openintents.sensorsimulator.hardware.Sensor;
-import org.openintents.sensorsimulator.hardware.SensorEvent;
-import org.openintents.sensorsimulator.hardware.SensorEventListener;
-import org.openintents.sensorsimulator.hardware.SensorManagerSimulator;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -95,21 +95,9 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
         gestureDec = new ScaleGestureDetector(this.getApplicationContext(), this);
 
-        mSensorManager = SensorManagerSimulator.getSystemService(this, Context.SENSOR_SERVICE);
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-        mSensorManager.registerListener(this, mSensor, SensorManagerSimulator.SENSOR_DELAY_FASTEST);
-        // this is what you have to do to run the network stuff on a different thread.
-        new AsyncSensorTask().execute(mSensorManager);
-    }
-
-    // why I have to make this as a class I will never know.
-    private static class AsyncSensorTask extends AsyncTask<SensorManagerSimulator, Void, Void>
-    {
-        public Void doInBackground(SensorManagerSimulator... params)
-        {
-            params[0].connectSimulator();
-            return null;
-        }
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
@@ -147,11 +135,11 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
     public boolean onTouchEvent(MotionEvent me) {
 
-        //Gyro g = new Gyro();
-//        float x, y, z;
 
-//        x = axisX;
-//        y = axisY;
+        float x, y;
+
+        x = axisX;
+        y = axisY;
 
 //        Log.d("Turtles are particularly fun", Float.toString(x) + " " + Float.toString(y));
 
@@ -160,6 +148,8 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         if (me.getAction() == MotionEvent.ACTION_DOWN) {
             xpos = me.getX();
             ypos = me.getY();
+            //xpos = x;
+            //ypos = y;
             return true;
         }
 
@@ -172,19 +162,23 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         }
 
         if (me.getAction() == MotionEvent.ACTION_MOVE) {
-            //float xd = x - xpos;
-            //float yd = y - ypos
-            float xd = me.getX() - xpos;
-            float yd = me.getY() - ypos;
+            float xd = x - xpos;
+            float yd = y - ypos;
+            //float xd = me.getX() - xpos;
+            //float yd = me.getY() - ypos;
             //float zd = me.getZ() - zpos;
 
-            xpos = me.getX();
-            ypos = me.getY();
+            //xpos = me.getX();
+            //ypos = me.getY();
             //zpos = me.getZ();
 
-            touchTurn = xd / -200f;
-            touchTurnUp = yd / -200f;
-            touchTurnUp = yd / -200f;
+            xpos = x;
+            ypos = y;
+
+            //touchTurn = xd / -200f;
+            //touchTurnUp = yd / -200f;
+            //touchTurn = xd;
+            //touchTurnUp = yd;
             //touchTurnZ = zd / -100f;
             return true;
         }
@@ -278,6 +272,8 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 plane.build();
                 plane.strip();
 
+                plane.setOrigin(SimpleVector.create(0, 10, 0));
+
                 world.addObject(plane);
                 world.addObjects(objs);
 
@@ -285,13 +281,23 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 light.enable();
 
                 light.setIntensity(122, 80, 80);
-                light.setPosition(SimpleVector.create(-10, -50, -100));
+                light.setPosition(SimpleVector.create(-10, 50, -100));
 
-                world.setAmbientLight(10, 10, 10);
+                /*
+                light2 = new Light(world);
+                light2.enable();
+                light2.setIntensity(122, 80, 80);
+                light2.setPosition(SimpleVector.create(-10, +50, -100));
+                */
+
+                world.setAmbientLight(61, 40, 40);
+
 
                 Camera cam = world.getCamera();
                 cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
                 cam.lookAt(plane.getTransformedCenter());
+
+                //cam.
 
                 MemoryHelper.compact();
 
@@ -308,7 +314,24 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             Logger.log("onSurfaceCreated");
         }
 
+
         public void onDrawFrame(GL10 gl) {
+
+            float x, y, z;
+
+            x = axisX /60.0f;
+            y = axisY /60.0f;
+            z = axisZ/-60.0f;
+
+            Camera cam = world.getCamera();
+            cam.moveCamera(Camera.CAMERA_MOVEIN, 70);
+            cam.rotateCameraX(-x);
+            cam.rotateCameraY(-y);
+            cam.rotateCameraZ(-z);
+            cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
+
+
+            /*
             if (touchTurn != 0) {
                 plane.rotateY(touchTurn);
                 touchTurn = 0;
@@ -318,7 +341,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 plane.rotateX(touchTurnUp);
                 touchTurnUp = 0;
             }
-
+            */
             shader.setUniform("heightScale", scale);
 
             fb.clear(back);
@@ -450,7 +473,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             // TODO Auto-generated method stub
         }
     }
-    private SensorManagerSimulator mSensorManager;
+    private SensorManager mSensorManager;
     private Sensor mSensor;
 
     public float axisX, axisY, axisZ;

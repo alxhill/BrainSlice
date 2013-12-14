@@ -197,6 +197,25 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         return true;
     }
 
+
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
+
+    public float axisX, axisY, axisZ;
+
+    public void onSensorChanged(SensorEvent event)
+    {
+        axisX = event.values[0];
+        axisY = event.values[1];
+        axisZ = event.values[2];
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy)
+    {
+        // do nothing
+    }
+
     class MyRenderer implements GLSurfaceView.Renderer {
 
         private int fps = 0;
@@ -223,37 +242,39 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
                 TextureManager tm = TextureManager.getInstance();
 
-                Texture face = new Texture(res.openRawResource(R.raw.face));
-                Texture normals = new Texture(res.openRawResource(R.raw.face_norm), true);
-                Texture height = new Texture(res.openRawResource(R.raw.face_height2));
+                //Texture face = new Texture(res.openRawResource(R.raw.face));
+                //Texture normals = new Texture(res.openRawResource(R.raw.face_norm), true);
+                //Texture height = new Texture(res.openRawResource(R.raw.face_height2));
 
                 plane = Primitives.getPlane(1, 1);
 
                 plane.setCulling(true);
 
+                Log.d("BrainSlice","Loading .obj file");
                 Object3D objs[] = Loader.loadOBJ(res.openRawResource(R.raw.brainm), res.openRawResource(R.raw.brainb), 10.0f);
+                Log.d("BrainSlice","Loaded .obj file");
 
                 int len = objs.length;
 
-                TexelGrabber grabber = new TexelGrabber();
-                height.setEffect(grabber);
-                height.applyEffect();
-                int[] heighties = grabber.getAlpha();
+                //TexelGrabber grabber = new TexelGrabber();
+                //height.setEffect(grabber);
+                //height.applyEffect();
+                //int[] heighties = grabber.getAlpha();
 
-                AlphaMerger setter = new AlphaMerger(heighties);
-                normals.setEffect(setter);
-                normals.applyEffect();
+                //AlphaMerger setter = new AlphaMerger(heighties);
+                //normals.setEffect(setter);
+                //normals.applyEffect();
 
                 font = new Texture(res.openRawResource(R.raw.numbers));
                 font.setMipmap(false);
 
-                tm.addTexture("face", face);
-                tm.addTexture("normals", normals);
+                //tm.addTexture("face", face);
+                //tm.addTexture("normals", normals);
 
-                TextureInfo ti = new TextureInfo(TextureManager.getInstance().getTextureID("face"));
-                ti.add(TextureManager.getInstance().getTextureID("normals"), TextureInfo.MODE_BLEND);
+                //TextureInfo ti = new TextureInfo(TextureManager.getInstance().getTextureID("face"));
+                //ti.add(TextureManager.getInstance().getTextureID("normals"), TextureInfo.MODE_BLEND);
 
-                plane.setTexture(ti);
+                //plane.setTexture(ti);
 
                 shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)), Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_offset)));
                 plane.setShader(shader);
@@ -293,7 +314,6 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
                 world.setAmbientLight(-61, -40, -40);
 
-
                 Camera cam = world.getCamera();
                 cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
                 cam.lookAt(plane.getTransformedCenter());
@@ -313,32 +333,29 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             Logger.log("onSurfaceCreated");
         }
 
-        long oldtime = System.currentTimeMillis();
+        long oldTime = System.currentTimeMillis();
 
         public void onDrawFrame(GL10 gl) {
-
             float x, y, z;
+            long newTime = System.currentTimeMillis();
+            long timeDiff = newTime - oldTime;
 
-            long newtime = System.currentTimeMillis();
-
-            long tdif = newtime - oldtime;
-
-            if(tdif == 0)
+            if(timeDiff == 0)
             {
-                oldtime = newtime;
+                oldTime = newTime;
                 return;
             }
 
-            float timedif = (float)tdif;
+            float fTimeDiff = (float)timeDiff;
 
-            x = axisX *timedif/1000.0f;
-            y = axisY *timedif/1000.0f;
-            z = axisZ *-timedif/1000.0f;
+            // Calculate the movement based on the time elapsed
+            x = axisX * fTimeDiff/1000.0f;
+            y = axisY * fTimeDiff/1000.0f;
+            z = axisZ *-fTimeDiff/1000.0f;
 
+            oldTime = newTime;
 
-            oldtime = newtime;
-
-
+            // Move the camera
             Camera cam = world.getCamera();
             cam.moveCamera(Camera.CAMERA_MOVEIN, 70);
             cam.rotateCameraX(-x);
@@ -346,25 +363,12 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             cam.rotateCameraZ(-z);
             cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
 
-
-            /*
-            if (touchTurn != 0) {
-                plane.rotateY(touchTurn);
-                touchTurn = 0;
-            }
-
-            if (touchTurnUp != 0) {
-                plane.rotateX(touchTurnUp);
-                touchTurnUp = 0;
-            }
-            */
             shader.setUniform("heightScale", scale);
 
             fb.clear(back);
             world.renderScene(fb);
             world.draw(fb);
             blitNumber(lfps, 5, 5);
-            //blitString("Ireland sucks", 5, 20);
             fb.display();
 
             if (System.currentTimeMillis() - time >= 1000) {
@@ -388,7 +392,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             }
         }
 
-        ///need a font that supports letters
+        ///TODO: need a font that supports letters
         private void blitString(String str, int x, int y)
         {
             if(font != null) {
@@ -488,28 +492,5 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         public void init(Texture arg0) {
             // TODO Auto-generated method stub
         }
-    }
-    private SensorManager mSensorManager;
-    private Sensor mSensor;
-
-    public float axisX, axisY, axisZ;
-
-	/*@Override
-	protected void onCreate(Bundle savedInstanceState) {
-
-	}*/
-
-    public void onSensorChanged(SensorEvent event)
-    {
-        axisX = event.values[0];
-        axisY = event.values[1];
-        axisZ = event.values[2];
-        //Log.d("dfdf", Float.toString(axisX) + " " + Float.toString(axisY));
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy)
-    {
-
     }
 }

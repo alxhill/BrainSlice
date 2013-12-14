@@ -135,14 +135,10 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
     }
 
     public boolean onTouchEvent(MotionEvent me) {
-
-
         float x, y;
 
         x = axisX;
         y = axisY;
-
-//        Log.d("Turtles are particularly fun", Float.toString(x) + " " + Float.toString(y));
 
         gestureDec.onTouchEvent(me);
 

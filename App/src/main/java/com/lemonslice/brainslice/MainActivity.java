@@ -40,10 +40,7 @@ import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
 /**
- *
- *
- * @author EgonOlsen
- *
+ * @author Based off JPCT HelloShader freely licenced example by EgonOlsen, heavily modified by LemonSlice
  */
 public class MainActivity extends Activity implements OnScaleGestureListener, SensorEventListener {
 
@@ -52,21 +49,27 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
     // Sensor stuff
     private ScaleGestureDetector scaleDetector = null;
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
 
-    //
-    boolean ifTouch = true;
-    boolean ifGyro = true;
+    // current gyro rotation
+    public float axisX, axisY, axisZ;
 
-    // finger control stuff
+
+    private boolean ifTouch = true;
+    private boolean ifGyro = true;
+
+    // current fingermove distance
     private float xpos1 = -1;
     private float ypos1 = -1;
-    private float xpos2 = -1;
-    private float ypos2 = -1;
+
     private int firstPointerID = -1;
 
     private float touchTurn = 0;
     private float touchTurnUp = 0;
-    //private float touchTurnZ = 0;
+
+    // scale size of brain
+    private float scale = 1.0f;
 
     // 3D stuff
     private GLSurfaceView mGLView;
@@ -76,10 +79,8 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
     private RGBColor back = new RGBColor(0, 0, 0);
     private Texture font = null;
     private Object3D plane;
-    private Light light;
-    private Light light2;
     private GLSLShader shader = null;
-    private float scale = 1.0f;
+
 
     protected void onCreate(Bundle savedInstanceState) {
         Logger.log("onCreate");
@@ -174,10 +175,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             case MotionEvent.ACTION_POINTER_UP:
                 //Get index of pointer that was lifted up
                 pointerIndex = me.getActionIndex();
-                //Some sort of wizardry, is replaced by the simple line above
-                //Clearly the Android engineer who wrote the sample line below was a madman.
-                //pointerIndex = (me.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK)
-                //        >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+
                 Logger.log("ACTION_POINTER_UP\t");
                 if (me.getPointerId(pointerIndex) == firstPointerID) {
                     //Choose new firstPointer
@@ -191,8 +189,6 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                     ypos1 = me.getY(newPointerIndex);
                     firstPointerID = me.getPointerId(newPointerIndex);
                 }
-                //touchTurn = 0;
-                //touchTurnUp = 0;
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -214,7 +210,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         }
 
         try {
-            Thread.sleep(15);
+            //Thread.sleep(15);
         } catch (Exception e) {
             // No need for this...
         }
@@ -228,25 +224,20 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         return true;
     }
 
-    // probably not needed
+    // must be implemented for onscale
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        //scale = 1;
         return true;
     }
 
-    // probably not needed
+    // must be implemented for onscale
     public void onScaleEnd(ScaleGestureDetector detector) {
-        //scale = 1;
+
     }
 
     protected boolean isFullscreenOpaque() {
         return true;
     }
 
-    private SensorManager mSensorManager;
-    private Sensor mSensor;
-
-    public float axisX, axisY, axisZ;
 
     public void onSensorChanged(SensorEvent event)
     {
@@ -288,79 +279,58 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
                 TextureManager tm = TextureManager.getInstance();
 
-                //Texture face = new Texture(res.openRawResource(R.raw.face));
-                //Texture normals = new Texture(res.openRawResource(R.raw.face_norm), true);
-                //Texture height = new Texture(res.openRawResource(R.raw.face_height2));
-
+                // brain is parented to small plane
                 plane = Primitives.getPlane(1, 1);
 
                 plane.setCulling(true);
-                
+
 
                 Log.d("BrainSlice","Loading .obj file");
-                Object3D objs[] = Loader.loadOBJ(res.openRawResource(R.raw.brainm), res.openRawResource(R.raw.brainb), 10.0f);
+                Object3D objs[] = Loader.load3DS(res.openRawResource(R.raw.brain), 10.0f);
                 Log.d("BrainSlice","Loaded .obj file");
 
+                //number of subobjs for brain
                 int len = objs.length;
-
-                //TexelGrabber grabber = new TexelGrabber();
-                //height.setEffect(grabber);
-                //height.applyEffect();
-                //int[] heighties = grabber.getAlpha();
-
-                //AlphaMerger setter = new AlphaMerger(heighties);
-                //normals.setEffect(setter);
-                //normals.applyEffect();
 
                 font = new Texture(res.openRawResource(R.raw.numbers));
                 font.setMipmap(false);
 
-                //tm.addTexture("face", face);
-                //tm.addTexture("normals", normals);
-
-                //TextureInfo ti = new TextureInfo(TextureManager.getInstance().getTextureID("face"));
-                //ti.add(TextureManager.getInstance().getTextureID("normals"), TextureInfo.MODE_BLEND);
-
-                //plane.setTexture(ti);
-
+                // compile and load shaders for plane
                 shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)), Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_offset)));
                 plane.setShader(shader);
                 plane.setSpecularLighting(true);
                 shader.setStaticUniform("invRadius", 0.0003f);
 
+                // initialise brain sub-objs
                 for(int i=0; i<len; i++)
                 {
                     objs[i].setCulling(true);
-                    //objs[i].setShader(shader);
-                    objs[i].setSpecularLighting(true);
+                    objs[i].setSpecularLighting(false); //was true
                     objs[i].build();
                     objs[i].strip();
                     objs[i].addParent(plane);
                 }
 
+                plane.rotateX(-3.141592f/2.0f);
+
                 plane.build();
                 plane.strip();
 
-                plane.setOrigin(SimpleVector.create(0, 10, 0));
+                plane.setOrigin(SimpleVector.create(0, 0, 10));
 
                 world.addObject(plane);
                 world.addObjects(objs);
 
-                light = new Light(world);
-                light.enable();
+                // create lights on opposite sides of brain
 
+                Light light = new Light(world);
+                light.enable();
                 light.setIntensity(122, 80, 80);
                 light.setPosition(SimpleVector.create(-10, 50, -100));
 
+                world.setAmbientLight(61, 40, 40);
 
-                light2 = new Light(world);
-                light2.enable();
-                light2.setIntensity(122, 80, 80);
-                light2.setPosition(SimpleVector.create(10, -50, 100));
-
-
-                world.setAmbientLight(-61, -40, -40);
-
+                // construct camera and move it into position
                 Camera cam = world.getCamera();
                 cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
                 cam.lookAt(plane.getTransformedCenter());
@@ -380,25 +350,22 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             Logger.log("onSurfaceCreated");
         }
 
+        // initialise to current time
         long oldTime = System.currentTimeMillis();
 
         public void onDrawFrame(GL10 gl) {
-            // Finger movement
-            if (touchTurn != 0) {
-                plane.rotateY(touchTurn);
-                touchTurn = 0;
-            }
+            // rotate by finger movement
+            plane.rotateX(touchTurnUp);
+            plane.rotateY(touchTurn);
 
-            if (touchTurnUp != 0) {
-                plane.rotateX(touchTurnUp);
-                touchTurnUp = 0;
-            }
-            if (scale != 1) {
-                plane.scale(scale);
-                scale = 1;
-            }
+            touchTurnUp = 0.0f;
+            touchTurn = 0.0f;
 
-            // Gyro movement
+            plane.scale(scale);
+
+            scale = 1.0f;
+
+            // rotate by gyro movement
             float x, y, z;
             long newTime = System.currentTimeMillis();
             long timeDiff = newTime - oldTime;
@@ -409,6 +376,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 return;
             }
 
+            // time since last frame
             float fTimeDiff = (float)timeDiff;
 
             // Calculate the movement based on the time elapsed
@@ -418,25 +386,21 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
             oldTime = newTime;
 
-            // Move the camera
-            //Camera cam = world.getCamera();
-            //cam.moveCamera(Camera.CAMERA_MOVEIN, 70);
-            //cam.rotateCameraX(-x);
-            //cam.rotateCameraY(-y);
-            //cam.rotateCameraZ(-z);
-            //cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
+            // rotate brain by gyro
             plane.rotateX(x);
             plane.rotateY(y);
             plane.rotateZ(z);
 
             shader.setUniform("heightScale", scale);
 
+            // clear buffers and draw framerate
             fb.clear(back);
             world.renderScene(fb);
             world.draw(fb);
             blitNumber(lfps, 5, 5);
             fb.display();
 
+            // calculate framerate
             if (System.currentTimeMillis() - time >= 1000) {
                 lfps = fps;
                 fps = 0;
@@ -445,6 +409,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             fps++;
         }
 
+        // display a number from bitmap font file
         private void blitNumber(int number, int x, int y) {
             if (font != null) {
                 String sNum = Integer.toString(number);
@@ -458,7 +423,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             }
         }
 
-        ///TODO: need a font that supports letters
+        ///TODO: need a bitmap font that supports letters
         private void blitString(String str, int x, int y)
         {
             if(font != null) {
@@ -466,8 +431,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
                 for(int i = 0; i < sNum.length(); i++) {
                     char cNum = sNum.charAt(i);
-                    char iNum = cNum;
-                    fb.blit(font, iNum * 5, 0, x, y, 5, 9, 5, 9, 10, true, null);
+                    fb.blit(font, cNum * 5, 0, x, y, 5, 9, 5, 9, 10, true, null);
                     x+=5;
                 }
             }
@@ -480,7 +444,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
      * Merges the height map into the alpha channel of the normal map.
      *
      * @author EgonOlsen
-     *
+     * This code is from the HelloShader example that comes with the JCPT graphics library
      */
     private static class AlphaMerger implements ITextureEffect {
 
@@ -510,7 +474,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
      * Extracts the alpha channel from a texture.
      *
      * @author EgonOlsen
-     *
+     * This code is from the HelloShader example that comes with the JCPT graphics library
      */
     private static class TexelGrabber implements ITextureEffect {
 

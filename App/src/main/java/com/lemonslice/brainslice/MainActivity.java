@@ -50,31 +50,36 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
     // Used to handle pause and resume...
     private static MainActivity master = null;
 
-    private ScaleGestureDetector gestureDec = null;
+    // Sensor stuff
+    private ScaleGestureDetector scaleDetector = null;
 
+    //
+    boolean ifTouch = true;
+    boolean ifGyro = true;
+
+    // finger control stuff
+    private float xpos1 = -1;
+    private float ypos1 = -1;
+    private float xpos2 = -1;
+    private float ypos2 = -1;
+    private int firstPointerID = -1;
+
+    private float touchTurn = 0;
+    private float touchTurnUp = 0;
+    //private float touchTurnZ = 0;
+
+    // 3D stuff
     private GLSurfaceView mGLView;
     private MyRenderer renderer = null;
     private FrameBuffer fb = null;
     private World world = null;
     private RGBColor back = new RGBColor(0, 0, 0);
-
-    private float touchTurn = 0;
-    private float touchTurnUp = 0;
-    private float touchTurnZ = 0;
-
-    private float xpos = -1;
-    private float ypos = -1;
-    private float zpos = -1;
-
     private Texture font = null;
-
     private Object3D plane;
     private Light light;
     private Light light2;
-
     private GLSLShader shader = null;
-
-    private float scale = 0.05f;
+    private float scale = 1.0f;
 
     protected void onCreate(Bundle savedInstanceState) {
         Logger.log("onCreate");
@@ -94,7 +99,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         mGLView.setRenderer(renderer);
         setContentView(mGLView);
 
-        gestureDec = new ScaleGestureDetector(this.getApplicationContext(), this);
+        scaleDetector = new ScaleGestureDetector(this.getApplicationContext(), this);
 
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
@@ -134,50 +139,76 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         }
     }
 
+
     public boolean onTouchEvent(MotionEvent me) {
-        float x, y;
-
-        x = axisX;
-        y = axisY;
-
-        gestureDec.onTouchEvent(me);
-
-        if (me.getAction() == MotionEvent.ACTION_DOWN) {
-            xpos = me.getX();
-            ypos = me.getY();
-            //xpos = x;
-            //ypos = y;
+        if (!ifTouch) return true;
+        scaleDetector.onTouchEvent(me);
+        if(scaleDetector.isInProgress()){
             return true;
         }
+        int pointerIndex;
 
-        if (me.getAction() == MotionEvent.ACTION_UP) {
-            xpos = -1;
-            ypos = -1;
-            touchTurn = 0;
-            touchTurnUp = 0;
-            return true;
-        }
+        switch (me.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                Logger.log("ACTION_DOWN\t");
+                xpos1 = me.getX();
+                ypos1 = me.getY();
+                firstPointerID = me.getPointerId(0);
+                break;
 
-        if (me.getAction() == MotionEvent.ACTION_MOVE) {
-            float xd = x - xpos;
-            float yd = y - ypos;
-            //float xd = me.getX() - xpos;
-            //float yd = me.getY() - ypos;
-            //float zd = me.getZ() - zpos;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                Logger.log("ACTION_POINTER_DOWN\t");
+                touchTurn = 0;
+                touchTurnUp = 0;
+                break;
 
-            //xpos = me.getX();
-            //ypos = me.getY();
-            //zpos = me.getZ();
+            case MotionEvent.ACTION_UP:
+                Logger.log("ACTION_UP\t");
+                xpos1 = -1;
+                ypos1 = -1;
+                touchTurn = 0;
+                touchTurnUp = 0;
+                firstPointerID = -1;
+                break;
 
-            xpos = x;
-            ypos = y;
+            case MotionEvent.ACTION_POINTER_UP:
+                //Get index of pointer that was lifted up
+                pointerIndex = me.getActionIndex();
+                //Some sort of wizardry, is replaced by the simple line above
+                //Clearly the Android engineer who wrote the sample line below was a madman.
+                //pointerIndex = (me.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK)
+                //        >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+                Logger.log("ACTION_POINTER_UP\t");
+                if (me.getPointerId(pointerIndex) == firstPointerID) {
+                    //Choose new firstPointer
+                    int newPointerIndex;
+                    if(pointerIndex == 0){
+                        newPointerIndex = 1;
+                    } else {
+                        newPointerIndex = 0;
+                    }
+                    xpos1 = me.getX(newPointerIndex);
+                    ypos1 = me.getY(newPointerIndex);
+                    firstPointerID = me.getPointerId(newPointerIndex);
+                }
+                //touchTurn = 0;
+                //touchTurnUp = 0;
+                break;
 
-            //touchTurn = xd / -200f;
-            //touchTurnUp = yd / -200f;
-            //touchTurn = xd;
-            //touchTurnUp = yd;
-            //touchTurnZ = zd / -100f;
-            return true;
+            case MotionEvent.ACTION_MOVE:
+                pointerIndex = me.findPointerIndex(firstPointerID);
+                Logger.log("ACTION_MOVE " + pointerIndex);
+                float xd = me.getX(pointerIndex) - xpos1;
+                float yd = me.getY(pointerIndex) - ypos1;
+                xpos1 = me.getX(pointerIndex);
+                ypos1 = me.getY(pointerIndex);
+                touchTurn = xd / -200f;
+                touchTurnUp = yd / -200f;
+                return true;
+
+            case MotionEvent.ACTION_CANCEL:
+                firstPointerID = -1;
+                break;
         }
 
         try {
@@ -186,13 +217,29 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             // No need for this...
         }
 
-        return super.onTouchEvent(me);
+        return true;
+    }
+
+    public boolean onScale(ScaleGestureDetector detector) {
+        float difference = detector.getCurrentSpan() - detector.getPreviousSpan();
+        scale += 0.001f * difference;
+        return true;
+    }
+
+    // probably not needed
+    public boolean onScaleBegin(ScaleGestureDetector detector) {
+        //scale = 1;
+        return true;
+    }
+
+    // probably not needed
+    public void onScaleEnd(ScaleGestureDetector detector) {
+        //scale = 1;
     }
 
     protected boolean isFullscreenOpaque() {
         return true;
     }
-
 
     private SensorManager mSensorManager;
     private Sensor mSensor;
@@ -201,6 +248,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
     public void onSensorChanged(SensorEvent event)
     {
+        if (!ifGyro) return;
         axisX = event.values[0];
         axisY = event.values[1];
         axisZ = event.values[2];
@@ -332,6 +380,22 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         long oldTime = System.currentTimeMillis();
 
         public void onDrawFrame(GL10 gl) {
+            // Finger movement
+            if (touchTurn != 0) {
+                plane.rotateY(touchTurn);
+                touchTurn = 0;
+            }
+
+            if (touchTurnUp != 0) {
+                plane.rotateX(touchTurnUp);
+                touchTurnUp = 0;
+            }
+            if (scale != 1) {
+                plane.scale(scale);
+                scale = 1;
+            }
+
+            // Gyro movement
             float x, y, z;
             long newTime = System.currentTimeMillis();
             long timeDiff = newTime - oldTime;
@@ -352,12 +416,15 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             oldTime = newTime;
 
             // Move the camera
-            Camera cam = world.getCamera();
-            cam.moveCamera(Camera.CAMERA_MOVEIN, 70);
-            cam.rotateCameraX(-x);
-            cam.rotateCameraY(-y);
-            cam.rotateCameraZ(-z);
-            cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
+            //Camera cam = world.getCamera();
+            //cam.moveCamera(Camera.CAMERA_MOVEIN, 70);
+            //cam.rotateCameraX(-x);
+            //cam.rotateCameraY(-y);
+            //cam.rotateCameraZ(-z);
+            //cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
+            plane.rotateX(x);
+            plane.rotateY(y);
+            plane.rotateZ(z);
 
             shader.setUniform("heightScale", scale);
 
@@ -404,30 +471,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         }
     }
 
-    public boolean onScale(ScaleGestureDetector detector) {
-        float div = detector.getCurrentSpan() - detector.getPreviousSpan();
-        div /= 5000;
 
-        scale += div;
-
-        if (scale > 0.063f) {
-            scale = 0.063f;
-        }
-        if (scale < 0) {
-            scale = 0;
-        }
-
-        return true;
-    }
-
-    public boolean onScaleBegin(ScaleGestureDetector detector) {
-        // TODO Auto-generated method stub
-        return true;
-    }
-
-    public void onScaleEnd(ScaleGestureDetector detector) {
-        // TODO Auto-generated method stub
-    }
 
     /**
      * Merges the height map into the alpha channel of the normal map.

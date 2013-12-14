@@ -295,6 +295,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 plane = Primitives.getPlane(1, 1);
 
                 plane.setCulling(true);
+                
 
                 Log.d("BrainSlice","Loading .obj file");
                 Object3D objs[] = Loader.loadOBJ(res.openRawResource(R.raw.brainm), res.openRawResource(R.raw.brainb), 10.0f);

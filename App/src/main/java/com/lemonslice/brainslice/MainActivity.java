@@ -196,14 +196,16 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                pointerIndex = me.findPointerIndex(firstPointerID);
-                Logger.log("ACTION_MOVE " + pointerIndex);
-                float xd = me.getX(pointerIndex) - xpos1;
-                float yd = me.getY(pointerIndex) - ypos1;
-                xpos1 = me.getX(pointerIndex);
-                ypos1 = me.getY(pointerIndex);
-                touchTurn = xd / -200f;
-                touchTurnUp = yd / -200f;
+                if(me.getPointerCount() == 1){
+                    pointerIndex = me.findPointerIndex(firstPointerID);
+                    Logger.log("ACTION_MOVE " + pointerIndex);
+                    float xd = me.getX(pointerIndex) - xpos1;
+                    float yd = me.getY(pointerIndex) - ypos1;
+                    xpos1 = me.getX(pointerIndex);
+                    ypos1 = me.getY(pointerIndex);
+                    touchTurn = xd / -200f;
+                    touchTurnUp = yd / -200f;
+                }
                 return true;
 
             case MotionEvent.ACTION_CANCEL:

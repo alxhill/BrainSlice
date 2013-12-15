@@ -20,6 +20,9 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
@@ -56,6 +59,9 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
     public enum Mode { TOUCH, GYRO }
     private Mode currentMode = Mode.TOUCH;
 
+    // button to switch mode
+    Button button;
+
     // Touchscreen
     private float xpos1 = -1;
     private float ypos1 = -1;
@@ -90,12 +96,38 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         // Enable the OpenGL ES2.0 context
         mGLView.setEGLContextClientVersion(2);
 
+        // initialise and show the 3D renderer
         renderer = new MyRenderer();
         mGLView.setRenderer(renderer);
         setContentView(mGLView);
 
-        scaleDetector = new ScaleGestureDetector(this.getApplicationContext(), this);
+        // initialise the button
+        button = new Button(getApplication());
+        button.setText("switch to gyro input");
 
+        button.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("BrainSlice", "button click event");
+                switch (currentMode)
+                {
+                    case TOUCH:
+                        button.setText("switch to touch input");
+                        currentMode = Mode.GYRO;
+                        break;
+                    case GYRO:
+                        button.setText("switch to gyro input");
+                        currentMode = Mode.TOUCH;
+                        break;
+                }
+            }
+        });
+
+        // add the button to the view
+        addContentView(button, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
+        // set up listeners for touch events and sensor input
+        scaleDetector = new ScaleGestureDetector(this.getApplicationContext(), this);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
         mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME);
@@ -302,7 +334,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 }
 
                 // Set the model's initial position
-                plane.rotateX(-3.141592f/2.0f);
+                plane.rotateX(-3.141592f / 2.0f);
 
                 plane.build();
                 plane.strip();

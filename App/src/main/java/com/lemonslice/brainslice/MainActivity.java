@@ -52,9 +52,9 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
     // current gyro rotation
     public float axisX, axisY, axisZ;
 
-    // mode options
-    private boolean ifTouch = true;
-    private boolean ifGyro = true;
+    // store which mode we're in
+    public enum Mode { TOUCH, GYRO }
+    private Mode currentMode = Mode.TOUCH;
 
     // Touchscreen
     private float xpos1 = -1;
@@ -136,7 +136,8 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
 
     public boolean onTouchEvent(MotionEvent me) {
-        if (!ifTouch) return true;
+        if (currentMode != Mode.TOUCH) return true;
+
         scaleDetector.onTouchEvent(me);
         if(scaleDetector.isInProgress()){
             return true;
@@ -203,12 +204,6 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 break;
         }
 
-        try {
-            //Thread.sleep(15);
-        } catch (Exception e) {
-            // No need for this...
-        }
-
         return true;
     }
 
@@ -235,7 +230,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
     public void onSensorChanged(SensorEvent event)
     {
-        if (!ifGyro) return;
+        if (currentMode != Mode.GYRO) return;
         axisX = event.values[0];
         axisY = event.values[1];
         axisZ = event.values[2];

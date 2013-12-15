@@ -6,7 +6,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import java.lang.reflect.Field;
@@ -25,7 +24,6 @@ import android.util.Log;
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.GLSLShader;
-import com.threed.jpct.ITextureEffect;
 import com.threed.jpct.Light;
 import com.threed.jpct.Loader;
 import com.threed.jpct.Logger;
@@ -34,7 +32,6 @@ import com.threed.jpct.Primitives;
 import com.threed.jpct.RGBColor;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.Texture;
-import com.threed.jpct.TextureInfo;
 import com.threed.jpct.TextureManager;
 import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
@@ -55,16 +52,14 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
     // current gyro rotation
     public float axisX, axisY, axisZ;
 
-
+    // mode options
     private boolean ifTouch = true;
     private boolean ifGyro = true;
 
-    // current fingermove distance
+    // Touchscreen
     private float xpos1 = -1;
     private float ypos1 = -1;
-
     private int firstPointerID = -1;
-
     private float touchTurn = 0;
     private float touchTurnUp = 0;
 
@@ -80,7 +75,6 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
     private Texture font = null;
     private Object3D plane;
     private GLSLShader shader = null;
-
 
     protected void onCreate(Bundle savedInstanceState) {
         Logger.log("onCreate");
@@ -284,10 +278,10 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
                 plane.setCulling(true);
 
-
-                Log.d("BrainSlice","Loading .obj file");
+                // Load the 3d model
+                Log.d("BrainSlice","Loading .3ds file");
                 Object3D objs[] = Loader.load3DS(res.openRawResource(R.raw.brain), 10.0f);
-                Log.d("BrainSlice","Loaded .obj file");
+                Log.d("BrainSlice","Loaded .3ds file");
 
                 //number of subobjs for brain
                 int len = objs.length;
@@ -296,7 +290,8 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 font.setMipmap(false);
 
                 // compile and load shaders for plane
-                shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)), Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_offset)));
+                shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
+                        Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_offset)));
                 plane.setShader(shader);
                 plane.setSpecularLighting(true);
                 shader.setStaticUniform("invRadius", 0.0003f);
@@ -311,18 +306,19 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                     objs[i].addParent(plane);
                 }
 
+                // Set the model's initial position
                 plane.rotateX(-3.141592f/2.0f);
 
                 plane.build();
                 plane.strip();
 
+                // Centre the model
                 plane.setOrigin(SimpleVector.create(0, 0, 10));
 
                 world.addObject(plane);
                 world.addObjects(objs);
 
-                // create lights on opposite sides of brain
-
+                // create a light
                 Light light = new Light(world);
                 light.enable();
                 light.setIntensity(122, 80, 80);

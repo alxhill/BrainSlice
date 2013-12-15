@@ -118,6 +118,9 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                     case GYRO:
                         button.setText("switch to gyro input");
                         currentMode = Mode.TOUCH;
+                        axisX=0;
+                        axisY=0;
+                        axisZ=0;
                         break;
                 }
             }

@@ -310,7 +310,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
                 // Load the 3d model
                 Log.d("BrainSlice","Loading .3ds file");
-                Object3D objs[] = Loader.load3DS(res.openRawResource(R.raw.brain), 10.0f);
+                Object3D objs[] = Loader.loadOBJ(res.openRawResource(R.raw.brain_new), res.openRawResource(R.raw.brain_material), 10.0f);
                 Log.d("BrainSlice","Loaded .3ds file");
 
                 //number of subobjs for brain

@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.+'
+        classpath 'com.android.tools.build:gradle:0.7.+'
     }
 }
 apply plugin: 'android'
@@ -36,5 +36,4 @@ android {
 dependencies {
     compile 'com.android.support:appcompat-v7:+'
     compile files('src/main/java/libs/jpct_ae.jar')
-    compile files('src/main/java/sensorsimulator-lib-2.0-rc1.jar')
 }

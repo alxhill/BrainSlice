@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="jpct_ae">
+  <library name="Gradle: jpct_ae">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/App/src/main/java/libs/jpct_ae.jar!/" />
     </CLASSES>

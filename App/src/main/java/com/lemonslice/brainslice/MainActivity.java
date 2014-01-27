@@ -26,16 +26,11 @@ import android.widget.Button;
 
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
-import com.threed.jpct.GLSLShader;
 import com.threed.jpct.Light;
-import com.threed.jpct.Loader;
 import com.threed.jpct.Logger;
-import com.threed.jpct.Object3D;
-import com.threed.jpct.Primitives;
 import com.threed.jpct.RGBColor;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.Texture;
-import com.threed.jpct.TextureManager;
 import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
@@ -66,8 +61,8 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
     private float xpos1 = -1;
     private float ypos1 = -1;
     private int firstPointerID = -1;
-    private float touchTurn = 0;
-    private float touchTurnUp = 0;
+    private float touchY = 0;
+    private float touchX = 0;
 
     // scale size of brain
     private float scale = 1.0f;
@@ -75,12 +70,10 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
     // 3D stuff
     private GLSurfaceView mGLView;
     private MyRenderer renderer = null;
+    private BrainModel brain = null;
     private FrameBuffer fb = null;
     private World world = null;
     private RGBColor back = new RGBColor(0, 0, 0);
-    private Texture font = null;
-    private Object3D plane;
-    private GLSLShader shader = null;
 
     protected void onCreate(Bundle savedInstanceState) {
         Logger.log("onCreate");
@@ -98,6 +91,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
         // initialise and show the 3D renderer
         renderer = new MyRenderer();
+        brain = new BrainModel();
         mGLView.setRenderer(renderer);
         setContentView(mGLView);
 
@@ -189,16 +183,16 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
             case MotionEvent.ACTION_POINTER_DOWN:
                 Logger.log("ACTION_POINTER_DOWN\t");
-                touchTurn = 0;
-                touchTurnUp = 0;
+                touchY = 0;
+                touchX = 0;
                 break;
 
             case MotionEvent.ACTION_UP:
                 Logger.log("ACTION_UP\t");
                 xpos1 = -1;
                 ypos1 = -1;
-                touchTurn = 0;
-                touchTurnUp = 0;
+                touchY = 0;
+                touchX = 0;
                 firstPointerID = -1;
                 break;
 
@@ -229,8 +223,8 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                     float yd = me.getY(pointerIndex) - ypos1;
                     xpos1 = me.getX(pointerIndex);
                     ypos1 = me.getY(pointerIndex);
-                    touchTurn = xd / -200f;
-                    touchTurnUp = yd / -200f;
+                    touchY = xd / -200f;
+                    touchX = yd / -200f;
                 }
                 return true;
 
@@ -301,52 +295,9 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             if (master == null) {
                 world = new World();
 
-                TextureManager tm = TextureManager.getInstance();
+                brain.load(res);
 
-                // brain is parented to small plane
-                plane = Primitives.getPlane(1, 1);
-
-                plane.setCulling(true);
-
-                // Load the 3d model
-                Log.d("BrainSlice","Loading .3ds file");
-                Object3D objs[] = Loader.loadOBJ(res.openRawResource(R.raw.brain_new), res.openRawResource(R.raw.brain_material), 10.0f);
-                Log.d("BrainSlice","Loaded .3ds file");
-
-                //number of subobjs for brain
-                int len = objs.length;
-
-                font = new Texture(res.openRawResource(R.raw.numbers));
-                font.setMipmap(false);
-
-                // compile and load shaders for plane
-                shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
-                        Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_offset)));
-                plane.setShader(shader);
-                plane.setSpecularLighting(true);
-                shader.setStaticUniform("invRadius", 0.0003f);
-
-                // initialise brain sub-objs
-                for(int i=0; i<len; i++)
-                {
-                    objs[i].setCulling(true);
-                    objs[i].setSpecularLighting(false); //was true
-                    objs[i].build();
-                    objs[i].strip();
-                    objs[i].addParent(plane);
-                }
-
-                // Set the model's initial position
-                plane.rotateX(-3.141592f / 2.0f);
-
-                plane.build();
-                plane.strip();
-
-                // Centre the model
-                plane.setOrigin(SimpleVector.create(0, 0, 10));
-
-                world.addObject(plane);
-                world.addObjects(objs);
+                brain.addToScene(world);
 
                 // create a light
                 Light light = new Light(world);
@@ -359,7 +310,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 // construct camera and move it into position
                 Camera cam = world.getCamera();
                 cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
-                cam.lookAt(plane.getTransformedCenter());
+                cam.lookAt(brain.getTransformedCenter());
 
                 MemoryHelper.compact();
 
@@ -380,73 +331,51 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
         long oldTime = System.currentTimeMillis();
 
         public void onDrawFrame(GL10 gl) {
-            // rotate by finger movement
-            plane.rotateX(touchTurnUp);
-            plane.rotateY(touchTurn);
-
-            touchTurnUp = 0.0f;
-            touchTurn = 0.0f;
-
-            plane.scale(scale);
-
-            scale = 1.0f;
-
-            // rotate by gyro movement
-            float x, y, z;
-            long newTime = System.currentTimeMillis();
-            long timeDiff = newTime - oldTime;
-
-            if(timeDiff == 0)
+            switch (currentMode)
             {
-                oldTime = newTime;
-                return;
+                case TOUCH:
+                    brain.rotate(touchX, touchY, 0.0f);
+                    brain.scale(scale);
+                    scale = 1.0f;
+                    break;
+                case GYRO:
+                    long newTime = System.currentTimeMillis();
+                    long timeDiff = newTime - oldTime;
+
+                    if(timeDiff == 0)
+                    {
+                        oldTime = newTime;
+                        return;
+                    }
+
+                    // time since last frame
+                    float fTimeDiff = (float)timeDiff;
+
+                    // Calculate the movement based on the time elapsed
+                    float x = axisX * fTimeDiff/1000.0f;
+                    float y = axisY * fTimeDiff/1000.0f;
+                    float z = axisZ *-fTimeDiff/1000.0f;
+
+                    oldTime = newTime;
+
+                    brain.rotate(x, y, z);
+
+                    break;
             }
-
-            // time since last frame
-            float fTimeDiff = (float)timeDiff;
-
-            // Calculate the movement based on the time elapsed
-            x = axisX * fTimeDiff/1000.0f;
-            y = axisY * fTimeDiff/1000.0f;
-            z = axisZ *-fTimeDiff/1000.0f;
-
-            oldTime = newTime;
-
-            // rotate brain by gyro
-            plane.rotateX(x);
-            plane.rotateY(y);
-            plane.rotateZ(z);
-
-            shader.setUniform("heightScale", scale);
 
             // clear buffers and draw framerate
             fb.clear(back);
             world.renderScene(fb);
             world.draw(fb);
-            blitNumber(lfps, 5, 5);
             fb.display();
 
             // calculate framerate
-            if (System.currentTimeMillis() - time >= 1000) {
-                lfps = fps;
-                fps = 0;
-                time = System.currentTimeMillis();
-            }
-            fps++;
-        }
-
-        // display a number from bitmap font file
-        private void blitNumber(int number, int x, int y) {
-            if (font != null) {
-                String sNum = Integer.toString(number);
-
-                for (int i = 0; i < sNum.length(); i++) {
-                    char cNum = sNum.charAt(i);
-                    int iNum = cNum - 48;
-                    fb.blit(font, iNum * 5, 0, x, y, 5, 9, 5, 9, 10, true, null);
-                    x += 5;
-                }
-            }
+//            if (System.currentTimeMillis() - time >= 1000) {
+//                lfps = fps;
+//                fps = 0;
+//                time = System.currentTimeMillis();
+//            }
+//            fps++;
         }
     }
 

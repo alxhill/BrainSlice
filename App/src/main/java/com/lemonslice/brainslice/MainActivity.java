@@ -35,7 +35,9 @@ public class MainActivity extends Activity {
     // Used to handle pause and resume...
     private static MainActivity master = null;
 
-    AbstractController viewController;
+    AbstractController baseController;
+    LearnController learnController;
+    VisualiseController visualiseController;
 
     // store which mode we're in
     public enum Mode {
@@ -77,8 +79,11 @@ public class MainActivity extends Activity {
         modeButton = new Button(getApplication());
         modeButton.setText("switch to gyro input");
 
-        viewController = new LearnController(getApplicationContext());
-        viewController.loadView();
+        learnController = new LearnController(getApplicationContext());
+        learnController.loadView();
+        baseController = learnController;
+
+        visualiseController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
 
         modeButton.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -90,16 +95,16 @@ public class MainActivity extends Activity {
                     case TOUCH:
                         modeButton.setText("switch to touch input");
                         currentMode = Mode.GYRO;
-                        viewController.unloadView();
-                        viewController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));;
-                        viewController.loadView();
+                        learnController.unloadView();
+                        visualiseController.loadView();
+                        baseController = visualiseController;
                         break;
                     case GYRO:
                         modeButton.setText("switch to gyro input");
                         currentMode = Mode.TOUCH;
-                        viewController.unloadView();
-                        viewController = new LearnController(getApplicationContext());
-                        viewController.loadView();
+                        visualiseController.unloadView();
+                        learnController.loadView();
+                        baseController = learnController;
                         break;
                 }
             }
@@ -152,7 +157,7 @@ public class MainActivity extends Activity {
     // activities are sent touch events,
     public boolean onTouchEvent(MotionEvent me)
     {
-        return viewController.touchEvent(me);
+        return baseController.touchEvent(me);
     }
 
     class MyRenderer implements GLSurfaceView.Renderer {
@@ -212,7 +217,7 @@ public class MainActivity extends Activity {
 
         public void onDrawFrame(GL10 gl)
         {
-            viewController.updateScene();
+            baseController.updateScene();
 
             // clear buffers and draw framerate
             fb.clear(back);

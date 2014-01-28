@@ -36,9 +36,6 @@ public class BrainModel {
         objs = Loader.loadOBJ(res.openRawResource(R.raw.brain_new), res.openRawResource(R.raw.brain_material), 10.0f);
         Log.d("BrainSlice", "Loaded .3ds file");
 
-        //number of subobjs for brain
-        int len = objs.length;
-
         // compile and load shaders for plane
         shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
                 Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_offset)));
@@ -58,6 +55,7 @@ public class BrainModel {
 
         // Set the model's initial position
         plane.rotateX(-3.141592f / 2.0f);
+        scale(0.05f);
 
         plane.build();
         plane.strip();

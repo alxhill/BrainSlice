@@ -70,7 +70,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener {
     private MyRenderer renderer = null;
     private FrameBuffer fb = null;
     private World world = null;
-    private RGBColor back = new RGBColor(25, 25, 112);
+    private RGBColor back = new RGBColor(0, 17, 34);
 
     protected void onCreate(Bundle savedInstanceState)
     {

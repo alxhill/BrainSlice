@@ -34,7 +34,7 @@ public class BrainModel {
         // Load the 3d model
         Log.d("BrainSlice", "Loading .3ds file");
         objs = Loader.loadOBJ(res.openRawResource(R.raw.brain_new), res.openRawResource(R.raw.brain_material), 10.0f);
-        Log.d("BrainSlice","Loaded .3ds file");
+        Log.d("BrainSlice", "Loaded .3ds file");
 
         //number of subobjs for brain
         int len = objs.length;
@@ -67,7 +67,8 @@ public class BrainModel {
 
     }
 
-    public static void addToScene(World world) {
+    public static void addToScene(World world)
+    {
         world.addObject(plane);
         world.addObjects(objs);
     }

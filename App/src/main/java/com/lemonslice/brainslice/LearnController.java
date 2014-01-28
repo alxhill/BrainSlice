@@ -25,17 +25,20 @@ public class LearnController implements OnScaleGestureListener {
     }
 
     @Override
-    public boolean onScale(ScaleGestureDetector detector) {
+    public boolean onScale(ScaleGestureDetector detector)
+    {
         return false;
     }
 
     @Override
-    public boolean onScaleBegin(ScaleGestureDetector detector) {
+    public boolean onScaleBegin(ScaleGestureDetector detector)
+    {
         return false;
     }
 
     @Override
-    public void onScaleEnd(ScaleGestureDetector detector) {
+    public void onScaleEnd(ScaleGestureDetector detector)
+    {
 
     }
 }

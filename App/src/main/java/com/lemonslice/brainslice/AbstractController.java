@@ -6,6 +6,8 @@ package com.lemonslice.brainslice;
 public abstract class AbstractController {
 
     public abstract void loadView();
+
     public abstract void unloadView();
+
     public abstract void updateScene();
 }

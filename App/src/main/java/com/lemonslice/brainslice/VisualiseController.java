@@ -49,19 +49,19 @@ public class VisualiseController extends AbstractController implements SensorEve
         long newTime = System.currentTimeMillis();
         long timeDiff = newTime - oldTime;
 
-        if(timeDiff == 0)
+        if (timeDiff == 0)
         {
             oldTime = newTime;
             return;
         }
 
         // time since last frame
-        float fTimeDiff = (float)timeDiff;
+        float fTimeDiff = (float) timeDiff;
 
         // Calculate the movement based on the time elapsed
-        float x = axisX * fTimeDiff/1000.0f;
-        float y = axisY * fTimeDiff/1000.0f;
-        float z = axisZ *-fTimeDiff/1000.0f;
+        float x = axisX * fTimeDiff / 1000.0f;
+        float y = axisY * fTimeDiff / 1000.0f;
+        float z = axisZ * -fTimeDiff / 1000.0f;
 
         oldTime = newTime;
 

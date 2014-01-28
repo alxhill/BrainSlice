@@ -3,7 +3,6 @@ package com.lemonslice.brainslice;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 import android.os.Bundle;
@@ -28,6 +27,7 @@ import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.Light;
 import com.threed.jpct.Logger;
+import com.threed.jpct.Object3D;
 import com.threed.jpct.RGBColor;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.Texture;
@@ -37,25 +37,25 @@ import com.threed.jpct.util.MemoryHelper;
 /**
  * @author Based off JPCT HelloShader freely licenced example by EgonOlsen, heavily modified by LemonSlice
  */
-public class MainActivity extends Activity implements OnScaleGestureListener, SensorEventListener {
+public class MainActivity extends Activity implements OnScaleGestureListener {
 
     // Used to handle pause and resume...
     private static MainActivity master = null;
 
     // Sensor stuff
     private ScaleGestureDetector scaleDetector = null;
-    private SensorManager mSensorManager;
-    private Sensor mSensor;
 
     // current gyro rotation
     public float axisX, axisY, axisZ;
+
+    AbstractController viewController;
 
     // store which mode we're in
     public enum Mode { TOUCH, GYRO }
     private Mode currentMode = Mode.TOUCH;
 
-    // button to switch mode
-    Button button;
+    // modeButton to switch mode
+    Button modeButton;
 
     // Touchscreen
     private float xpos1 = -1;
@@ -70,10 +70,9 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
     // 3D stuff
     private GLSurfaceView mGLView;
     private MyRenderer renderer = null;
-    private BrainModel brain = null;
     private FrameBuffer fb = null;
     private World world = null;
-    private RGBColor back = new RGBColor(0, 0, 0);
+    private RGBColor back = new RGBColor(25, 25, 112);
 
     protected void onCreate(Bundle savedInstanceState) {
         Logger.log("onCreate");
@@ -91,43 +90,39 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
         // initialise and show the 3D renderer
         renderer = new MyRenderer();
-        brain = new BrainModel();
         mGLView.setRenderer(renderer);
         setContentView(mGLView);
 
-        // initialise the button
-        button = new Button(getApplication());
-        button.setText("switch to gyro input");
+        // initialise the modeButton
+        modeButton = new Button(getApplication());
+        modeButton.setText("switch to gyro input");
 
-        button.setOnClickListener(new Button.OnClickListener() {
+        modeButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("BrainSlice", "button click event");
-                switch (currentMode)
-                {
+                Log.d("BrainSlice", "modeButton click event");
+                switch (currentMode) {
                     case TOUCH:
-                        button.setText("switch to touch input");
+                        modeButton.setText("switch to touch input");
                         currentMode = Mode.GYRO;
+                        if (viewController != null) viewController.loadView();
                         break;
                     case GYRO:
-                        button.setText("switch to gyro input");
+                        modeButton.setText("switch to gyro input");
                         currentMode = Mode.TOUCH;
-                        axisX=0;
-                        axisY=0;
-                        axisZ=0;
+                        viewController.unloadView();
                         break;
                 }
             }
         });
 
-        // add the button to the view
-        addContentView(button, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        // add the modeButton to the view
+        addContentView(modeButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
         // set up listeners for touch events and sensor input
         scaleDetector = new ScaleGestureDetector(this.getApplicationContext(), this);
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME);
+
+        viewController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
     }
 
     @Override
@@ -252,25 +247,6 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
 
     }
 
-    protected boolean isFullscreenOpaque() {
-        return true;
-    }
-
-
-    public void onSensorChanged(SensorEvent event)
-    {
-        if (currentMode != Mode.GYRO) return;
-        axisX = event.values[0];
-        axisY = event.values[1];
-        axisZ = event.values[2];
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy)
-    {
-        // do nothing
-    }
-
     class MyRenderer implements GLSurfaceView.Renderer {
 
         private int fps = 0;
@@ -295,9 +271,9 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             if (master == null) {
                 world = new World();
 
-                brain.load(res);
+                BrainModel.load(res);
 
-                brain.addToScene(world);
+                BrainModel.addToScene(world);
 
                 // create a light
                 Light light = new Light(world);
@@ -310,7 +286,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
                 // construct camera and move it into position
                 Camera cam = world.getCamera();
                 cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
-                cam.lookAt(brain.getTransformedCenter());
+                cam.lookAt(BrainModel.getTransformedCenter());
 
                 MemoryHelper.compact();
 
@@ -327,39 +303,19 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             Logger.log("onSurfaceCreated");
         }
 
-        // initialise to current time
-        long oldTime = System.currentTimeMillis();
-
         public void onDrawFrame(GL10 gl) {
             switch (currentMode)
             {
                 case TOUCH:
-                    brain.rotate(touchX, touchY, 0.0f);
-                    brain.scale(scale);
+                    BrainModel.rotate(touchX, touchY, 0.0f);
+                    touchX = 0;
+                    touchY = 0;
+
+                    BrainModel.scale(scale);
                     scale = 1.0f;
                     break;
                 case GYRO:
-                    long newTime = System.currentTimeMillis();
-                    long timeDiff = newTime - oldTime;
-
-                    if(timeDiff == 0)
-                    {
-                        oldTime = newTime;
-                        return;
-                    }
-
-                    // time since last frame
-                    float fTimeDiff = (float)timeDiff;
-
-                    // Calculate the movement based on the time elapsed
-                    float x = axisX * fTimeDiff/1000.0f;
-                    float y = axisY * fTimeDiff/1000.0f;
-                    float z = axisZ *-fTimeDiff/1000.0f;
-
-                    oldTime = newTime;
-
-                    brain.rotate(x, y, z);
-
+                    viewController.updateScene();
                     break;
             }
 
@@ -368,15 +324,6 @@ public class MainActivity extends Activity implements OnScaleGestureListener, Se
             world.renderScene(fb);
             world.draw(fb);
             fb.display();
-
-            // calculate framerate
-//            if (System.currentTimeMillis() - time >= 1000) {
-//                lfps = fps;
-//                fps = 0;
-//                time = System.currentTimeMillis();
-//            }
-//            fps++;
         }
     }
-
 }

@@ -19,14 +19,11 @@ public class BrainModel {
     private float x, y, z;
 
     // magic 3D stuff
-    private Object3D plane;
-    private Object3D[] objs;
-    private GLSLShader shader = null;
+    private static Object3D plane;
+    private static Object3D[] objs;
+    private static GLSLShader shader = null;
 
-    public BrainModel() {
-    }
-
-    public void load(Resources res)
+    public static void load(Resources res)
     {
 
         // brain is parented to small plane
@@ -50,13 +47,13 @@ public class BrainModel {
         shader.setStaticUniform("invRadius", 0.0003f);
 
         // initialise brain sub-objs
-        for(int i=0; i<len; i++)
+        for (Object3D obj : objs)
         {
-            objs[i].setCulling(true);
-            objs[i].setSpecularLighting(false); //was true
-            objs[i].build();
-            objs[i].strip();
-            objs[i].addParent(plane);
+            obj.setCulling(true);
+            obj.setSpecularLighting(false); //was true
+            obj.build();
+            obj.strip();
+            obj.addParent(plane);
         }
 
         // Set the model's initial position
@@ -70,24 +67,24 @@ public class BrainModel {
 
     }
 
-    public void addToScene(World world) {
+    public static void addToScene(World world) {
         world.addObject(plane);
         world.addObjects(objs);
     }
 
-    public SimpleVector getTransformedCenter()
+    public static SimpleVector getTransformedCenter()
     {
         return plane.getTransformedCenter();
     }
 
-    public void rotate(float x, float y, float z)
+    public static void rotate(float x, float y, float z)
     {
         plane.rotateX(x);
         plane.rotateY(y);
         plane.rotateZ(z);
     }
 
-    public void scale(float scale)
+    public static void scale(float scale)
     {
         plane.scale(scale);
         // I have no idea if we need this

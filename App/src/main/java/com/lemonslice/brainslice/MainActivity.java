@@ -8,8 +8,6 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
-import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
@@ -32,16 +30,10 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * @author Based off JPCT HelloShader freely licenced example by EgonOlsen, heavily modified by LemonSlice
  */
-public class MainActivity extends Activity implements OnScaleGestureListener {
+public class MainActivity extends Activity {
 
     // Used to handle pause and resume...
     private static MainActivity master = null;
-
-    // Sensor stuff
-    private ScaleGestureDetector scaleDetector = null;
-
-    // current gyro rotation
-    public float axisX, axisY, axisZ;
 
     AbstractController viewController;
 
@@ -54,16 +46,6 @@ public class MainActivity extends Activity implements OnScaleGestureListener {
 
     // modeButton to switch mode
     Button modeButton;
-
-    // Touchscreen
-    private float xpos1 = -1;
-    private float ypos1 = -1;
-    private int firstPointerID = -1;
-    private float touchY = 0;
-    private float touchX = 0;
-
-    // scale size of brain
-    private float scale = 1.0f;
 
     // 3D stuff
     private GLSurfaceView mGLView;
@@ -95,6 +77,9 @@ public class MainActivity extends Activity implements OnScaleGestureListener {
         modeButton = new Button(getApplication());
         modeButton.setText("switch to gyro input");
 
+        viewController = new LearnController(getApplicationContext());
+        viewController.loadView();
+
         modeButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -105,12 +90,16 @@ public class MainActivity extends Activity implements OnScaleGestureListener {
                     case TOUCH:
                         modeButton.setText("switch to touch input");
                         currentMode = Mode.GYRO;
-                        if (viewController != null) viewController.loadView();
+                        viewController.unloadView();
+                        viewController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));;
+                        viewController.loadView();
                         break;
                     case GYRO:
                         modeButton.setText("switch to gyro input");
                         currentMode = Mode.TOUCH;
                         viewController.unloadView();
+                        viewController = new LearnController(getApplicationContext());
+                        viewController.loadView();
                         break;
                 }
             }
@@ -118,11 +107,6 @@ public class MainActivity extends Activity implements OnScaleGestureListener {
 
         // add the modeButton to the view
         addContentView(modeButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-
-        // set up listeners for touch events and sensor input
-        scaleDetector = new ScaleGestureDetector(this.getApplicationContext(), this);
-
-        viewController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
     }
 
     @Override
@@ -165,111 +149,13 @@ public class MainActivity extends Activity implements OnScaleGestureListener {
         }
     }
 
-
+    // activities are sent touch events,
     public boolean onTouchEvent(MotionEvent me)
     {
-        if (currentMode != Mode.TOUCH) return true;
-
-        scaleDetector.onTouchEvent(me);
-        if (scaleDetector.isInProgress())
-        {
-            return true;
-        }
-        int pointerIndex;
-
-        switch (me.getActionMasked())
-        {
-            case MotionEvent.ACTION_DOWN:
-                Logger.log("ACTION_DOWN\t");
-                xpos1 = me.getX();
-                ypos1 = me.getY();
-                firstPointerID = me.getPointerId(0);
-                break;
-
-            case MotionEvent.ACTION_POINTER_DOWN:
-                Logger.log("ACTION_POINTER_DOWN\t");
-                touchY = 0;
-                touchX = 0;
-                break;
-
-            case MotionEvent.ACTION_UP:
-                Logger.log("ACTION_UP\t");
-                xpos1 = -1;
-                ypos1 = -1;
-                touchY = 0;
-                touchX = 0;
-                firstPointerID = -1;
-                break;
-
-            case MotionEvent.ACTION_POINTER_UP:
-                //Get index of pointer that was lifted up
-                pointerIndex = me.getActionIndex();
-
-                Logger.log("ACTION_POINTER_UP\t");
-                if (me.getPointerId(pointerIndex) == firstPointerID)
-                {
-                    //Choose new firstPointer
-                    int newPointerIndex;
-                    if (pointerIndex == 0)
-                    {
-                        newPointerIndex = 1;
-                    } else
-                    {
-                        newPointerIndex = 0;
-                    }
-                    xpos1 = me.getX(newPointerIndex);
-                    ypos1 = me.getY(newPointerIndex);
-                    firstPointerID = me.getPointerId(newPointerIndex);
-                }
-                break;
-
-            case MotionEvent.ACTION_MOVE:
-                if (me.getPointerCount() == 1)
-                {
-                    pointerIndex = me.findPointerIndex(firstPointerID);
-                    Logger.log("ACTION_MOVE " + pointerIndex);
-                    float xd = me.getX(pointerIndex) - xpos1;
-                    float yd = me.getY(pointerIndex) - ypos1;
-                    xpos1 = me.getX(pointerIndex);
-                    ypos1 = me.getY(pointerIndex);
-                    touchY = xd / -200f;
-                    touchX = yd / -200f;
-                }
-                return true;
-
-            case MotionEvent.ACTION_CANCEL:
-                firstPointerID = -1;
-                break;
-        }
-
-        return true;
-    }
-
-    public boolean onScale(ScaleGestureDetector detector)
-    {
-        float difference = detector.getCurrentSpan() - detector.getPreviousSpan();
-        scale += 0.001f * difference;
-        return true;
-    }
-
-    // must be implemented for onscale
-    public boolean onScaleBegin(ScaleGestureDetector detector)
-    {
-        return true;
-    }
-
-    // must be implemented for onscale
-    public void onScaleEnd(ScaleGestureDetector detector)
-    {
-
+        return viewController.touchEvent(me);
     }
 
     class MyRenderer implements GLSurfaceView.Renderer {
-
-        private int fps = 0;
-        private int lfps = 0;
-
-        private long time = System.currentTimeMillis();
 
         public MyRenderer()
         {
@@ -326,20 +212,7 @@ public class MainActivity extends Activity implements OnScaleGestureListener {
 
         public void onDrawFrame(GL10 gl)
         {
-            switch (currentMode)
-            {
-                case TOUCH:
-                    BrainModel.rotate(touchX, touchY, 0.0f);
-                    touchX = 0;
-                    touchY = 0;
-
-                    BrainModel.scale(scale);
-                    scale = 1.0f;
-                    break;
-                case GYRO:
-                    viewController.updateScene();
-                    break;
-            }
+            viewController.updateScene();
 
             // clear buffers and draw framerate
             fb.clear(back);

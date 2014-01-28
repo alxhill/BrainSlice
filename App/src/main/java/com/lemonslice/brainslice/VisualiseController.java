@@ -4,6 +4,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.view.MotionEvent;
 
 /**
  * Handles gyro input and passes it to the brain model
@@ -67,6 +68,13 @@ public class VisualiseController extends AbstractController implements SensorEve
 
         BrainModel.rotate(x, y, z);
 
+    }
+
+    @Override
+    public boolean touchEvent(MotionEvent me)
+    {
+        // visualise mode does not use touch events
+        return false;
     }
 
     @Override

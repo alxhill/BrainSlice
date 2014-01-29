@@ -1,28 +1,32 @@
 package com.lemonslice.brainslice;
 
+import android.util.Log;
+
 import java.util.HashMap;
 import java.util.Objects;
 
 /**
  * Created by James on 29/01/14.
  */
+
 public class BrainSegment {
     private String title;
     private String description;
-    private HashMap<String, Object> metadata;
+    private HashMap<String, Object> metadata = new HashMap<String, Object>();
 
-    public BrainSegment(HashMap<String, Object> metadata, String description, String title)
+    public BrainSegment(String title, String description, HashMap<String, Object> metadata)
     {
-        this.description = description;
         this.title = title;
+        this.description = description;
         this.metadata = metadata;
     }
 
-    public BrainSegment(String description, String title)
+    public BrainSegment(String title, String description)
     {
-        this.description = description;
         this.title = title;
-        this.metadata = null;
+        this.description = description;
+        Log.d("BrainSlice", "Created "+title);
+
     }
 
     public String getTitle()

@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
@@ -32,6 +33,9 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class MainActivity extends Activity {
 
+    //TEMP
+    Labels label;
+
     // Used to handle pause and resume...
     private static MainActivity master = null;
 
@@ -48,6 +52,7 @@ public class MainActivity extends Activity {
 
     // modeButton to switch mode
     Button modeButton;
+    Button tempButton;
 
     // 3D stuff
     private GLSurfaceView mGLView;
@@ -110,8 +115,22 @@ public class MainActivity extends Activity {
             }
         });
 
+        tempButton = new Button(getApplication());
+        tempButton.setText("Load Label");
+
+        tempButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                Toast t = Labels.getLabel(getApplicationContext(), "Cerebellum");
+                t.show();
+            }
+        });
+
+
         // add the modeButton to the view
-        addContentView(modeButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+//        addContentView(modeButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        addContentView(tempButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     }
 
     @Override

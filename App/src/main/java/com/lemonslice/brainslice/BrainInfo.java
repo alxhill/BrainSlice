@@ -8,9 +8,9 @@ import java.util.HashMap;
  */
 public class BrainInfo
 {
-    private HashMap<String, BrainSegment> segments;
+    private HashMap<String, BrainSegment> segments = new HashMap<String, BrainSegment>();
 
-    void BrainInfo()
+    public BrainInfo()
     {
         BrainSegment Cerebellum = new BrainSegment(
             "Cerebellum",
@@ -25,5 +25,9 @@ public class BrainInfo
 
         segments.put(Cerebellum.getTitle(), Cerebellum);
         segments.put(ANOTHERSEGMENT.getTitle(), ANOTHERSEGMENT);
+    }
+
+    BrainSegment getSegement(String segment) {
+        return segments.get(segment);
     }
 }

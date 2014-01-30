@@ -1,18 +1,54 @@
-<?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/labelLayout"
-    android:orientation="vertical" android:layout_width="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/label_layout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
+    >
+        <LinearLayout
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="-20dp"
+        android:orientation="vertical"
+        >
 
-        <TextView android:id="@+id/tvSegmentTitle"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/segment_title"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Hello, I am a TextView" />
-        <Button android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello, I am a Button" />
+            android:text="Cerebellum"
+            android:textColor="#ffffff"
+            android:fontFamily="Helvetica Neue"
+            android:typeface="sans"
+            android:textSize="40sp"
+            android:singleLine="true"
+            android:background="@drawable/segtitle"
+            android:shadowColor="#7c9dae"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            />
 
+        <TextView
+            android:id="@+id/segment_description"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="The cerebellum (Latin for little brain) is a region of the brain that plays an important role in motor control. It may also be involved in some cognitive functions such as attention and language, and in regulating fear and pleasure responses, but its movement-related functions are the most solidly established."
+            android:textColor="#ffffff"
+            android:fontFamily="Helvetica Neue"
+            android:typeface="sans"
+            android:textSize="15sp"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="0dp"
+            android:scrollbars = "vertical"
+            />
+
+    </LinearLayout>
 </LinearLayout>

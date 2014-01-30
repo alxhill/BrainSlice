@@ -26,7 +26,6 @@ public class BrainSegment {
         this.title = title;
         this.description = description;
         Log.d("BrainSlice", "Created "+title);
-
     }
 
     public String getTitle()
@@ -44,13 +43,7 @@ public class BrainSegment {
         return metadata;
     }
 
-    public Object getMetaData(String key)
-    {
-        return metadata.get(key);
-    }
+    public Object getMetaData(String key){ return metadata.get(key); }
 
-    public void setMetadata(String key, Object obj)
-    {
-        this.metadata.put(key, obj);
-    }
+    public void setMetadata(String key, Object obj) { this.metadata.put(key, obj);}
 }

@@ -14,7 +14,10 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.threed.jpct.Camera;
@@ -37,11 +40,6 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class MainActivity extends Activity {
 
-    //TEMP
-    Labels label;
-    LayoutInflater tempInflater;
-    LinearLayout tempLayout;
-
     // Used to handle pause and resume...
     private static MainActivity master = null;
 
@@ -58,7 +56,6 @@ public class MainActivity extends Activity {
 
     // modeButton to switch mode
     Button modeButton;
-    Button tempButton;
 
     // 3D stuff
     private GLSurfaceView mGLView;
@@ -66,6 +63,9 @@ public class MainActivity extends Activity {
     private FrameBuffer fb = null;
     private World world = null;
     private RGBColor back = new RGBColor(0, 17, 34);
+
+    //Frame overlaying 3d rendering for labels, instructions etc...
+    private FrameLayout overlaying_frame;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -78,7 +78,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         super.onCreate(savedInstanceState);
-//        mGLView = new GLSurfaceView(getApplication());
         mGLView = (GLSurfaceView)findViewById(R.id.openGlView);
 
         // Enable the OpenGL ES2.0 context
@@ -87,8 +86,6 @@ public class MainActivity extends Activity {
         // initialise and show the 3D renderer
         renderer = new MyRenderer();
         mGLView.setRenderer(renderer);
-//        setContentView(mGLView);
-
 
         // initialise the modeButton
         modeButton = new Button(getApplication());
@@ -102,11 +99,9 @@ public class MainActivity extends Activity {
 
         modeButton.setOnClickListener(new Button.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Log.d("BrainSlice", "modeButton click event");
-                switch (currentMode)
-                {
+                switch (currentMode) {
                     case TOUCH:
                         modeButton.setText("switch to touch input");
                         currentMode = Mode.GYRO;
@@ -125,29 +120,13 @@ public class MainActivity extends Activity {
             }
         });
 
-        tempButton = new Button(getApplication());
-        tempButton.setText("Load Label");
+        overlaying_frame = (FrameLayout)findViewById(R.id.overlay_layout);
 
-//        tempLayout = (LinearLayout)findViewById(R.id.labelLayout);
-        tempInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-//        addContentView(tempLayout, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-
-        tempButton.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-//                Toast t = Labels.getLabel(getApplicationContext(), "Cerebellum");
-//
-//                View tempView = tempInflater.inflate(R.layout.labels, null);
-//                tempLayout.addView(tempView);
-            }
-        });
-
+        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        overlaying_frame.addView(Labels.getLabel(inflater, "ANOTHERSEGMENT"));
 
         // add the modeButton to the view
 //        addContentView(modeButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-//        addContentView(tempButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     }
 
     @Override

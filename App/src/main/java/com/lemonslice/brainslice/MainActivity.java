@@ -120,13 +120,15 @@ public class MainActivity extends Activity {
             }
         });
 
+        //frame layout to pass view to
         overlaying_frame = (FrameLayout)findViewById(R.id.overlay_layout);
 
-        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        overlaying_frame.addView(Labels.getLabel(inflater, "ANOTHERSEGMENT"));
+        //Display label code:
+//        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        overlaying_frame.addView(Labels.getLabel(inflater, "ANOTHERSEGMENT"));
 
         // add the modeButton to the view
-//        addContentView(modeButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        addContentView(modeButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     }
 
     @Override

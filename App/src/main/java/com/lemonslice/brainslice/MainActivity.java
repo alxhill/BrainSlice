@@ -7,10 +7,14 @@ import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.threed.jpct.Camera;
@@ -35,6 +39,8 @@ public class MainActivity extends Activity {
 
     //TEMP
     Labels label;
+    LayoutInflater tempInflater;
+    LinearLayout tempLayout;
 
     // Used to handle pause and resume...
     private static MainActivity master = null;
@@ -69,8 +75,11 @@ public class MainActivity extends Activity {
         if (master != null)
             copy(master);
 
+        setContentView(R.layout.activity_main);
+
         super.onCreate(savedInstanceState);
-        mGLView = new GLSurfaceView(getApplication());
+//        mGLView = new GLSurfaceView(getApplication());
+        mGLView = (GLSurfaceView)findViewById(R.id.openGlView);
 
         // Enable the OpenGL ES2.0 context
         mGLView.setEGLContextClientVersion(2);
@@ -78,7 +87,8 @@ public class MainActivity extends Activity {
         // initialise and show the 3D renderer
         renderer = new MyRenderer();
         mGLView.setRenderer(renderer);
-        setContentView(mGLView);
+//        setContentView(mGLView);
+
 
         // initialise the modeButton
         modeButton = new Button(getApplication());
@@ -118,19 +128,26 @@ public class MainActivity extends Activity {
         tempButton = new Button(getApplication());
         tempButton.setText("Load Label");
 
+//        tempLayout = (LinearLayout)findViewById(R.id.labelLayout);
+        tempInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+//        addContentView(tempLayout, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
         tempButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                Toast t = Labels.getLabel(getApplicationContext(), "Cerebellum");
-                t.show();
+//                Toast t = Labels.getLabel(getApplicationContext(), "Cerebellum");
+//
+//                View tempView = tempInflater.inflate(R.layout.labels, null);
+//                tempLayout.addView(tempView);
             }
         });
 
 
         // add the modeButton to the view
 //        addContentView(modeButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        addContentView(tempButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+//        addContentView(tempButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     }
 
     @Override

@@ -1,8 +1,11 @@
 package com.lemonslice.brainslice;
 
+import android.graphics.Typeface;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 /**
@@ -18,7 +21,7 @@ public class Labels
         LinearLayout label = (LinearLayout)inflater.inflate(R.layout.labels, null);
 
         TextView titleView = (TextView)label.findViewById(R.id.segment_title);
-        titleView.setText(title);
+        titleView = Utils.getSmallCaps(titleView);
 
         TextView descView = (TextView)label.findViewById(R.id.segment_description);
         descView.setText(description);

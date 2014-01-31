@@ -129,12 +129,7 @@ public class MainActivity extends Activity {
         //frame layout to pass view to
         overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
 
-        //Display label code:
-//        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        overlayingFrame.addView(Labels.getLabel(inflater, "ANOTHERSEGMENT"));
 
-        // add the modeButton to the view
-//        addContentView(modeButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     }
 
     @Override
@@ -249,4 +244,24 @@ public class MainActivity extends Activity {
             fb.display();
         }
     }
+
+//    public class AndroidExternalFontsActivity extends Activity {
+//        @Override
+//        public void onCreate(Bundle savedInstanceState) {
+//            super.onCreate(savedInstanceState);
+//            setContentView(R.layout.activity_main);
+//
+//            // Font path
+//            String fontPath = "fonts/Futura.otf";
+//
+//            // text view label
+//            TextView txtFutura = (TextView) findViewById(R.id.segment_title);
+//
+//            // Loading Font Face
+//            Typeface tf = Typeface.createFromAsset(getAssets(), fontPath);
+//
+//            // Applying font
+//            txtFutura.setTypeface(tf);
+//        }
+//    }
 }

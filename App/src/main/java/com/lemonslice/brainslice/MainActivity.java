@@ -7,10 +7,18 @@ import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
@@ -56,6 +64,9 @@ public class MainActivity extends Activity {
     private World world = null;
     private RGBColor back = new RGBColor(0, 17, 34);
 
+    //Frame overlaying 3d rendering for labels, instructions etc...
+    private FrameLayout overlaying_frame;
+
     protected void onCreate(Bundle savedInstanceState)
     {
         Logger.log("onCreate");
@@ -64,8 +75,10 @@ public class MainActivity extends Activity {
         if (master != null)
             copy(master);
 
+        setContentView(R.layout.activity_main);
+
         super.onCreate(savedInstanceState);
-        mGLView = new GLSurfaceView(getApplication());
+        mGLView = (GLSurfaceView)findViewById(R.id.openGlView);
 
         // Enable the OpenGL ES2.0 context
         mGLView.setEGLContextClientVersion(2);
@@ -73,7 +86,6 @@ public class MainActivity extends Activity {
         // initialise and show the 3D renderer
         renderer = new MyRenderer();
         mGLView.setRenderer(renderer);
-        setContentView(mGLView);
 
         // initialise the modeButton
         modeButton = new Button(getApplication());
@@ -87,11 +99,9 @@ public class MainActivity extends Activity {
 
         modeButton.setOnClickListener(new Button.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Log.d("BrainSlice", "modeButton click event");
-                switch (currentMode)
-                {
+                switch (currentMode) {
                     case TOUCH:
                         modeButton.setText("switch to touch input");
                         currentMode = Mode.GYRO;
@@ -109,6 +119,13 @@ public class MainActivity extends Activity {
                 }
             }
         });
+
+        //frame layout to pass view to
+        overlaying_frame = (FrameLayout)findViewById(R.id.overlay_layout);
+
+        //Display label code:
+//        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        overlaying_frame.addView(Labels.getLabel(inflater, "ANOTHERSEGMENT"));
 
         // add the modeButton to the view
         addContentView(modeButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));

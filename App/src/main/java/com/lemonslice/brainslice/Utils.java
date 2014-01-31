@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 /**
  * Created by James on 31/01/14.
+<<<<<<< HEAD
  *
  * working:
  * getSmallCaps(TextView tv)
@@ -15,6 +16,7 @@ import android.widget.TextView;
 public class Utils {
 
     //get small caps code to convert to small caps (not yet working)
+
     private static char[] smallCaps = new char[]
             {
                     '\uf761', //A
@@ -74,4 +76,5 @@ public class Utils {
 
         return tv;
     }
+
 }

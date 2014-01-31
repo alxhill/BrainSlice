@@ -129,7 +129,6 @@ public class MainActivity extends Activity {
         //frame layout to pass view to
         overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
 
-
     }
 
     @Override

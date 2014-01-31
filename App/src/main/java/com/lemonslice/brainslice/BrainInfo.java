@@ -15,6 +15,7 @@ public class BrainInfo
         BrainSegment Cerebellum = new BrainSegment(
             "Cerebellum",
             "The cerebellum (Latin for little brain) is a region of the brain that plays an important role in motor control. It may also be involved in some cognitive functions such as attention and language, and in regulating fear and pleasure responses, but its movement-related functions are the most solidly established."
+
         );
         BrainSegment Cerebrum = new BrainSegment(
                 "Cerebrum",

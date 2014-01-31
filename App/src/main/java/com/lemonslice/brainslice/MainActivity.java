@@ -7,18 +7,11 @@ import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.ViewManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
@@ -52,11 +45,6 @@ public class MainActivity extends Activity {
         TOUCH, GYRO
     }
 
-    private Mode currentMode = Mode.TOUCH;
-
-    // modeButton to switch mode
-    Button modeButton;
-
     // 3D stuff
     private GLSurfaceView mGLView;
     private MyRenderer renderer = null;
@@ -65,7 +53,7 @@ public class MainActivity extends Activity {
     private RGBColor back = new RGBColor(0, 17, 34);
 
     //Frame overlaying 3d rendering for labels, instructions etc...
-    private FrameLayout overlaying_frame;
+    private FrameLayout overlayingFrame;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -87,48 +75,45 @@ public class MainActivity extends Activity {
         renderer = new MyRenderer();
         mGLView.setRenderer(renderer);
 
-        // initialise the modeButton
-        modeButton = new Button(getApplication());
-        modeButton.setText("switch to gyro input");
-
         learnController = new LearnController(getApplicationContext());
         learnController.loadView();
         baseController = learnController;
 
         visualiseController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
 
-        modeButton.setOnClickListener(new Button.OnClickListener() {
+        Button learnButton = (Button) findViewById(R.id.learn_button);
+        learnButton.setOnClickListener(new Button.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
-                Log.d("BrainSlice", "modeButton click event");
-                switch (currentMode) {
-                    case TOUCH:
-                        modeButton.setText("switch to touch input");
-                        currentMode = Mode.GYRO;
-                        learnController.unloadView();
-                        visualiseController.loadView();
-                        baseController = visualiseController;
-                        break;
-                    case GYRO:
-                        modeButton.setText("switch to gyro input");
-                        currentMode = Mode.TOUCH;
-                        visualiseController.unloadView();
-                        learnController.loadView();
-                        baseController = learnController;
-                        break;
-                }
+            public void onClick(View v)
+            {
+                visualiseController.unloadView();
+                learnController.loadView();
+                baseController = learnController;
+            }
+        });
+
+
+        Button visualiseButton = (Button) findViewById(R.id.visualise_button);
+        visualiseButton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                learnController.unloadView();
+                visualiseController.loadView();
+                baseController = visualiseController;
             }
         });
 
         //frame layout to pass view to
-        overlaying_frame = (FrameLayout)findViewById(R.id.overlay_layout);
+        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
 
         //Display label code:
 //        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        overlaying_frame.addView(Labels.getLabel(inflater, "ANOTHERSEGMENT"));
+//        overlayingFrame.addView(Labels.getLabel(inflater, "ANOTHERSEGMENT"));
 
         // add the modeButton to the view
-        addContentView(modeButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+//        addContentView(modeButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     }
 
     @Override

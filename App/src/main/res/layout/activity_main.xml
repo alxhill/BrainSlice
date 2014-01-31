@@ -19,4 +19,26 @@
         android:layout_height="fill_parent">
         </FrameLayout>
 
-    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:gravity="center_horizontal"
+        android:background="@drawable/menu_bg">
+        <Button
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Learn"
+            android:id="@+id/learn_button"
+            android:layout_marginRight="30dp"/>
+        <Button
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="Visualise"
+            android:id="@+id/visualise_button"
+            android:layout_marginLeft="30dp"/>
+        </LinearLayout>
+
+  </FrameLayout>

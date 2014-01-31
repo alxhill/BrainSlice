@@ -29,15 +29,21 @@
         android:background="@drawable/menu_bg">
         <Button
             android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:text="Learn"
+            android:textSize="18sp"
             android:id="@+id/learn_button"
+            android:background="@android:color/transparent"
+            android:textColor="@android:color/white"
             android:layout_marginRight="30dp"/>
         <Button
             android:layout_width="200dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:textSize="18sp"
             android:text="Visualise"
             android:id="@+id/visualise_button"
+            android:background="@android:color/transparent"
+            android:textColor="@android:color/white"
             android:layout_marginLeft="30dp"/>
         </LinearLayout>
 

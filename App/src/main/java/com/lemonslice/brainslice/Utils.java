@@ -5,9 +5,16 @@ import android.widget.TextView;
 
 /**
  * Created by James on 31/01/14.
+ *
+ * working:
+ * getSmallCaps(TextView tv)
+ *
+ * not working:
+ * getSmallCaps(String s)
  */
 public class Utils {
 
+    //get small caps code to convert to small caps (not yet working)
     private static char[] smallCaps = new char[]
             {
                     '\uf761', //A
@@ -39,7 +46,24 @@ public class Utils {
             };
 
 
-    public static TextView getSmallCaps(TextView tv) {
+    //get small caps by simply returning small caps string (not yet working)
+    public static String getSmallCaps(String s)
+    {
+        char[] chars = s.toCharArray();
+        for(int i = 0; i < chars.length; i++)
+        {
+            if(chars[i] >= 'a' && chars[i] <= 'z')
+            {
+                chars[i] = smallCaps[chars[i] - 'a'];
+            }
+        }
+        return String.valueOf(chars);
+    }
+
+
+    //get small caps by passing and returning textview (working)
+    public static TextView getSmallCaps(TextView tv)
+    {
         String s = tv.getText().toString();
         tv.setText(
                 Html.fromHtml(s.substring(0, 1)
@@ -49,15 +73,5 @@ public class Utils {
         );
 
         return tv;
-    }
-
-    public static String getSmallCaps(String s) {
-        char[] chars = s.toCharArray();
-        for(int i = 0; i < chars.length; i++) {
-            if(chars[i] >= 'a' && chars[i] <= 'z') {
-                chars[i] = smallCaps[chars[i] - 'a'];
-            }
-        }
-        return String.valueOf(chars);
     }
 }

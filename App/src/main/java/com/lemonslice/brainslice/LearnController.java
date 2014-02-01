@@ -1,21 +1,24 @@
 package com.lemonslice.brainslice;
 
 import android.content.Context;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
-
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import com.threed.jpct.Logger;
 
 /**
  * Created by alexander on 28/01/2014.
  */
-public class LearnController extends AbstractController implements OnScaleGestureListener {
+public class LearnController extends AbstractController implements OnScaleGestureListener, OnGestureListener {
 
     private float touchX;
     private float touchY;
 
     private float xpos1 = -1;
+
     private float ypos1 = -1;
     private int firstPointerID = -1;
 
@@ -26,11 +29,13 @@ public class LearnController extends AbstractController implements OnScaleGestur
 
     // Sensor stuff
     private ScaleGestureDetector scaleDetector = null;
+    private GestureDetector gestureDetector = null;
 
 
     public LearnController(Context applicationContext)
     {
         scaleDetector = new ScaleGestureDetector(applicationContext, this);
+        gestureDetector = new GestureDetector(applicationContext, this);
     }
 
     @Override
@@ -55,6 +60,38 @@ public class LearnController extends AbstractController implements OnScaleGestur
 
         BrainModel.scale(scale);
         scale = 1.0f;
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        //Put things in here for single tap (labels and the like)
+        return true;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
+
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public boolean onDown(MotionEvent motionEvent) {
+        return true;
     }
 
     @Override

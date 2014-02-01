@@ -6,6 +6,9 @@ import android.widget.TextView;
 /**
  * Created by James on 31/01/14.
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Commented and cleaned up code
  *
  * working:
  * getSmallCaps(TextView tv)

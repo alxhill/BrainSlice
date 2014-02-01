@@ -40,6 +40,7 @@ public class Labels
     {
         BrainSegment seg = BrainInfo.getSegment(brainSegment);
 
+
         //check if segment exists
         if(seg != null)
             return createLabel(inflater, seg);

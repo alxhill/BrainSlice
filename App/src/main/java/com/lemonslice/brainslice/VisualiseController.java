@@ -62,7 +62,7 @@ public class VisualiseController extends AbstractController implements SensorEve
         // Calculate the movement based on the time elapsed
         float x = axisX * fTimeDiff / 1000.0f;
         float y = axisY * fTimeDiff / 1000.0f;
-        float z = axisZ * -fTimeDiff / 1000.0f;
+        float z = axisZ * fTimeDiff / 1000.0f;
 
         oldTime = newTime;
 
@@ -80,9 +80,10 @@ public class VisualiseController extends AbstractController implements SensorEve
     @Override
     public void onSensorChanged(SensorEvent event)
     {
-        axisX = event.values[0];
-        axisY = event.values[1];
-        axisZ = event.values[2];
+        // Axes set for landscape gyro data
+        axisX = -event.values[1];
+        axisY = event.values[0];
+        axisZ = -event.values[2];
     }
 
     @Override

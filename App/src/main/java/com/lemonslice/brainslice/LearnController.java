@@ -5,20 +5,19 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
-import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
-import com.threed.jpct.Logger;
 
 /**
  * Created by alexander on 28/01/2014.
  */
 public class LearnController extends AbstractController implements OnScaleGestureListener, OnGestureListener {
 
-    private float touchX;
-    private float touchY;
+    private float dragX;
+    private float dragY;
+    private float velocityX = 0;
+    private float velocityY = 0;
 
     private float xpos1 = -1;
-
     private float ypos1 = -1;
     private int firstPointerID = -1;
 
@@ -41,7 +40,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public void loadView()
     {
-        touchX = touchY = 0;
+        dragX = dragY = 0;
         isLoaded = true;
     }
 
@@ -54,9 +53,18 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public void updateScene()
     {
-        BrainModel.rotate(touchX, touchY, 0.0f);
-        touchX = 0;
-        touchY = 0;
+        dragX += velocityX;
+        dragY += velocityY;
+
+        if(velocityX > 10) velocityX -= 10;
+        else velocityX = 0;
+
+        if(velocityY > 10) velocityY -= 10;
+        else velocityY = 0;
+
+        BrainModel.rotate(dragX, dragY, 0.0f);
+        dragX = 0;
+        dragY = 0;
 
         BrainModel.scale(scale);
         scale = 1.0f;
@@ -65,13 +73,17 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public boolean onSingleTapUp(MotionEvent motionEvent) {
         //Put things in here for single tap (labels and the like)
+        velocityX = 0;
+        velocityY = 0;
         return true;
     }
 
     @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-
-        return false;
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float distanceX, float distanceY)
+    {
+        dragX += distanceX;
+        dragY += distanceY;
+        return true;
     }
 
     @Override
@@ -80,17 +92,25 @@ public class LearnController extends AbstractController implements OnScaleGestur
     }
 
     @Override
-    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        return false;
+    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float vX, float vY)
+    {
+        velocityX = vX;
+        velocityY = vY;
+        return true;
     }
 
     @Override
-    public void onShowPress(MotionEvent motionEvent) {
-
+    public void onShowPress(MotionEvent motionEvent)
+    {
+        velocityX = 0;
+        velocityY = 0;
     }
 
     @Override
-    public boolean onDown(MotionEvent motionEvent) {
+    public boolean onDown(MotionEvent motionEvent)
+    {
+        velocityX = 0;
+        velocityY = 0;
         return true;
     }
 
@@ -101,7 +121,9 @@ public class LearnController extends AbstractController implements OnScaleGestur
         if (scaleDetector.isInProgress())
             return true;
 
-        int pointerIndex;
+        gestureDetector.onTouchEvent(me);
+
+        /*int pointerIndex;
 
         switch (me.getActionMasked())
         {
@@ -114,16 +136,16 @@ public class LearnController extends AbstractController implements OnScaleGestur
 
             case MotionEvent.ACTION_POINTER_DOWN:
                 Logger.log("ACTION_POINTER_DOWN\t");
-                touchY = 0;
-                touchX = 0;
+                dragY = 0;
+                dragX = 0;
                 break;
 
             case MotionEvent.ACTION_UP:
                 Logger.log("ACTION_UP\t");
                 xpos1 = -1;
                 ypos1 = -1;
-                touchY = 0;
-                touchX = 0;
+                dragY = 0;
+                dragX = 0;
                 firstPointerID = -1;
                 break;
 
@@ -158,8 +180,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
                     float yd = me.getY(pointerIndex) - ypos1;
                     xpos1 = me.getX(pointerIndex);
                     ypos1 = me.getY(pointerIndex);
-                    touchY = xd / -200f;
-                    touchX = yd / -200f;
+                    dragY = xd / -200f;
+                    dragX = yd / -200f;
                 }
                 return true;
 
@@ -167,7 +189,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
                 firstPointerID = -1;
                 break;
         }
-
+        */
         return true;
     }
 

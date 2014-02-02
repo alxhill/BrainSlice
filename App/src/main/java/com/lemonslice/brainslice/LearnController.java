@@ -1,5 +1,6 @@
 package com.lemonslice.brainslice;
 
+import android.util.Log;
 import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -53,14 +54,17 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public void updateScene()
     {
-        dragX += velocityX;
-        dragY += velocityY;
+        if(velocityX > 0.01 || velocityX < -0.01 || velocityY > 0.01 || velocityY < -0.01)
+            Log.d("Update Scene", velocityX + " " + velocityY + " " + dragX + " " + dragY);
 
-        if(velocityX > 10) velocityX -= 10;
+        if(velocityX > 0.01 || velocityX < -0.01) velocityX *= 0.95;
         else velocityX = 0;
 
-        if(velocityY > 10) velocityY -= 10;
+        if(velocityY > 0.01 || velocityY < -0.01) velocityY *= 0.95;
         else velocityY = 0;
+
+        dragX += velocityX;
+        dragY += velocityY;
 
         BrainModel.rotate(dragX, dragY, 0.0f);
         dragX = 0;
@@ -70,6 +74,27 @@ public class LearnController extends AbstractController implements OnScaleGestur
         scale = 1.0f;
     }
 
+
+    @Override
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float distanceY, float distanceX)
+    {
+        dragX = distanceX / 100;
+        dragY = distanceY / 100;
+        Log.d("Touch Input", "onScroll: " + dragY + " " + dragX + " " + distanceX + " " + distanceY);
+        return true;
+    }
+
+
+    @Override
+    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float vY, float vX)
+    {
+        velocityX = -vX / 10000;
+        velocityY = -vY / 10000;
+        Log.d("Touch Input", "onFling: " + velocityX + " " + velocityY);
+        return true;
+    }
+
+
     @Override
     public boolean onSingleTapUp(MotionEvent motionEvent) {
         //Put things in here for single tap (labels and the like)
@@ -78,25 +103,10 @@ public class LearnController extends AbstractController implements OnScaleGestur
         return true;
     }
 
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float distanceX, float distanceY)
-    {
-        dragX += distanceX;
-        dragY += distanceY;
-        return true;
-    }
 
     @Override
     public void onLongPress(MotionEvent motionEvent) {
 
-    }
-
-    @Override
-    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float vX, float vY)
-    {
-        velocityX = vX;
-        velocityY = vY;
-        return true;
     }
 
     @Override

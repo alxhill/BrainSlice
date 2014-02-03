@@ -18,9 +18,12 @@ public class LearnController extends AbstractController implements OnScaleGestur
     private float velocityX = 0;
     private float velocityY = 0;
 
-    private float xpos1 = -1;
-    private float ypos1 = -1;
-    private int firstPointerID = -1;
+
+    //These multipliers affect how fast the brain moves.
+    static final double decelCutoff = 0.01;
+    static final double decelRate = 0.95;
+    static final float velocityDiv = 10000;
+    static final float moveDiv = 100;
 
     // scale size of brain
     private float scale = 1.0f;
@@ -54,13 +57,13 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public void updateScene()
     {
-        if(velocityX > 0.01 || velocityX < -0.01 || velocityY > 0.01 || velocityY < -0.01)
+        if(velocityX > decelCutoff || velocityX < -decelCutoff || velocityY > decelCutoff || velocityY < -decelCutoff)
             Log.d("Update Scene", velocityX + " " + velocityY + " " + dragX + " " + dragY);
 
-        if(velocityX > 0.01 || velocityX < -0.01) velocityX *= 0.95;
+        if(velocityX > decelCutoff || velocityX < -decelCutoff) velocityX *= decelRate;
         else velocityX = 0;
 
-        if(velocityY > 0.01 || velocityY < -0.01) velocityY *= 0.95;
+        if(velocityY > decelCutoff || velocityY < -decelCutoff) velocityY *= decelRate;
         else velocityY = 0;
 
         dragX += velocityX;
@@ -78,8 +81,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float distanceY, float distanceX)
     {
-        dragX = distanceX / 100;
-        dragY = distanceY / 100;
+        dragX = distanceX / moveDiv;
+        dragY = distanceY / moveDiv;
         Log.d("Touch Input", "onScroll: " + dragY + " " + dragX + " " + distanceX + " " + distanceY);
         return true;
     }
@@ -88,8 +91,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float vY, float vX)
     {
-        velocityX = -vX / 10000;
-        velocityY = -vY / 10000;
+        velocityX = -vX / velocityDiv;
+        velocityY = -vY / velocityDiv;
         Log.d("Touch Input", "onFling: " + velocityX + " " + velocityY);
         return true;
     }
@@ -133,73 +136,6 @@ public class LearnController extends AbstractController implements OnScaleGestur
 
         gestureDetector.onTouchEvent(me);
 
-        /*int pointerIndex;
-
-        switch (me.getActionMasked())
-        {
-            case MotionEvent.ACTION_DOWN:
-                Logger.log("ACTION_DOWN\t");
-                xpos1 = me.getX();
-                ypos1 = me.getY();
-                firstPointerID = me.getPointerId(0);
-                break;
-
-            case MotionEvent.ACTION_POINTER_DOWN:
-                Logger.log("ACTION_POINTER_DOWN\t");
-                dragY = 0;
-                dragX = 0;
-                break;
-
-            case MotionEvent.ACTION_UP:
-                Logger.log("ACTION_UP\t");
-                xpos1 = -1;
-                ypos1 = -1;
-                dragY = 0;
-                dragX = 0;
-                firstPointerID = -1;
-                break;
-
-            case MotionEvent.ACTION_POINTER_UP:
-                //Get index of pointer that was lifted up
-                pointerIndex = me.getActionIndex();
-
-                Logger.log("ACTION_POINTER_UP\t");
-                if (me.getPointerId(pointerIndex) == firstPointerID)
-                {
-                    //Choose new firstPointer
-                    int newPointerIndex;
-                    if (pointerIndex == 0)
-                    {
-                        newPointerIndex = 1;
-                    } else
-                    {
-                        newPointerIndex = 0;
-                    }
-                    xpos1 = me.getX(newPointerIndex);
-                    ypos1 = me.getY(newPointerIndex);
-                    firstPointerID = me.getPointerId(newPointerIndex);
-                }
-                break;
-
-            case MotionEvent.ACTION_MOVE:
-                if (me.getPointerCount() == 1)
-                {
-                    pointerIndex = me.findPointerIndex(firstPointerID);
-                    Logger.log("ACTION_MOVE " + pointerIndex);
-                    float xd = me.getX(pointerIndex) - xpos1;
-                    float yd = me.getY(pointerIndex) - ypos1;
-                    xpos1 = me.getX(pointerIndex);
-                    ypos1 = me.getY(pointerIndex);
-                    dragY = xd / -200f;
-                    dragX = yd / -200f;
-                }
-                return true;
-
-            case MotionEvent.ACTION_CANCEL:
-                firstPointerID = -1;
-                break;
-        }
-        */
         return true;
     }
 

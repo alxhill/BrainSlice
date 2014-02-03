@@ -13,17 +13,22 @@ import android.view.GestureDetector.OnGestureListener;
  */
 public class LearnController extends AbstractController implements OnScaleGestureListener, OnGestureListener {
 
+    //How much to rotate the brain
     private float dragX;
     private float dragY;
     private float velocityX = 0;
     private float velocityY = 0;
 
+    private boolean scaleEnd = false;
 
     //These multipliers affect how fast the brain moves.
     static final double decelCutoff = 0.01;
     static final double decelRate = 0.95;
     static final float velocityDiv = 10000;
     static final float moveDiv = 100;
+
+    //If initial velocity is below this threshold ignore it
+    static final double velocityThreshold = 0.1;
 
     // scale size of brain
     private float scale = 1.0f;
@@ -91,9 +96,20 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float vY, float vX)
     {
+        if(scaleEnd)
+        {
+            scaleEnd = false;
+            return true;
+        }
         velocityX = -vX / velocityDiv;
         velocityY = -vY / velocityDiv;
-        Log.d("Touch Input", "onFling: " + velocityX + " " + velocityY);
+
+        Log.d("Touch Input", "onFling before: " + velocityX + " " + velocityY);
+
+        if(velocityX < velocityThreshold && velocityX > -velocityThreshold) velocityX = 0;
+        if(velocityY < velocityThreshold && velocityY > -velocityThreshold) velocityY = 0;
+
+        Log.d("Touch Input", "onFling after: " + velocityX + " " + velocityY);
         return true;
     }
 
@@ -127,18 +143,6 @@ public class LearnController extends AbstractController implements OnScaleGestur
         return true;
     }
 
-    @Override
-    public boolean touchEvent(MotionEvent me)
-    {
-        scaleDetector.onTouchEvent(me);
-        if (scaleDetector.isInProgress())
-            return true;
-
-        gestureDetector.onTouchEvent(me);
-
-        return true;
-    }
-
     public boolean onScale(ScaleGestureDetector detector)
     {
         if (!isLoaded) return false;
@@ -156,7 +160,19 @@ public class LearnController extends AbstractController implements OnScaleGestur
     // must be implemented for onscale
     public void onScaleEnd(ScaleGestureDetector detector)
     {
+        scaleEnd = true;
+    }
 
+    @Override
+    public boolean touchEvent(MotionEvent me)
+    {
+        scaleDetector.onTouchEvent(me);
+        if (scaleDetector.isInProgress())
+            return true;
+
+        gestureDetector.onTouchEvent(me);
+
+        return true;
     }
 
 }

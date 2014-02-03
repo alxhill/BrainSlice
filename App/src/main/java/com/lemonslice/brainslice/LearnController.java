@@ -1,23 +1,34 @@
 package com.lemonslice.brainslice;
 
+import android.util.Log;
 import android.content.Context;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
-
-import com.threed.jpct.Logger;
+import android.view.GestureDetector.OnGestureListener;
 
 /**
  * Created by alexander on 28/01/2014.
  */
-public class LearnController extends AbstractController implements OnScaleGestureListener {
+public class LearnController extends AbstractController implements OnScaleGestureListener, OnGestureListener {
 
-    private float touchX;
-    private float touchY;
+    //How much to rotate the brain
+    private float dragX;
+    private float dragY;
+    private float velocityX = 0;
+    private float velocityY = 0;
 
-    private float xpos1 = -1;
-    private float ypos1 = -1;
-    private int firstPointerID = -1;
+    private boolean scaleEnd = false;
+
+    //These multipliers affect how fast the brain moves.
+    static final double decelCutoff = 0.01;
+    static final double decelRate = 0.95;
+    static final float velocityDiv = 10000;
+    static final float moveDiv = 100;
+
+    //If initial velocity is below this threshold ignore it
+    static final double velocityThreshold = 0.1;
 
     // scale size of brain
     private float scale = 1.0f;
@@ -26,17 +37,19 @@ public class LearnController extends AbstractController implements OnScaleGestur
 
     // Sensor stuff
     private ScaleGestureDetector scaleDetector = null;
+    private GestureDetector gestureDetector = null;
 
 
     public LearnController(Context applicationContext)
     {
         scaleDetector = new ScaleGestureDetector(applicationContext, this);
+        gestureDetector = new GestureDetector(applicationContext, this);
     }
 
     @Override
     public void loadView()
     {
-        touchX = touchY = 0;
+        dragX = dragY = 0;
         isLoaded = true;
     }
 
@@ -49,88 +62,84 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public void updateScene()
     {
-        BrainModel.rotate(touchX, touchY, 0.0f);
-        touchX = 0;
-        touchY = 0;
+        if(velocityX > decelCutoff || velocityX < -decelCutoff || velocityY > decelCutoff || velocityY < -decelCutoff)
+            Log.d("Update Scene", velocityX + " " + velocityY + " " + dragX + " " + dragY);
+
+        if(velocityX > decelCutoff || velocityX < -decelCutoff) velocityX *= decelRate;
+        else velocityX = 0;
+
+        if(velocityY > decelCutoff || velocityY < -decelCutoff) velocityY *= decelRate;
+        else velocityY = 0;
+
+        dragX += velocityX;
+        dragY += velocityY;
+
+        BrainModel.rotate(dragX, dragY, 0.0f);
+        dragX = 0;
+        dragY = 0;
 
         BrainModel.scale(scale);
         scale = 1.0f;
     }
 
+
     @Override
-    public boolean touchEvent(MotionEvent me)
+    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float distanceY, float distanceX)
     {
-        scaleDetector.onTouchEvent(me);
-        if (scaleDetector.isInProgress())
-            return true;
+        dragX = distanceX / moveDiv;
+        dragY = distanceY / moveDiv;
+        Log.d("Touch Input", "onScroll: " + dragY + " " + dragX + " " + distanceX + " " + distanceY);
+        return true;
+    }
 
-        int pointerIndex;
 
-        switch (me.getActionMasked())
+    @Override
+    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float vY, float vX)
+    {
+        if(scaleEnd)
         {
-            case MotionEvent.ACTION_DOWN:
-                Logger.log("ACTION_DOWN\t");
-                xpos1 = me.getX();
-                ypos1 = me.getY();
-                firstPointerID = me.getPointerId(0);
-                break;
-
-            case MotionEvent.ACTION_POINTER_DOWN:
-                Logger.log("ACTION_POINTER_DOWN\t");
-                touchY = 0;
-                touchX = 0;
-                break;
-
-            case MotionEvent.ACTION_UP:
-                Logger.log("ACTION_UP\t");
-                xpos1 = -1;
-                ypos1 = -1;
-                touchY = 0;
-                touchX = 0;
-                firstPointerID = -1;
-                break;
-
-            case MotionEvent.ACTION_POINTER_UP:
-                //Get index of pointer that was lifted up
-                pointerIndex = me.getActionIndex();
-
-                Logger.log("ACTION_POINTER_UP\t");
-                if (me.getPointerId(pointerIndex) == firstPointerID)
-                {
-                    //Choose new firstPointer
-                    int newPointerIndex;
-                    if (pointerIndex == 0)
-                    {
-                        newPointerIndex = 1;
-                    } else
-                    {
-                        newPointerIndex = 0;
-                    }
-                    xpos1 = me.getX(newPointerIndex);
-                    ypos1 = me.getY(newPointerIndex);
-                    firstPointerID = me.getPointerId(newPointerIndex);
-                }
-                break;
-
-            case MotionEvent.ACTION_MOVE:
-                if (me.getPointerCount() == 1)
-                {
-                    pointerIndex = me.findPointerIndex(firstPointerID);
-                    Logger.log("ACTION_MOVE " + pointerIndex);
-                    float xd = me.getX(pointerIndex) - xpos1;
-                    float yd = me.getY(pointerIndex) - ypos1;
-                    xpos1 = me.getX(pointerIndex);
-                    ypos1 = me.getY(pointerIndex);
-                    touchY = xd / -200f;
-                    touchX = yd / -200f;
-                }
-                return true;
-
-            case MotionEvent.ACTION_CANCEL:
-                firstPointerID = -1;
-                break;
+            scaleEnd = false;
+            return true;
         }
+        velocityX = -vX / velocityDiv;
+        velocityY = -vY / velocityDiv;
 
+        Log.d("Touch Input", "onFling before: " + velocityX + " " + velocityY);
+
+        if(velocityX < velocityThreshold && velocityX > -velocityThreshold) velocityX = 0;
+        if(velocityY < velocityThreshold && velocityY > -velocityThreshold) velocityY = 0;
+
+        Log.d("Touch Input", "onFling after: " + velocityX + " " + velocityY);
+        return true;
+    }
+
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent motionEvent) {
+        //Put things in here for single tap (labels and the like)
+        velocityX = 0;
+        velocityY = 0;
+        return true;
+    }
+
+
+    @Override
+    public void onLongPress(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public void onShowPress(MotionEvent motionEvent)
+    {
+        velocityX = 0;
+        velocityY = 0;
+    }
+
+    @Override
+    public boolean onDown(MotionEvent motionEvent)
+    {
+        velocityX = 0;
+        velocityY = 0;
         return true;
     }
 
@@ -151,7 +160,19 @@ public class LearnController extends AbstractController implements OnScaleGestur
     // must be implemented for onscale
     public void onScaleEnd(ScaleGestureDetector detector)
     {
+        scaleEnd = true;
+    }
 
+    @Override
+    public boolean touchEvent(MotionEvent me)
+    {
+        scaleDetector.onTouchEvent(me);
+        if (scaleDetector.isInProgress())
+            return true;
+
+        gestureDetector.onTouchEvent(me);
+
+        return true;
     }
 
 }

@@ -3,15 +3,27 @@ package com.lemonslice.brainslice;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.style.StyleSpan;
+import android.text.style.TypefaceSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
@@ -22,6 +34,8 @@ import com.threed.jpct.SimpleVector;
 import com.threed.jpct.Texture;
 import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
+
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Field;
 
@@ -81,8 +95,8 @@ public class MainActivity extends Activity {
 
         visualiseController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
 
-        Button learnButton = (Button) findViewById(R.id.learn_button);
-        learnButton.setOnClickListener(new Button.OnClickListener() {
+        LinearLayout learnButton = (LinearLayout) findViewById(R.id.learn_button);
+        learnButton.setOnClickListener(new FrameLayout.OnClickListener() {
 
             @Override
             public void onClick(View v)
@@ -94,8 +108,8 @@ public class MainActivity extends Activity {
         });
 
 
-        Button visualiseButton = (Button) findViewById(R.id.visualise_button);
-        visualiseButton.setOnClickListener(new Button.OnClickListener() {
+        LinearLayout visualiseButton = (LinearLayout) findViewById(R.id.visualise_button);
+        visualiseButton.setOnClickListener(new FrameLayout.OnClickListener() {
             @Override
             public void onClick(View v)
             {
@@ -105,6 +119,18 @@ public class MainActivity extends Activity {
             }
         });
 
+        Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/glyphicons-halflings-regular.ttf");
+
+        TextView learnIcon = (TextView) learnButton.getChildAt(0);
+        assert learnIcon != null;
+        learnIcon.setTypeface(fontAwesome);
+        learnIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+
+        TextView visIcon = (TextView) visualiseButton.getChildAt(0);
+        assert visIcon != null;
+        visIcon.setTypeface(fontAwesome);
+        visIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        
         //frame layout to pass view to
         overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
 

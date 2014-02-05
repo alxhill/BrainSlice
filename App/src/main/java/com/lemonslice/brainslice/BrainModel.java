@@ -1,6 +1,7 @@
 package com.lemonslice.brainslice;
 
 import android.content.res.Resources;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.threed.jpct.GLSLShader;
@@ -16,7 +17,7 @@ import com.threed.jpct.World;
  */
 public class BrainModel {
 
-    private float x, y, z;
+    private static float absX, absY, absZ = 0;
 
     // magic 3D stuff
     private static Object3D plane;
@@ -55,6 +56,7 @@ public class BrainModel {
 
         // Set the model's initial position
         plane.rotateX(-3.141592f / 2.0f);
+        //rotate(-3.141592f / 2.0f,0,0);
         scale(0.05f);
 
         plane.build();
@@ -78,6 +80,9 @@ public class BrainModel {
 
     public static void rotate(float x, float y, float z)
     {
+        absX += x;
+        absY += y;
+        absZ += z;
         plane.rotateX(x);
         plane.rotateY(y);
         plane.rotateZ(z);
@@ -88,6 +93,37 @@ public class BrainModel {
         plane.scale(scale);
         // I have no idea if we need this
         shader.setUniform("heightScale", 1.0f);
+    }
+
+    public static void smoothMove(float x, float y, float z, int time)
+    {
+        Log.d("BrainSlice", "smoothMove");
+        float xDiff = x - absX;
+        float yDiff = y - absY;
+        float zDiff = z - absZ;
+
+
+        float absX2 = absX;
+        float absY2 = absY;
+        float absZ2 = absZ;
+        //rotate(xDiff, yDiff, zDiff);
+
+
+        for (int i=0; i<time; i++)
+        {
+            float newAbsX = easeOutExpo(i,absX2,xDiff,time);
+            float newAbsY = easeOutExpo(i,absY2,yDiff,time);
+            float newAbsZ = easeOutExpo(i,absZ2,zDiff,time);
+
+            rotate(newAbsX - absX,newAbsY - absY,newAbsZ - absZ);
+
+            SystemClock.sleep(1);
+        }
+    }
+
+    private static float easeOutExpo(float t, float b, float c, float d)
+    {
+        return c * (float)(-Math.pow(2, -10 * t/d) + 1) + b;
     }
 
 }

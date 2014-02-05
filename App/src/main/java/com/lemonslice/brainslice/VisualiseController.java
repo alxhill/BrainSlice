@@ -36,6 +36,7 @@ public class VisualiseController extends AbstractController implements SensorEve
         oldTime = System.currentTimeMillis();
         mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME);
         axisX = axisY = axisZ = 0;
+        BrainModel.smoothMove(0,0,0,400);
     }
 
     @Override

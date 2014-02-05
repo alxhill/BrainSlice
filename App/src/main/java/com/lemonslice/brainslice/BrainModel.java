@@ -98,27 +98,32 @@ public class BrainModel {
     public static void smoothMove(float x, float y, float z, int time)
     {
         Log.d("BrainSlice", "smoothMove");
-        float xDiff = x - absX;
-        float yDiff = y - absY;
-        float zDiff = z - absZ;
+        float xDiff = (x - absX) % (2*(float)Math.PI);
+        float yDiff = (y - absY) % (2*(float)Math.PI);
+        float zDiff = (z - absZ) % (2*(float)Math.PI);
 
+        if (xDiff > (float)Math.PI) xDiff = 2*(float)Math.PI - xDiff;
+        if (yDiff > (float)Math.PI) yDiff = 2*(float)Math.PI - yDiff;
+        if (zDiff > (float)Math.PI) zDiff = 2*(float)Math.PI - zDiff;
 
-        float absX2 = absX;
-        float absY2 = absY;
-        float absZ2 = absZ;
-        //rotate(xDiff, yDiff, zDiff);
-
+        float originalAbsX = absX;
+        float originalAbsY = absY;
+        float originalAbsZ = absZ;
 
         for (int i=0; i<time; i++)
         {
-            float newAbsX = easeOutExpo(i,absX2,xDiff,time);
-            float newAbsY = easeOutExpo(i,absY2,yDiff,time);
-            float newAbsZ = easeOutExpo(i,absZ2,zDiff,time);
+            float newAbsX = easeOutExpo(i,originalAbsX,xDiff,time);
+            float newAbsY = easeOutExpo(i,originalAbsY,yDiff,time);
+            float newAbsZ = easeOutExpo(i,originalAbsZ,zDiff,time);
 
             rotate(newAbsX - absX,newAbsY - absY,newAbsZ - absZ);
 
             SystemClock.sleep(1);
         }
+
+        //absX = x;
+        //absY = y;
+        //absZ = z;
     }
 
     private static float easeOutExpo(float t, float b, float c, float d)

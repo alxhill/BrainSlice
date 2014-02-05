@@ -3,22 +3,27 @@ package com.lemonslice.brainslice;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.style.StyleSpan;
+import android.text.style.TypefaceSpan;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.view.ViewManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
@@ -29,6 +34,8 @@ import com.threed.jpct.SimpleVector;
 import com.threed.jpct.Texture;
 import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
+
+import org.w3c.dom.Text;
 
 import java.lang.reflect.Field;
 
@@ -52,11 +59,6 @@ public class MainActivity extends Activity {
         TOUCH, GYRO
     }
 
-    private Mode currentMode = Mode.TOUCH;
-
-    // modeButton to switch mode
-    Button modeButton;
-
     // 3D stuff
     private GLSurfaceView mGLView;
     private MyRenderer renderer = null;
@@ -65,7 +67,7 @@ public class MainActivity extends Activity {
     private RGBColor back = new RGBColor(0, 17, 34);
 
     //Frame overlaying 3d rendering for labels, instructions etc...
-    private FrameLayout overlaying_frame;
+    private FrameLayout overlayingFrame;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -87,48 +89,57 @@ public class MainActivity extends Activity {
         renderer = new MyRenderer();
         mGLView.setRenderer(renderer);
 
-        // initialise the modeButton
-        modeButton = new Button(getApplication());
-        modeButton.setText("switch to gyro input");
-
         learnController = new LearnController(getApplicationContext());
         learnController.loadView();
         baseController = learnController;
 
         visualiseController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
 
-        modeButton.setOnClickListener(new Button.OnClickListener() {
+        LinearLayout learnButton = (LinearLayout) findViewById(R.id.learn_button);
+        learnButton.setOnClickListener(new FrameLayout.OnClickListener() {
+
             @Override
-            public void onClick(View v) {
-                Log.d("BrainSlice", "modeButton click event");
-                switch (currentMode) {
-                    case TOUCH:
-                        modeButton.setText("switch to touch input");
-                        currentMode = Mode.GYRO;
-                        learnController.unloadView();
-                        visualiseController.loadView();
-                        baseController = visualiseController;
-                        break;
-                    case GYRO:
-                        modeButton.setText("switch to gyro input");
-                        currentMode = Mode.TOUCH;
-                        visualiseController.unloadView();
-                        learnController.loadView();
-                        baseController = learnController;
-                        break;
-                }
+            public void onClick(View v)
+            {
+                visualiseController.unloadView();
+                learnController.loadView();
+                baseController = learnController;
             }
         });
 
+
+        LinearLayout visualiseButton = (LinearLayout) findViewById(R.id.visualise_button);
+        visualiseButton.setOnClickListener(new FrameLayout.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                learnController.unloadView();
+                visualiseController.loadView();
+                baseController = visualiseController;
+            }
+        });
+
+        Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/glyphicons-halflings-regular.ttf");
+
+        TextView learnIcon = (TextView) learnButton.getChildAt(0);
+        assert learnIcon != null;
+        learnIcon.setTypeface(fontAwesome);
+        learnIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+
+        TextView visIcon = (TextView) visualiseButton.getChildAt(0);
+        assert visIcon != null;
+        visIcon.setTypeface(fontAwesome);
+        visIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        
         //frame layout to pass view to
-        overlaying_frame = (FrameLayout)findViewById(R.id.overlay_layout);
+        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
 
         //Display label code:
 //        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        overlaying_frame.addView(Labels.getLabel(inflater, "ANOTHERSEGMENT"));
+//        overlayingFrame.addView(Labels.getLabel(inflater, "ANOTHERSEGMENT"));
 
         // add the modeButton to the view
-        addContentView(modeButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+//        addContentView(modeButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
     }
 
     @Override

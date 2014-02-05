@@ -19,4 +19,58 @@
         android:layout_height="fill_parent">
         </FrameLayout>
 
-    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom"
+        android:gravity="center_horizontal"
+        android:background="@drawable/menu_bg">
+        <LinearLayout
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:id="@+id/learn_button"
+            android:background="@android:color/transparent"
+            android:textColor="@android:color/white"
+            android:clickable="true"
+            android:layout_marginRight="30dp">
+            <TextView
+                android:gravity="center"
+                android:text="@string/learn_icon"
+                android:layout_height="50dp"
+                android:layout_width="40dp" />
+            <TextView
+                android:gravity="center"
+                android:text="Learn"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:textSize="24sp" />
+            </LinearLayout>
+        <LinearLayout
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:id="@+id/visualise_button"
+            android:background="@android:color/transparent"
+            android:textColor="@android:color/white"
+            android:clickable="true"
+            android:layout_marginRight="30dp">
+            <TextView
+                android:gravity="center"
+                android:text="@string/visualise_icon"
+                android:layout_height="50dp"
+                android:layout_width="40dp" />
+            <TextView
+                android:gravity="center"
+                android:text="Visualise"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:textSize="24sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+  </FrameLayout>

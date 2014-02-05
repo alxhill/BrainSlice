@@ -4,5 +4,6 @@
     <string name="app_name">BrainSlice</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-
+    <string name="learn_icon">&#xe012;</string>
+    <string name="visualise_icon">&#xe046;</string>
 </resources>

@@ -32,7 +32,7 @@ public class BrainInfo
 
         BrainSegment Hippocampus = new BrainSegment(
                 "Hippocampus",
-                "The hippocampus lies under the cerebral cortex, and is important in making short-term memories long-term. It looks a bit like a seahorse.
+                "The hippocampus lies under the cerebral cortex, and is important in making short-term memories long-term. It looks a bit like a seahorse."
         );
 
         BrainSegment Amygdala = new BrainSegment(
@@ -75,7 +75,7 @@ public class BrainInfo
         segments.put(Cerebellum.getTitle(), Cerebellum);
         segments.put(Cerebrum.getTitle(), Cerebrum);
         segments.put(CerebralCortex.getTitle(), CerebralCortex);
-        segments.put(Brainstem.getTitle(), BrainStem);
+        segments.put(Brainstem.getTitle(), Brainstem);
         segments.put(Hippocampus.getTitle(), Hippocampus);
         segments.put(Amygdala.getTitle(), Amygdala);
         segments.put(MedullaOblongata.getTitle(), MedullaOblongata);

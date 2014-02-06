@@ -32,6 +32,9 @@ public class LearnController extends AbstractController implements OnScaleGestur
 
     // scale size of brain
     private float scale = 1.0f;
+    private static float minScale = 0.1f;
+    private static float maxScale = 1.6f;
+    private float totalScale = 1.0f;
 
     private boolean isLoaded;
 
@@ -44,6 +47,11 @@ public class LearnController extends AbstractController implements OnScaleGestur
     {
         scaleDetector = new ScaleGestureDetector(applicationContext, this);
         gestureDetector = new GestureDetector(applicationContext, this);
+    }
+
+    //Returns the multiple needed to return the brain to it's original size
+    public float resetScale(){
+        return totalScale;
     }
 
     @Override
@@ -148,6 +156,12 @@ public class LearnController extends AbstractController implements OnScaleGestur
         if (!isLoaded) return false;
         float difference = detector.getCurrentSpan() - detector.getPreviousSpan();
         scale += 0.001f * difference;
+
+        if(scale * totalScale > maxScale ||  scale * totalScale < minScale)
+            scale = 1.0f;
+        else
+            totalScale *= scale;
+
         return true;
     }
 

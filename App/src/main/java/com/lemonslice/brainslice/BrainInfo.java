@@ -25,14 +25,14 @@ public class BrainInfo
                 "The cerebral cortex is the outermost layer of tissue, covering the cerebrum. It takes part in memory, attention, and thought."
         );
 
-        BrainSegment Brainstem = new BrainSegment(
+        BrainSegment BrainStem = new BrainSegment(
                 "Brainstem",
                 "The brainstem is the back part of the brain, connected to the spinal cord. It keeps you breathing, sleeping, and eating."
         );
 
         BrainSegment Hippocampus = new BrainSegment(
                 "Hippocampus",
-                "The hippocampus lies under the cerebral cortex, and is important in making short-term memories long-term. It looks a bit like a seahorse.
+                "The hippocampus lies under the cerebral cortex, and is important in making short-term memories long-term. It looks a bit like a seahorse."
         );
 
         BrainSegment Amygdala = new BrainSegment(

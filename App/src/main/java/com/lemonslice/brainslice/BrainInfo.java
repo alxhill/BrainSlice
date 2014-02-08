@@ -1,15 +1,16 @@
 package com.lemonslice.brainslice;
 
 import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * Created by James on 29/01/14.
  */
 public class BrainInfo
 {
-    private HashMap<String, BrainSegment> segments = new HashMap<String, BrainSegment>();
+    private static HashMap<String, BrainSegment> segments = new HashMap<String, BrainSegment>();
 
-    public BrainInfo()
+    static
     {
         BrainSegment Cerebellum = new BrainSegment(
             "Cerebellum",
@@ -17,7 +18,7 @@ public class BrainInfo
         );
         BrainSegment Cerebrum = new BrainSegment(
                 "Cerebrum",
-                "The cerebrum consists of the cerebral cortex and subcortical structures. It ontrols all voluntary actions in the body"
+                "The cerebrum consists of the cerebral cortex and subcortical structures. It controls all voluntary actions in the body"
         );
 
         BrainSegment CerebralCortex = new BrainSegment(
@@ -75,7 +76,7 @@ public class BrainInfo
         segments.put(Cerebellum.getTitle(), Cerebellum);
         segments.put(Cerebrum.getTitle(), Cerebrum);
         segments.put(CerebralCortex.getTitle(), CerebralCortex);
-        segments.put(Brainstem.getTitle(), BrainStem);
+        segments.put(BrainStem.getTitle(), BrainStem);
         segments.put(Hippocampus.getTitle(), Hippocampus);
         segments.put(Amygdala.getTitle(), Amygdala);
         segments.put(MedullaOblongata.getTitle(), MedullaOblongata);
@@ -86,7 +87,7 @@ public class BrainInfo
         segments.put(TemporalLobe.getTitle(), TemporalLobe);
     }
 
-    BrainSegment getSegement(String segment) {
+    static BrainSegment getSegment(String segment) {
         return segments.get(segment);
     }
 }

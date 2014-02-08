@@ -1,20 +1,15 @@
 package com.lemonslice.brainslice;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by James on 29/01/14.
  */
 public class Labels
 {
-    private static BrainInfo brain = new BrainInfo();
-
     private static View createLabel(LayoutInflater inflater, BrainSegment brainSegment)
     {
         String title = brainSegment.getTitle();
@@ -33,7 +28,7 @@ public class Labels
 
     public static View getLabel(LayoutInflater inflater, String brainSegment)
     {
-        BrainSegment seg = brain.getSegement(brainSegment);
+        BrainSegment seg = BrainInfo.getSegment(brainSegment);
 
         if(seg != null)
             return createLabel(inflater, seg);

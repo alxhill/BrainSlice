@@ -59,7 +59,6 @@ public class BrainModel {
 
         // Set the model's initial position
         plane.rotateX(-3.141592f / 2.0f);
-        frontMatrix = plane.getRotationMatrix().cloneMatrix();
         scale(0.05f);
 
         plane.build();
@@ -68,6 +67,9 @@ public class BrainModel {
         // Centre the model
         plane.setOrigin(SimpleVector.create(0, 0, 10));
 
+        frontMatrix = new Matrix(plane.getRotationMatrix());
+        // removes the scale to make it a pure rotation matrix
+        frontMatrix.orthonormalize();
     }
 
     public static void addToScene(World world)
@@ -101,39 +103,38 @@ public class BrainModel {
 
         float epsilon = 0.01f;
 
-        float thetaX, thetaY, thetaZ, angle;
+        double e1, e2, e3, angle;
         SimpleVector axis = new SimpleVector();
 
-        Matrix r = plane.getRotationMatrix().cloneMatrix().transpose();
-        r.matMul(frontMatrix);
+        Matrix r = plane.getRotationMatrix().cloneMatrix().invert3x3();
+        r.orthonormalize();
 
-        Log.d("BrainSlice", "front matrix: " + frontMatrix.toString());
-        Log.d("BrainSlice", "plane matrix: " + plane.getRotationMatrix().toString());
+
+        Log.d("BrainSlice", "front matrix (normalised): " + frontMatrix.toString());
+        Log.d("BrainSlice", "plane matrix: " + r.toString());
+        r.matMul(frontMatrix);
         Log.d("BrainSlice", "rotation matrix: " + r.toString());
 
         // convert matrix into axis-angle representation
-        angle = (float) Math.acos((r.get(0, 0) + r.get(1, 1) + r.get(2, 2) - 1) / 2);
+        angle = Math.acos((r.get(0, 0) + r.get(1, 1) + r.get(2, 2) - 1.0f) / 2.0f);
 
-        float m21m12 = r.get(2, 1) - r.get(1, 2);
-        float m02m20 = r.get(0, 2) - r.get(2, 0);
-        float m10m01 = r.get(1, 0) - r.get(0, 1);
-        float sqrtVal = (float) Math.sqrt(m21m12 * m21m12 + m02m20 * m02m20 + m10m01 * m10m01);
+        double sinTheta = 2 * Math.sin(angle);
 
-        Log.d("BrainSlice", "sqrtval: " + sqrtVal);
+        Log.d("BrainSlice", "sinTheta: " + sinTheta);
 
-        thetaX = (r.get(2, 1) - r.get(1, 2)) / sqrtVal;
-        thetaY = (r.get(0, 2) - r.get(2, 0)) / sqrtVal;
-        thetaZ = (r.get(1, 0) - r.get(0, 1)) / sqrtVal;
+        e1 = (r.get(2, 1) - r.get(1, 2)) / sinTheta;
+        e2 = (r.get(0, 2) - r.get(2, 0)) / sinTheta;
+        e3 = (r.get(1, 0) - r.get(0, 1)) / sinTheta;
 
-        Log.d("BrainSlice", "thetaX: " + thetaX);
-        Log.d("BrainSlice", "thetaY: " + thetaY);
-        Log.d("BrainSlice", "thetaZ: " + thetaZ);
+        Log.d("BrainSlice", "e1: " + e1);
+        Log.d("BrainSlice", "e2: " + e2);
+        Log.d("BrainSlice", "e3: " + e3);
 
-        axis.set(thetaX, thetaY, thetaZ);
+        axis.set((float) e1, (float) e2, (float) e3);
 
         Log.d("BrainSlice", String.format("axis-angle: %s %s", axis.toString(), angle));
 
-        float stepRotation = angle / time;
+        float stepRotation = (float) (angle / time);
         for (int i = 0; i < time; i++)
         {
             plane.rotateAxis(axis, stepRotation);

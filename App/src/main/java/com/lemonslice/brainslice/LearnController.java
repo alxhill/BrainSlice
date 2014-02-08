@@ -62,8 +62,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public void updateScene()
     {
-        if(velocityX > decelCutoff || velocityX < -decelCutoff || velocityY > decelCutoff || velocityY < -decelCutoff)
-            Log.d("Update Scene", velocityX + " " + velocityY + " " + dragX + " " + dragY);
+//        if(velocityX > decelCutoff || velocityX < -decelCutoff || velocityY > decelCutoff || velocityY < -decelCutoff)
+//            Log.d("Update Scene", velocityX + " " + velocityY + " " + dragX + " " + dragY);
 
         if(velocityX > decelCutoff || velocityX < -decelCutoff) velocityX *= decelRate;
         else velocityX = 0;
@@ -88,7 +88,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
     {
         dragX = distanceX / moveDiv;
         dragY = distanceY / moveDiv;
-        Log.d("Touch Input", "onScroll: " + dragY + " " + dragX + " " + distanceX + " " + distanceY);
+//        Log.d("Touch Input", "onScroll: " + dragY + " " + dragX + " " + distanceX + " " + distanceY);
         return true;
     }
 
@@ -104,12 +104,12 @@ public class LearnController extends AbstractController implements OnScaleGestur
         velocityX = -vX / velocityDiv;
         velocityY = -vY / velocityDiv;
 
-        Log.d("Touch Input", "onFling before: " + velocityX + " " + velocityY);
+//        Log.d("Touch Input", "onFling before: " + velocityX + " " + velocityY);
 
         if(velocityX < velocityThreshold && velocityX > -velocityThreshold) velocityX = 0;
         if(velocityY < velocityThreshold && velocityY > -velocityThreshold) velocityY = 0;
 
-        Log.d("Touch Input", "onFling after: " + velocityX + " " + velocityY);
+//        Log.d("Touch Input", "onFling after: " + velocityX + " " + velocityY);
         return true;
     }
 

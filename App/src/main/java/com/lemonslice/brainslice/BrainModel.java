@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.threed.jpct.GLSLShader;
 import com.threed.jpct.Loader;
+import com.threed.jpct.Matrix;
 import com.threed.jpct.Object3D;
 import com.threed.jpct.Primitives;
 import com.threed.jpct.SimpleVector;
@@ -23,6 +24,8 @@ public class BrainModel {
     private static Object3D plane;
     private static Object3D[] objs;
     private static GLSLShader shader = null;
+
+    private static Matrix frontMatrix;
 
     public static void load(Resources res)
     {
@@ -56,7 +59,7 @@ public class BrainModel {
 
         // Set the model's initial position
         plane.rotateX(-3.141592f / 2.0f);
-        //rotate(-3.141592f / 2.0f,0,0);
+        frontMatrix = plane.getRotationMatrix().cloneMatrix();
         scale(0.05f);
 
         plane.build();
@@ -80,9 +83,6 @@ public class BrainModel {
 
     public static void rotate(float x, float y, float z)
     {
-        absX += x;
-        absY += y;
-        absZ += z;
         plane.rotateX(x);
         plane.rotateY(y);
         plane.rotateZ(z);
@@ -95,35 +95,50 @@ public class BrainModel {
         shader.setUniform("heightScale", 1.0f);
     }
 
-    public static void smoothMove(float x, float y, float z, int time)
+    public static void smoothMove(int time)
     {
         Log.d("BrainSlice", "smoothMove");
-        float xDiff = (x - absX) % (2*(float)Math.PI);
-        float yDiff = (y - absY) % (2*(float)Math.PI);
-        float zDiff = (z - absZ) % (2*(float)Math.PI);
 
-        if (xDiff > (float)Math.PI) xDiff = 2*(float)Math.PI - xDiff;
-        if (yDiff > (float)Math.PI) yDiff = 2*(float)Math.PI - yDiff;
-        if (zDiff > (float)Math.PI) zDiff = 2*(float)Math.PI - zDiff;
+        float epsilon = 0.01f;
 
-        float originalAbsX = absX;
-        float originalAbsY = absY;
-        float originalAbsZ = absZ;
+        float thetaX, thetaY, thetaZ, angle;
+        SimpleVector axis = new SimpleVector();
 
-        for (int i=0; i<time; i++)
+        Matrix r = plane.getRotationMatrix().cloneMatrix().transpose();
+        r.matMul(frontMatrix);
+
+        Log.d("BrainSlice", "front matrix: " + frontMatrix.toString());
+        Log.d("BrainSlice", "plane matrix: " + plane.getRotationMatrix().toString());
+        Log.d("BrainSlice", "rotation matrix: " + r.toString());
+
+        // convert matrix into axis-angle representation
+        angle = (float) Math.acos((r.get(0, 0) + r.get(1, 1) + r.get(2, 2) - 1) / 2);
+
+        float m21m12 = r.get(2, 1) - r.get(1, 2);
+        float m02m20 = r.get(0, 2) - r.get(2, 0);
+        float m10m01 = r.get(1, 0) - r.get(0, 1);
+        float sqrtVal = (float) Math.sqrt(m21m12 * m21m12 + m02m20 * m02m20 + m10m01 * m10m01);
+
+        Log.d("BrainSlice", "sqrtval: " + sqrtVal);
+
+        thetaX = (r.get(2, 1) - r.get(1, 2)) / sqrtVal;
+        thetaY = (r.get(0, 2) - r.get(2, 0)) / sqrtVal;
+        thetaZ = (r.get(1, 0) - r.get(0, 1)) / sqrtVal;
+
+        Log.d("BrainSlice", "thetaX: " + thetaX);
+        Log.d("BrainSlice", "thetaY: " + thetaY);
+        Log.d("BrainSlice", "thetaZ: " + thetaZ);
+
+        axis.set(thetaX, thetaY, thetaZ);
+
+        Log.d("BrainSlice", String.format("axis-angle: %s %s", axis.toString(), angle));
+
+        float stepRotation = angle / time;
+        for (int i = 0; i < time; i++)
         {
-            float newAbsX = easeOutExpo(i,originalAbsX,xDiff,time);
-            float newAbsY = easeOutExpo(i,originalAbsY,yDiff,time);
-            float newAbsZ = easeOutExpo(i,originalAbsZ,zDiff,time);
-
-            rotate(newAbsX - absX,newAbsY - absY,newAbsZ - absZ);
-
+            plane.rotateAxis(axis, stepRotation);
             SystemClock.sleep(1);
         }
-
-        //absX = x;
-        //absY = y;
-        //absZ = z;
     }
 
     private static float easeOutExpo(float t, float b, float c, float d)

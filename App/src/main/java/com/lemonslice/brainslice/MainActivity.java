@@ -54,11 +54,6 @@ public class MainActivity extends Activity {
     LearnController learnController;
     VisualiseController visualiseController;
 
-    // store which mode we're in
-    public enum Mode {
-        TOUCH, GYRO
-    }
-
     // 3D stuff
     private GLSurfaceView mGLView;
     private MyRenderer renderer = null;

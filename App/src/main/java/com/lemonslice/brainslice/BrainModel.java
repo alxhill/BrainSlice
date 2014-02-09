@@ -37,7 +37,8 @@ public class BrainModel {
 
         // Load the 3d model
         Log.d("BrainSlice", "Loading .3ds file");
-        objs = Loader.load3DS(res.openRawResource(R.raw.brain_fast), 10.0f);
+        //objs = Loader.load3DS(res.openRawResource(R.raw.brain_fast), 10.0f);
+        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.brain_ser));
         Log.d("BrainSlice", "Loaded .3ds file");
 
         // compile and load shaders for plane
@@ -59,7 +60,8 @@ public class BrainModel {
 
         // Set the model's initial position
         plane.rotateY((float) Math.PI);
-        scale(0.05f);
+        plane.rotateX((float) -Math.PI/2.0f);
+        scale(0.5f);
 
         plane.build();
         plane.strip();
@@ -141,6 +143,7 @@ public class BrainModel {
 
     }
 
+    // adapted from http://easings.net/
     private static double easeOutExpo(double delta, double currentTime, double totalTime)
     {
         if (currentTime == totalTime) return delta;

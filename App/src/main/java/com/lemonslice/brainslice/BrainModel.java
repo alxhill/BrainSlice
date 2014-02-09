@@ -37,7 +37,8 @@ public class BrainModel {
 
         // Load the 3d model
         Log.d("BrainSlice", "Loading .3ds file");
-        objs = Loader.load3DS(res.openRawResource(R.raw.brain_complete), 10.0f);
+        //objs = Loader.load3DS(res.openRawResource(R.raw.brain_complete), 10.0f);
+        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.brain_complete_ser));
         Log.d("BrainSlice", "Loaded .3ds file");
 
         // compile and load shaders for plane

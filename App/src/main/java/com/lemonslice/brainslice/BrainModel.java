@@ -1,10 +1,12 @@
 package com.lemonslice.brainslice;
 
 import android.content.res.Resources;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.threed.jpct.GLSLShader;
 import com.threed.jpct.Loader;
+import com.threed.jpct.Matrix;
 import com.threed.jpct.Object3D;
 import com.threed.jpct.Primitives;
 import com.threed.jpct.SimpleVector;
@@ -16,12 +18,14 @@ import com.threed.jpct.World;
  */
 public class BrainModel {
 
-    private float x, y, z;
+    private static float absX, absY, absZ = 0;
 
     // magic 3D stuff
     private static Object3D plane;
     private static Object3D[] objs;
     private static GLSLShader shader = null;
+
+    private static Matrix frontMatrix;
 
     public static void load(Resources res)
     {
@@ -54,7 +58,7 @@ public class BrainModel {
         }
 
         // Set the model's initial position
-        plane.rotateX(-3.141592f / 2.0f);
+        plane.rotateY((float) Math.PI);
         scale(0.05f);
 
         plane.build();
@@ -63,6 +67,10 @@ public class BrainModel {
         // Centre the model
         plane.setOrigin(SimpleVector.create(0, 0, 10));
 
+        // get the rotation matrix for the current position
+        frontMatrix = new Matrix(plane.getRotationMatrix());
+        // removes scale from the rotation matrix
+        frontMatrix.orthonormalize();
     }
 
     public static void addToScene(World world)
@@ -88,6 +96,55 @@ public class BrainModel {
         plane.scale(scale);
         // I have no idea if we need this
         shader.setUniform("heightScale", 1.0f);
+    }
+
+    public static void smoothMove(int time)
+    {
+        Log.d("BrainSlice", "smoothMove");
+
+        double e1, e2, e3, angle;
+        SimpleVector axis = new SimpleVector();
+
+        Matrix r = plane.getRotationMatrix().cloneMatrix().invert3x3();
+        r.orthonormalize();
+        r.matMul(frontMatrix);
+
+        Log.d("BrainSlice", "front matrix: " + frontMatrix.toString());
+        Log.d("BrainSlice", "rotation matrix: " + r.toString());
+
+        /*
+        convert matrix into axis-angle representation.
+        see wikipedia for explanation of why/how this works:
+        https://en.wikipedia.org/wiki/Rotation_formalisms_in_three_dimensions#Rotation_matrix_.E2.86.94_Euler_axis.2Fangle
+        */
+
+        // angle to rotate about the axis
+        angle = Math.acos((r.get(0, 0) + r.get(1, 1) + r.get(2, 2) - 1.0f) / 2.0f);
+
+        double sinTheta = 2 * Math.sin(angle);
+
+        // vector values representing the axis
+        e1 = (r.get(2, 1) - r.get(1, 2)) / sinTheta;
+        e2 = (r.get(0, 2) - r.get(2, 0)) / sinTheta;
+        e3 = (r.get(1, 0) - r.get(0, 1)) / sinTheta;
+
+        axis.set((float) e1, (float) e2, (float) e3);
+
+//        Log.d("BrainSlice", String.format("axis-angle: %s %s", axis.toString(), angle));
+
+        for (int i = 1; i <= time; i++)
+        {
+            double stepRotation = easeOutExpo(angle, i, time) - easeOutExpo(angle, i-1, time);
+            plane.rotateAxis(axis, (float) stepRotation);
+            SystemClock.sleep(1);
+        }
+
+    }
+
+    private static double easeOutExpo(double delta, double currentTime, double totalTime)
+    {
+        if (currentTime == totalTime) return delta;
+        return delta * (-Math.pow(2, -10 * currentTime/totalTime) + 1);
     }
 
 }

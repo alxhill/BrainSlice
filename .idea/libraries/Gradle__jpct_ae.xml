@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Gradle: jpct_ae">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/App/src/main/java/libs/jpct_ae.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

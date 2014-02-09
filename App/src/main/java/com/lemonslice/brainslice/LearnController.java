@@ -13,51 +13,50 @@ import android.view.GestureDetector.OnGestureListener;
  */
 public class LearnController extends AbstractController implements OnScaleGestureListener, OnGestureListener {
 
-    //How much to rotate the brain
-    private float dragX;
-    private float dragY;
+    //Variables that we transform the brain with
+    private float scale = 1.0f;
+    private float dragX = 0;
+    private float dragY = 0;
     private float velocityX = 0;
     private float velocityY = 0;
 
+    //Used to prevent flinging at the end of a scale
     private boolean scaleEnd = false;
 
-    //These multipliers affect how fast the brain moves.
-    static final double decelCutoff = 0.01;
-    static final double decelRate = 0.95;
-    static final float velocityDiv = 10000;
-    static final float moveDiv = 100;
+    //Constants that dictate cutoffs and speed multipliers
+    private static final double decelCutoff = 0.01;
+    private static final double decelRate = 0.95;
+    private static final float velocityMult = 0.0001f;
+    private static final float velocityThreshold = 0.1f;
+    private static final float moveMult = 0.01f;
+    private static final float scaleMult = 0.001f;
+    private static final float minScale = 0.1f;
+    private static final float maxScale = 1.6f;
 
-    //If initial velocity is below this threshold ignore it
-    static final double velocityThreshold = 0.1;
-
-    // scale size of brain
-    private float scale = 1.0f;
-    private static float minScale = 0.1f;
-    private static float maxScale = 1.6f;
-    private float totalScale = 1.0f;
+    private float cumulativeScale = 1.0f;
 
     private boolean isLoaded;
 
-    // Sensor stuff
+    // Used to interpret motion events as gestures
     private ScaleGestureDetector scaleDetector = null;
     private GestureDetector gestureDetector = null;
 
 
     public LearnController(Context applicationContext)
     {
+        //Initialise detectors
         scaleDetector = new ScaleGestureDetector(applicationContext, this);
         gestureDetector = new GestureDetector(applicationContext, this);
     }
 
     //Returns the multiple needed to return the brain to it's original size
-    public float resetScale(){
-        return totalScale;
+    public float getCumulativeScale(){
+        return cumulativeScale;
     }
 
     @Override
     public void loadView()
     {
-        dragX = dragY = 0;
         isLoaded = true;
     }
 
@@ -70,8 +69,9 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public void updateScene()
     {
-//        if(velocityX > decelCutoff || velocityX < -decelCutoff || velocityY > decelCutoff || velocityY < -decelCutoff)
-//            Log.d("Update Scene", velocityX + " " + velocityY + " " + dragX + " " + dragY);
+
+        /*if(velocityX > decelCutoff || velocityX < -decelCutoff || velocityY > decelCutoff || velocityY < -decelCutoff)
+            Log.d("Update Scene", velocityX + " " + velocityY + " " + dragX + " " + dragY);*/
 
         if(velocityX > decelCutoff || velocityX < -decelCutoff) velocityX *= decelRate;
         else velocityX = 0;
@@ -94,9 +94,9 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float distanceY, float distanceX)
     {
-        dragX = distanceX / moveDiv;
-        dragY = distanceY / moveDiv;
-//        Log.d("Touch Input", "onScroll: " + dragY + " " + dragX + " " + distanceX + " " + distanceY);
+        dragX = distanceX * moveMult;
+        dragY = distanceY * moveMult;
+        Log.d("Touch Input", "onScroll: " + dragY + " " + dragX + " " + distanceX + " " + distanceY);
         return true;
     }
 
@@ -109,22 +109,19 @@ public class LearnController extends AbstractController implements OnScaleGestur
             scaleEnd = false;
             return true;
         }
-        velocityX = -vX / velocityDiv;
-        velocityY = -vY / velocityDiv;
 
-//        Log.d("Touch Input", "onFling before: " + velocityX + " " + velocityY);
-
+        velocityX = -vX * velocityMult;
+        velocityY = -vY * velocityMult;
         if(velocityX < velocityThreshold && velocityX > -velocityThreshold) velocityX = 0;
         if(velocityY < velocityThreshold && velocityY > -velocityThreshold) velocityY = 0;
 
-//        Log.d("Touch Input", "onFling after: " + velocityX + " " + velocityY);
         return true;
     }
 
 
     @Override
     public boolean onSingleTapUp(MotionEvent motionEvent) {
-        //Put things in here for single tap (labels and the like)
+        //Put things in here for single tap such as labels popping up
         velocityX = 0;
         velocityY = 0;
         return true;
@@ -151,27 +148,28 @@ public class LearnController extends AbstractController implements OnScaleGestur
         return true;
     }
 
+    @Override
     public boolean onScale(ScaleGestureDetector detector)
     {
         if (!isLoaded) return false;
         float difference = detector.getCurrentSpan() - detector.getPreviousSpan();
-        scale += 0.001f * difference;
+        scale += scaleMult * difference;
 
-        if(scale * totalScale > maxScale ||  scale * totalScale < minScale)
+        if(scale * cumulativeScale > maxScale ||  scale * cumulativeScale < minScale)
             scale = 1.0f;
         else
-            totalScale *= scale;
+            cumulativeScale *= scale;
 
         return true;
     }
 
-    // must be implemented for onscale
+    @Override
     public boolean onScaleBegin(ScaleGestureDetector detector)
     {
         return true;
     }
 
-    // must be implemented for onscale
+    @Override
     public void onScaleEnd(ScaleGestureDetector detector)
     {
         scaleEnd = true;

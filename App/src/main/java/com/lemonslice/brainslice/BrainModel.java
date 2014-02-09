@@ -37,7 +37,6 @@ public class BrainModel {
 
         // Load the 3d model
         Log.d("BrainSlice", "Loading .3ds file");
-        //objs = Loader.load3DS(res.openRawResource(R.raw.brain_complete), 10.0f);
         objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.brain_complete_ser));
         Log.d("BrainSlice", "Loaded .3ds file");
 
@@ -91,6 +90,52 @@ public class BrainModel {
         plane.rotateX(x);
         plane.rotateY(y);
         plane.rotateZ(z);
+    }
+
+    // moves the camera so it's a constant distance from the brain.
+    public static void adjustCamera()
+    {
+        Matrix m = plane.getRotationMatrix().cloneMatrix();
+        m.orthonormalize();
+
+        Log.d("BrainSlicelol", m.toString());
+
+        float y = (float) Math.atan2(-m.get(2, 0), m.get(0, 0));
+        float z = (float) Math.asin(m.get(1, 0));
+        float x = (float) Math.atan2(-m.get(1,2), m.get(1,1));
+
+        if(Float.isNaN(y))
+        {
+            Log.d("BrainSlicelol", "failll");
+            return;
+        }
+
+        Log.d("BrainSlicecunt3", String.valueOf(y));
+
+        float ex = (float) (20.0f*Math.cos(y));
+        float ey = (float) (10.0f*Math.sin(y));
+
+        float dist = (float) Math.sqrt(ex*ex + ey*ey);
+
+        float maxDist = 20.0f;
+        float minDist = 10.0f;
+
+        float maxSize = 0.6f;
+        float minSize = 0.5f;
+
+        float distScale = (dist - minDist) / (maxDist - minDist);
+
+        distScale = 1.0f - distScale;
+
+        Log.d("BrainSlicecunt2", String.valueOf(distScale));
+
+        float scale = distScale*(maxSize - minSize) + minSize;
+
+        Log.d("BrainSlicecunt", String.valueOf(scale));
+
+        plane.setScale(scale);
+
+
     }
 
     public static void scale(float scale)

@@ -69,6 +69,7 @@ public class VisualiseController extends AbstractController implements SensorEve
 
         BrainModel.rotate(x, y, z);
 
+        BrainModel.adjustCamera();
     }
 
     @Override

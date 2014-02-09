@@ -86,7 +86,12 @@ public class BrainInfo
         segments.put(TemporalLobe.getTitle(), TemporalLobe);
     }
 
+
     static BrainSegment getSegment(String segment) {
         return segments.get(segment);
+    }
+
+    HashMap<String, BrainSegment> getSegments() {
+        return segments;
     }
 }

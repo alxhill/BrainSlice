@@ -2,6 +2,7 @@ package com.lemonslice.brainslice;
 
 import android.graphics.Typeface;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -26,7 +27,8 @@ public class Labels
 
         //Set the text of the title of the Segment (in small Caps)
         TextView titleView = (TextView)label.findViewById(R.id.segment_title);
-        titleView = Utils.getSmallCaps(titleView);
+        titleView.setText(title);
+//        titleView = Utils.getSmallCaps(titleView);
 
         //Set the text of the description text view
         TextView descView = (TextView)label.findViewById(R.id.segment_description);
@@ -44,6 +46,8 @@ public class Labels
         //check if segment exists
         if(seg != null)
             return createLabel(inflater, seg);
+        else
+            Log.e("Brain Slice", "No slice found");
 
         return null;
     }

@@ -9,7 +9,7 @@
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="300dp"
         android:layout_marginTop="-20dp"
         android:orientation="vertical"
         >
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:text="No title recieved"
             android:textColor="#ffffff"
-            android:fontFamily="Futura"
+            android:fontFamily="Helvetica Neue"
             android:typeface="sans"
             android:textSize="40sp"
             android:singleLine="true"

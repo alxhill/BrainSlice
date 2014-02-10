@@ -67,6 +67,7 @@ public class MainActivity extends Activity {
 
     //Frame overlaying 3d rendering for labels, instructions etc...
     private FrameLayout overlayingFrame;
+    private String selectedSegment = null;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -103,6 +104,7 @@ public class MainActivity extends Activity {
                 visualiseController.unloadView();
                 learnController.loadView();
                 baseController = learnController;
+                (findViewById(R.id.segment_list)).setVisibility(View.VISIBLE);
             }
         });
 
@@ -112,6 +114,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v)
             {
+                (findViewById(R.id.segment_list)).setVisibility(View.GONE);
+                ((FrameLayout)(findViewById(R.id.overlay_layout))).removeAllViews();
                 learnController.unloadView();
                 visualiseController.loadView();
                 baseController = visualiseController;
@@ -169,8 +173,18 @@ public class MainActivity extends Activity {
                 overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
                 overlayingFrame.removeAllViews();
 
-                if(Labels.getLabel(inflater, segment) != null)
-                    overlayingFrame.addView(Labels.getLabel(inflater, segment));
+                if((segment.equals(selectedSegment)))
+                {
+                    selectedSegment = null;
+                }
+                else
+                {
+                    if(Labels.getLabel(inflater, segment) != null)
+                        overlayingFrame.addView(Labels.getLabel(inflater, segment));
+
+                    selectedSegment = segment;
+                }
+
             }
         });
 

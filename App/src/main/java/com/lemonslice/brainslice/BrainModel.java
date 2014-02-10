@@ -175,6 +175,9 @@ public class BrainModel {
         e2 = (r.get(0, 2) - r.get(2, 0)) / sinTheta;
         e3 = (r.get(1, 0) - r.get(0, 1)) / sinTheta;
 
+        if (Double.isNaN(e1) || Double.isNaN(e2) || Double.isNaN(e3) || Double.isNaN(angle))
+            return;
+
         axis.set((float) e1, (float) e2, (float) e3);
 
 //        Log.d("BrainSlice", String.format("axis-angle: %s %s", axis.toString(), angle));

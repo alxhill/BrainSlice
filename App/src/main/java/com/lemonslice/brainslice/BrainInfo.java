@@ -14,7 +14,7 @@ public class BrainInfo
     {
         BrainSegment Cerebellum = new BrainSegment(
             "Cerebellum",
-            "The cerebellum is the part of the brain that controls your movement, as well as playing a part in paying attention and recognising fear and pleasure."
+            "The cerebellum (Latin for little brain) is a region of the brain that plays an important role in motor control. It may also be involved in some cognitive functions such as attention and language, and in regulating fear and pleasure responses, but its movement-related functions are the most solidly established."
         );
         BrainSegment Cerebrum = new BrainSegment(
                 "Cerebrum",
@@ -71,7 +71,6 @@ public class BrainInfo
                 "The temporal lobe is the bottom part of your brain, which lets you keep visual memories, understand languages, and stores new memories and emotion."
         );
 
-        
 
         segments.put(Cerebellum.getTitle(), Cerebellum);
         segments.put(Cerebrum.getTitle(), Cerebrum);
@@ -87,7 +86,12 @@ public class BrainInfo
         segments.put(TemporalLobe.getTitle(), TemporalLobe);
     }
 
+
     static BrainSegment getSegment(String segment) {
         return segments.get(segment);
+    }
+
+    HashMap<String, BrainSegment> getSegments() {
+        return segments;
     }
 }

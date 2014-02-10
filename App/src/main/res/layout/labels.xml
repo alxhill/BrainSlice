@@ -9,7 +9,7 @@
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="300dp"
         android:layout_marginTop="-20dp"
         android:orientation="vertical"
         >
@@ -18,7 +18,7 @@
             android:id="@+id/segment_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Cerebellum"
+            android:text="No title recieved"
             android:textColor="#ffffff"
             android:fontFamily="Helvetica Neue"
             android:typeface="sans"
@@ -35,20 +35,28 @@
             android:paddingLeft="10dp"
             />
 
-        <TextView
-            android:id="@+id/segment_description"
+
+        <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="The cerebellum (Latin for little brain) is a region of the brain that plays an important role in motor control. It may also be involved in some cognitive functions such as attention and language, and in regulating fear and pleasure responses, but its movement-related functions are the most solidly established."
-            android:textColor="#ffffff"
-            android:fontFamily="Helvetica Neue"
-            android:typeface="sans"
-            android:textSize="15sp"
-            android:paddingTop="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="0dp"
-            android:scrollbars = "vertical"
-            />
+            android:id="@+id/label_scroll"
+            >
+            <TextView
+                android:id="@+id/segment_description"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="No description recieved"
+                android:textColor="#ffffff"
+                android:fontFamily="Helvetica Neue"
+                android:typeface="sans"
+                android:textSize="15sp"
+                android:paddingTop="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="0dp"
+                android:overScrollMode="always"
+
+                />
+        </ScrollView>
 
     </LinearLayout>
 </LinearLayout>

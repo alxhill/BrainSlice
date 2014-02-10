@@ -13,11 +13,20 @@
         >
         </android.opengl.GLSurfaceView>
 
+
     <FrameLayout
         android:id="@+id/overlay_layout"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        </FrameLayout>
+        android:layout_height="fill_parent"
+        >
+    </FrameLayout>
+
+    <ListView
+        android:id="@+id/segment_list"
+        android:layout_width="200dp"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="50dp"
+        />
 
 
     <LinearLayout

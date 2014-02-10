@@ -7,23 +7,20 @@ import android.graphics.Typeface;
 import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.style.StyleSpan;
-import android.text.style.TypefaceSpan;
+import android.os.DropBoxManager;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
@@ -35,9 +32,16 @@ import com.threed.jpct.Texture;
 import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
-import org.w3c.dom.Text;
-
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.security.KeyStore;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -63,6 +67,7 @@ public class MainActivity extends Activity {
 
     //Frame overlaying 3d rendering for labels, instructions etc...
     private FrameLayout overlayingFrame;
+    private String selectedSegment = null;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -99,6 +104,7 @@ public class MainActivity extends Activity {
                 visualiseController.unloadView();
                 learnController.loadView();
                 baseController = learnController;
+                (findViewById(R.id.segment_list)).setVisibility(View.VISIBLE);
             }
         });
 
@@ -108,6 +114,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v)
             {
+                (findViewById(R.id.segment_list)).setVisibility(View.GONE);
+                ((FrameLayout)(findViewById(R.id.overlay_layout))).removeAllViews();
                 learnController.unloadView();
                 visualiseController.loadView();
                 baseController = visualiseController;
@@ -127,14 +135,59 @@ public class MainActivity extends Activity {
         visIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         
         //frame layout to pass view to
-        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
+//        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
 
-        //Display label code:
 //        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        overlayingFrame.addView(Labels.getLabel(inflater, "ANOTHERSEGMENT"));
+//        overlayingFrame.addView(Labels.getLabel(inflater, "Cerebellum"));
 
-        // add the modeButton to the view
-//        addContentView(modeButton, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+////        set custom font
+//        Typeface typeface=Typeface.createFromAsset(getAssets(),"fonts/Futura.otf");
+//        TextView segmentTitleView =(TextView)findViewById(R.id.segment_title);
+//        segmentTitleView.setTypeface(typeface);
+
+
+        ListView segListView = (ListView)findViewById(R.id.segment_list);
+        ArrayList<String> segList = new ArrayList<String>();
+
+        BrainInfo bi = new BrainInfo();
+        HashMap<String, BrainSegment> bs = bi.getSegments();
+
+        for(BrainSegment s : bs.values()) {
+            segList.add(s.getTitle());
+            Log.d("BRAIN SLICE", s.getTitle());
+        }
+
+        Collections.sort(segList);
+
+        StableArrayAdapter adapter = new StableArrayAdapter(this,
+                android.R.layout.simple_list_item_1, segList);
+        segListView.setAdapter(adapter);
+
+        segListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String segment = ((TextView)view).getText().toString();
+
+                LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
+                overlayingFrame.removeAllViews();
+
+                if((segment.equals(selectedSegment)))
+                {
+                    selectedSegment = null;
+                }
+                else
+                {
+                    if(Labels.getLabel(inflater, segment) != null)
+                        overlayingFrame.addView(Labels.getLabel(inflater, segment));
+
+                    selectedSegment = segment;
+                }
+
+            }
+        });
+
     }
 
     @Override
@@ -249,4 +302,49 @@ public class MainActivity extends Activity {
             fb.display();
         }
     }
+
+    private class StableArrayAdapter extends ArrayAdapter<String> {
+
+        HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
+
+        public StableArrayAdapter(Context context, int textViewResourceId,
+                                  List<String> objects) {
+            super(context, textViewResourceId, objects);
+            for (int i = 0; i < objects.size(); ++i) {
+                mIdMap.put(objects.get(i), i);
+            }
+        }
+
+        @Override
+        public long getItemId(int position) {
+            String item = getItem(position);
+            return mIdMap.get(item);
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return true;
+        }
+
+    }
+
+//    public class AndroidExternalFontsActivity extends Activity {
+//        @Override
+//        public void onCreate(Bundle savedInstanceState) {
+//            super.onCreate(savedInstanceState);
+//            setContentView(R.layout.activity_main);
+//
+//            // Font path
+//            String fontPath = "fonts/Futura.otf";
+//
+//            // text view label
+//            TextView txtFutura = (TextView) findViewById(R.id.segment_title);
+//
+//            // Loading Font Face
+//            Typeface tf = Typeface.createFromAsset(getAssets(), fontPath);
+//
+//            // Applying font
+//            txtFutura.setTypeface(tf);
+//        }
+//    }
 }

@@ -12,6 +12,9 @@ import com.threed.jpct.Primitives;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.World;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Renders the brain to the screen and handles moving the model
  * Created by alexander on 27/01/2014.
@@ -145,12 +148,11 @@ public class BrainModel {
         shader.setUniform("heightScale", 1.0f);
     }
 
-    public static void smoothMove(int time)
+    public static void moveToFront()
     {
-        Log.d("BrainSlice", "smoothMove");
+        Log.d("BrainSlice", "moveToFront");
 
-        double e1, e2, e3, angle;
-        SimpleVector axis = new SimpleVector();
+        double e1, e2, e3;
 
         Matrix r = plane.getRotationMatrix().cloneMatrix().invert3x3();
         r.orthonormalize();
@@ -166,7 +168,7 @@ public class BrainModel {
         */
 
         // angle to rotate about the axis
-        angle = Math.acos((r.get(0, 0) + r.get(1, 1) + r.get(2, 2) - 1.0f) / 2.0f);
+        final double angle = Math.acos((r.get(0, 0) + r.get(1, 1) + r.get(2, 2) - 1.0f) / 2.0f);
 
         double sinTheta = 2 * Math.sin(angle);
 
@@ -178,16 +180,32 @@ public class BrainModel {
         if (Double.isNaN(e1) || Double.isNaN(e2) || Double.isNaN(e3) || Double.isNaN(angle))
             return;
 
-        axis.set((float) e1, (float) e2, (float) e3);
+        final SimpleVector axis = new SimpleVector((float) e1, (float) e2, (float) e3);
 
 //        Log.d("BrainSlice", String.format("axis-angle: %s %s", axis.toString(), angle));
 
-        for (int i = 1; i <= time; i++)
-        {
-            double stepRotation = easeOutExpo(angle, i, time) - easeOutExpo(angle, i-1, time);
-            plane.rotateAxis(axis, (float) stepRotation);
-            SystemClock.sleep(1);
-        }
+        final int time = 50 + (int) Math.round(Math.abs(angle)*150.0f);
+
+        Timer timer = new Timer();
+
+        timer.schedule(new TimerTask() {
+            // time in ms for each step
+            final int stepTime = 15;
+            // current number of milliseconds elapsed
+            int i = stepTime;
+
+            @Override
+            public void run()
+            {
+                // calculate the next rotation step to move by
+                double stepRotation = easeOutExpo(angle, i, time) - easeOutExpo(angle, i - stepTime, time);
+                plane.rotateAxis(axis, (float) stepRotation);
+                i += stepTime;
+
+                if (i >= time) cancel();
+            }
+
+        }, 0, 10);
 
     }
 

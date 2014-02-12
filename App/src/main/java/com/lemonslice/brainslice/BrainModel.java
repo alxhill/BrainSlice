@@ -216,4 +216,8 @@ public class BrainModel {
         return delta * (-Math.pow(2, -10 * currentTime/totalTime) + 1);
     }
 
+    public static float getScale()
+    {
+        return plane.getScale();
+    }
 }

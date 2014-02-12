@@ -23,17 +23,20 @@ public class LearnController extends AbstractController implements OnScaleGestur
     //Used to prevent flinging at the end of a scale
     private boolean scaleEnd = false;
 
-    //Constants that dictate cutoffs and speed multipliers
+    // cutoff point for deceleration
     private static final double decelCutoff = 0.01;
+    // rate of speed decrease
     private static final double decelRate = 0.95;
-    private static final float velocityMult = 0.0001f;
+    // multiplier for velocity decrease
+    private static final float velocityMult = 0.00005f;
+    // stopping threshold for velocity
     private static final float velocityThreshold = 0.1f;
-    private static final float moveMult = 0.01f;
+    // multipliers for scaling and moving
+    private static final float moveMult = 0.005f;
     private static final float scaleMult = 0.001f;
-    private static final float minScale = 0.1f;
-    private static final float maxScale = 1.6f;
-
-    private float cumulativeScale = 1.0f;
+    // limits for scaling
+    private static final float minScale = 0.2f;
+    private static final float maxScale = 0.69f;
 
     private boolean isLoaded;
 
@@ -47,11 +50,6 @@ public class LearnController extends AbstractController implements OnScaleGestur
         //Initialise detectors
         scaleDetector = new ScaleGestureDetector(applicationContext, this);
         gestureDetector = new GestureDetector(applicationContext, this);
-    }
-
-    //Returns the multiple needed to return the brain to it's original size
-    public float getCumulativeScale(){
-        return cumulativeScale;
     }
 
     @Override
@@ -73,10 +71,10 @@ public class LearnController extends AbstractController implements OnScaleGestur
         /*if(velocityX > decelCutoff || velocityX < -decelCutoff || velocityY > decelCutoff || velocityY < -decelCutoff)
             Log.d("Update Scene", velocityX + " " + velocityY + " " + dragX + " " + dragY);*/
 
-        if(velocityX > decelCutoff || velocityX < -decelCutoff) velocityX *= decelRate;
+        if (velocityX > decelCutoff || velocityX < -decelCutoff) velocityX *= decelRate;
         else velocityX = 0;
 
-        if(velocityY > decelCutoff || velocityY < -decelCutoff) velocityY *= decelRate;
+        if (velocityY > decelCutoff || velocityY < -decelCutoff) velocityY *= decelRate;
         else velocityY = 0;
 
         dragX += velocityX;
@@ -96,7 +94,6 @@ public class LearnController extends AbstractController implements OnScaleGestur
     {
         dragX = distanceX * moveMult;
         dragY = distanceY * moveMult;
-        Log.d("Touch Input", "onScroll: " + dragY + " " + dragX + " " + distanceX + " " + distanceY);
         return true;
     }
 
@@ -155,10 +152,10 @@ public class LearnController extends AbstractController implements OnScaleGestur
         float difference = detector.getCurrentSpan() - detector.getPreviousSpan();
         scale += scaleMult * difference;
 
+        float cumulativeScale = BrainModel.getScale();
+
         if(scale * cumulativeScale > maxScale ||  scale * cumulativeScale < minScale)
             scale = 1.0f;
-        else
-            cumulativeScale *= scale;
 
         return true;
     }

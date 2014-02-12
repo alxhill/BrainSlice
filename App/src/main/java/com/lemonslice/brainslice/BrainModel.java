@@ -206,7 +206,6 @@ public class BrainModel {
             }
 
         }, 0, 10);
-
     }
 
     // adapted from http://easings.net/
@@ -216,8 +215,32 @@ public class BrainModel {
         return delta * (-Math.pow(2, -10 * currentTime/totalTime) + 1);
     }
 
+
     public static float getScale()
     {
         return plane.getScale();
+    }
+
+
+    // adapted from http://easings.net/
+    private static double easeOutElastic(double delta, double currentTime, double totalTime)
+    {
+        if (currentTime==0)
+            return 1;
+
+        currentTime = currentTime/totalTime;
+        if (currentTime==1)
+            return 1+delta;
+
+        double p=totalTime*0.5;
+        double s = p/(2*Math.PI) * Math.asin (delta/delta);
+        return delta*Math.pow(2,-10*currentTime) * Math.sin( (currentTime*totalTime-s)*(2*Math.PI)/p ) + delta + 1;
+    }
+
+    // adapted from http://easings.net/
+    private static double easeOutBack(double delta, double currentTime, double totalTime)
+    {
+        double s = 1.70158;
+        return delta*((currentTime=currentTime/totalTime-1)*currentTime*((s+1)*currentTime + s) + 1) + 1;
     }
 }

@@ -184,7 +184,8 @@ public class BrainModel {
 
 //        Log.d("BrainSlice", String.format("axis-angle: %s %s", axis.toString(), angle));
 
-        final int time = 200 + (int) Math.round(Math.abs(angle)*150.0f);
+        //final int time = 200 + (int) Math.round(Math.abs(angle)*150.0f);
+        final int time = 600;
 
         Timer timer = new Timer();
 
@@ -198,14 +199,15 @@ public class BrainModel {
             public void run()
             {
                 // calculate the next rotation step to move by
-                double stepRotation = easeOutExpo(angle, i, time) - easeOutExpo(angle, i - stepTime, time);
+                //double stepRotation = easeOutExpo(angle, i, time) - easeOutExpo(angle, i - stepTime, time);
+                double stepRotation = easeOutElastic(angle, i, time) - easeOutElastic(angle, i - stepTime, time);
                 plane.rotateAxis(axis, (float) stepRotation);
                 i += stepTime;
 
                 if (i >= time) cancel();
             }
 
-        }, 0, 10);
+        }, 0, 15);
     }
 
     // adapted from http://easings.net/

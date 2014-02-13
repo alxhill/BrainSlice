@@ -235,7 +235,7 @@ public class BrainModel {
             return 1+delta;
 
         double p=totalTime*0.5;
-        double s = p/(2*Math.PI) * Math.asin (delta/delta);
+        double s = p/4;
         return delta*Math.pow(2,-10*currentTime) * Math.sin( (currentTime*totalTime-s)*(2*Math.PI)/p ) + delta + 1;
     }
 

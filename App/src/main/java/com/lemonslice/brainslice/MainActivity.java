@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.DropBoxManager;
 import android.util.Log;
@@ -78,6 +79,8 @@ public class MainActivity extends Activity {
             copy(master);
 
         setContentView(R.layout.activity_main);
+
+        hideSystemBars();
 
         super.onCreate(savedInstanceState);
         mGLView = (GLSurfaceView)findViewById(R.id.openGlView);
@@ -234,6 +237,32 @@ public class MainActivity extends Activity {
     public boolean onTouchEvent(MotionEvent me)
     {
         return baseController.touchEvent(me);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus)
+    {
+        // Immersive mode is only supported in Android KitKat and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        {
+            super.onWindowFocusChanged(hasFocus);
+            if (hasFocus)
+            {
+                hideSystemBars();
+            }
+        }
+    }
+
+    private void hideSystemBars()
+    {
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        );
     }
 
     class MyRenderer implements GLSurfaceView.Renderer {

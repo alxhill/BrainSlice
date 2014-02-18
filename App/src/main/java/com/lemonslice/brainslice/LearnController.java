@@ -24,11 +24,11 @@ public class LearnController extends AbstractController implements OnScaleGestur
     private boolean scaleEnd = false;
 
     //Constants that dictate cutoffs and speed multipliers
-    private static final double decelCutoff = 0.01;
-    private static final double decelRate = 0.95;
-    private static final float velocityMult = 0.0001f;
-    private static final float velocityThreshold = 0.1f;
-    private static final float moveMult = 0.01f;
+    private static final double decelCutoff = 0.001;
+    private static final double decelRate = 0.97;
+    private static final float velocityMult = 0.00005f;
+    private static final float velocityThreshold = 0.05f;
+    private static final float moveMult = 0.005f;
     private static final float scaleMult = 0.001f;
     private static final float minScale = 0.1f;
     private static final float maxScale = 1.6f;
@@ -69,15 +69,20 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public void updateScene()
     {
-
+        double totalVelocity = Math.sqrt(velocityX*velocityX + velocityY*velocityY);
         /*if(velocityX > decelCutoff || velocityX < -decelCutoff || velocityY > decelCutoff || velocityY < -decelCutoff)
             Log.d("Update Scene", velocityX + " " + velocityY + " " + dragX + " " + dragY);*/
 
-        if(velocityX > decelCutoff || velocityX < -decelCutoff) velocityX *= decelRate;
-        else velocityX = 0;
 
-        if(velocityY > decelCutoff || velocityY < -decelCutoff) velocityY *= decelRate;
-        else velocityY = 0;
+        if(totalVelocity > decelCutoff || totalVelocity < -decelCutoff)
+        {
+            velocityX *= decelRate;
+            velocityY *= decelRate;
+            Log.e("ffs", "X " + velocityX + " Y " + velocityY);
+        } else {
+            velocityX = 0;
+            velocityY = 0;
+        }
 
         dragX += velocityX;
         dragY += velocityY;

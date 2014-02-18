@@ -76,6 +76,7 @@ public class MainActivity extends Activity {
 
     // Horizontal progress bar on loading screen
     private ProgressBar progressBar;
+    private FrameLayout loadingScreen;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -88,7 +89,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         hideSystemBars();
-        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
+        loadingScreen = (FrameLayout)findViewById(R.id.loading_screen);
         progressBar = (ProgressBar)findViewById(R.id.progressBarMain);
         startLoadingScreen();
 
@@ -184,6 +185,7 @@ public class MainActivity extends Activity {
                 String segment = ((TextView)view).getText().toString();
 
                 LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
                 overlayingFrame.removeAllViews();
 
                 if((segment.equals(selectedSegment)))
@@ -251,7 +253,7 @@ public class MainActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                overlayingFrame.setVisibility(View.VISIBLE);
+                loadingScreen.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -261,7 +263,7 @@ public class MainActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                overlayingFrame.setVisibility(View.INVISIBLE);
+                loadingScreen.setVisibility(View.INVISIBLE);
             }
         });
     }

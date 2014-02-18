@@ -79,7 +79,14 @@
         android:id="@+id/overlay_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:clickable="false"
+        android:clickable="false">
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/loading_screen"
         android:background="#000000">
 
         <TextView
@@ -120,7 +127,6 @@
             android:id="@+id/imageView"
             android:layout_gravity="center"
             android:src="@drawable/ic_launcher" />
-
     </FrameLayout>
 
 </FrameLayout>

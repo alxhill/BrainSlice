@@ -1,6 +1,7 @@
 package com.lemonslice.brainslice;
 
 import android.content.res.Resources;
+import android.hardware.SensorManager;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -63,14 +64,14 @@ public class BrainModel {
 
         // Set the model's initial position
         plane.rotateY((float) Math.PI);
-        plane.rotateX((float) -Math.PI/2.0f);
+        plane.rotateX((float) -Math.PI / 2.0f);
         scale(0.5f);
 
         plane.build();
         plane.strip();
 
-        // Centre the model
-        plane.setOrigin(SimpleVector.create(0, 0, 10));
+        // Centre the model (as calculated with painful trial and error)
+        plane.setOrigin(SimpleVector.create(0, 20, 10));
 
         // get the rotation matrix for the current position
         frontMatrix = new Matrix(plane.getRotationMatrix());
@@ -99,30 +100,31 @@ public class BrainModel {
     // moves the camera so it's a constant distance from the brain.
     public static void adjustCamera()
     {
-        Matrix m = plane.getRotationMatrix().cloneMatrix();
+        Matrix m = plane.getRotationMatrix().cloneMatrix().invert3x3();
         m.orthonormalize();
+        m.matMul(frontMatrix);
 
-        Log.d("BrainSlicelol", m.toString());
+        float R[] = m.getDump();
+        float axis[] = new float[3];
 
-        float y = (float) Math.atan2(-m.get(2, 0), m.get(0, 0));
-        float z = (float) Math.asin(m.get(1, 0));
-        float x = (float) Math.atan2(-m.get(1,2), m.get(1,1));
+        SensorManager.getOrientation(R, axis);
 
-        if(Float.isNaN(y))
+        float x = axis[1];
+        float y = axis[2];
+
+        if (Float.isNaN(y) || Float.isNaN(x))
         {
-            Log.d("BrainSlicelol", "failll");
+            Log.e("BrainSlice", "Invalid x and y values");
             return;
         }
 
-        Log.d("BrainSlicecunt3", String.valueOf(y));
-
-        float ex = (float) (20.0f*Math.cos(y));
-        float ey = (float) (10.0f*Math.sin(y));
-
-        float dist = (float) Math.sqrt(ex*ex + ey*ey);
-
         float maxDist = 20.0f;
         float minDist = 10.0f;
+
+        float ex = (float) (maxDist*Math.cos(y));
+        float ey = (float) (minDist*Math.sin(y));
+
+        float dist = (float) Math.sqrt(ex*ex + ey*ey);
 
         float maxSize = 0.6f;
         float minSize = 0.5f;
@@ -131,13 +133,15 @@ public class BrainModel {
 
         distScale = 1.0f - distScale;
 
-        Log.d("BrainSlicecunt2", String.valueOf(distScale));
+        float xAdjust = 0;
+        float scaleFactor = distScale*(maxSize - minSize);
 
-        float scale = distScale*(maxSize - minSize) + minSize;
+        final double eighthPi = Math.PI / 8.0f;
 
-        Log.d("BrainSlicecunt", String.valueOf(scale));
+        if (x < eighthPi && x > -eighthPi)
+            xAdjust = (float) ((eighthPi - Math.abs(x)) / eighthPi);
 
-        plane.setScale(scale);
+        plane.setScale(scaleFactor*xAdjust + minSize);
 
 
     }
@@ -145,7 +149,6 @@ public class BrainModel {
     public static void scale(float scale)
     {
         plane.scale(scale);
-        // I have no idea if we need this
         shader.setUniform("heightScale", 1.0f);
     }
 

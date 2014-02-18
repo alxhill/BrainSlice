@@ -76,7 +76,6 @@ public class MainActivity extends Activity {
 
     // Horizontal progress bar on loading screen
     private ProgressBar progressBar;
-    private int currentProgress;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -89,6 +88,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         hideSystemBars();
+        startLoadingScreen();
 
         super.onCreate(savedInstanceState);
         mGLView = (GLSurfaceView)findViewById(R.id.openGlView);
@@ -144,7 +144,9 @@ public class MainActivity extends Activity {
         assert visIcon != null;
         visIcon.setTypeface(fontAwesome);
         visIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-        
+
+        progressBar = (ProgressBar)findViewById(R.id.progressBarMain);
+
         //frame layout to pass view to
 //        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
 
@@ -197,8 +199,6 @@ public class MainActivity extends Activity {
                 }
             }
         });
-        progressBar = (ProgressBar)findViewById(R.id.progressBar2);
-        startLoadingScreen();
     }
 
     @Override

@@ -108,7 +108,7 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/progressBar2"
+                android:id="@+id/progressBarMain"
                 android:layout_gravity="center_horizontal|bottom"
                 android:indeterminate="false"
                 android:progressDrawable="@drawable/custom_progress" />

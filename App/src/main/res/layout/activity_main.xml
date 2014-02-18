@@ -14,13 +14,6 @@
         </android.opengl.GLSurfaceView>
 
 
-    <FrameLayout
-        android:id="@+id/overlay_layout"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        >
-    </FrameLayout>
-
     <ListView
         android:id="@+id/segment_list"
         android:layout_width="200dp"
@@ -82,4 +75,27 @@
             </LinearLayout>
         </LinearLayout>
 
-  </FrameLayout>
+    <FrameLayout
+        android:id="@+id/overlay_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="false"
+        android:background="#000000">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
+            android:layout_gravity="center" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar2"
+            android:layout_gravity="center_horizontal|bottom" />
+
+    </FrameLayout>
+
+</FrameLayout>

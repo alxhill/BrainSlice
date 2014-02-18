@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -187,9 +190,30 @@ public class MainActivity extends Activity {
 
                     selectedSegment = segment;
                 }
-
             }
         });
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask()
+        {
+            int tickTime=0;
+            int totalTime=3000;
+            ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar2);
+            @Override
+            public void run()
+            {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setProgress(100*(tickTime/totalTime));
+                    }
+                });
+                tickTime+=15;
+            }
+        }, 0, 15);
+
+
+        Log.d("BrainSlice","onCreate Finished");
 
     }
 
@@ -214,6 +238,17 @@ public class MainActivity extends Activity {
     {
         Logger.log("onStop");
         super.onStop();
+    }
+
+    public void hideLoadingScreen()
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                FrameLayout overlayingFrame = (FrameLayout) findViewById(R.id.overlay_layout);
+                overlayingFrame.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     private void copy(Object src)
@@ -266,7 +301,6 @@ public class MainActivity extends Activity {
     }
 
     class MyRenderer implements GLSurfaceView.Renderer {
-
         public MyRenderer()
         {
             Texture.defaultToMipmapping(true);
@@ -313,6 +347,9 @@ public class MainActivity extends Activity {
                     master = MainActivity.this;
                 }
             }
+
+            hideLoadingScreen();
+            
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config)

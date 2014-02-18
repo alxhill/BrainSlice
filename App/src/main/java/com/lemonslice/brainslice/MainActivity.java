@@ -88,6 +88,8 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         hideSystemBars();
+        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
+        progressBar = (ProgressBar)findViewById(R.id.progressBarMain);
         startLoadingScreen();
 
         super.onCreate(savedInstanceState);
@@ -145,8 +147,6 @@ public class MainActivity extends Activity {
         visIcon.setTypeface(fontAwesome);
         visIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
-        progressBar = (ProgressBar)findViewById(R.id.progressBarMain);
-
         //frame layout to pass view to
 //        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
 
@@ -176,7 +176,7 @@ public class MainActivity extends Activity {
                 android.R.layout.simple_list_item_1, segList);
         segListView.setAdapter(adapter);
 
-        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
+
         segListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

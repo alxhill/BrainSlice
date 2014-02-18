@@ -9,6 +9,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DropBoxManager;
+import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -69,9 +70,13 @@ public class MainActivity extends Activity {
     private World world = null;
     private RGBColor back = new RGBColor(0, 17, 34);
 
-    //Frame overlaying 3d rendering for labels, instructions etc...
+    // Frame overlaying 3d rendering for labels, instructions etc...
     private FrameLayout overlayingFrame;
     private String selectedSegment = null;
+
+    // Horizontal progress bar on loading screen
+    private ProgressBar progressBar;
+    private int currentProgress;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -192,26 +197,20 @@ public class MainActivity extends Activity {
                 }
             }
         });
+        progressBar = (ProgressBar)findViewById(R.id.progressBar2);
 
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask()
-        {
-            int tickTime=0;
-            int totalTime=3000;
-            ProgressBar progressBar = (ProgressBar)findViewById(R.id.progressBar2);
+        new Timer().schedule(new TimerTask() {
             @Override
-            public void run()
-            {
+            public void run() {
                 runOnUiThread(new Runnable() {
-                    @Override
                     public void run() {
-                        progressBar.setProgress(100*(tickTime/totalTime));
+                        progressBar.setProgress(progressBar.getProgress()+1);
+                        if ((progressBar.getProgress() > 99) && (renderer.isLoaded()))
+                            hideLoadingScreen();
                     }
                 });
-                tickTime+=15;
             }
-        }, 0, 15);
-
+        }, 0, 30);
 
         Log.d("BrainSlice","onCreate Finished");
 
@@ -301,10 +300,17 @@ public class MainActivity extends Activity {
     }
 
     class MyRenderer implements GLSurfaceView.Renderer {
+        private boolean isLoaded = false;
+
         public MyRenderer()
         {
             Texture.defaultToMipmapping(true);
             Texture.defaultTo4bpp(true);
+        }
+
+        public boolean isLoaded()
+        {
+            return isLoaded;
         }
 
         public void onSurfaceChanged(GL10 gl, int w, int h)
@@ -347,9 +353,7 @@ public class MainActivity extends Activity {
                     master = MainActivity.this;
                 }
             }
-
-            hideLoadingScreen();
-            
+            isLoaded=true;
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config)

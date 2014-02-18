@@ -174,6 +174,7 @@ public class MainActivity extends Activity {
                 android.R.layout.simple_list_item_1, segList);
         segListView.setAdapter(adapter);
 
+        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
         segListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -181,7 +182,6 @@ public class MainActivity extends Activity {
                 String segment = ((TextView)view).getText().toString();
 
                 LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
                 overlayingFrame.removeAllViews();
 
                 if((segment.equals(selectedSegment)))
@@ -198,22 +198,7 @@ public class MainActivity extends Activity {
             }
         });
         progressBar = (ProgressBar)findViewById(R.id.progressBar2);
-
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        progressBar.setProgress(progressBar.getProgress()+1);
-                        if ((progressBar.getProgress() > 99) && (renderer.isLoaded()))
-                            hideLoadingScreen();
-                    }
-                });
-            }
-        }, 0, 30);
-
-        Log.d("BrainSlice","onCreate Finished");
-
+        startLoadingScreen();
     }
 
     @Override
@@ -239,12 +224,43 @@ public class MainActivity extends Activity {
         super.onStop();
     }
 
+    public void startLoadingScreen()
+    {
+        progressBar.setProgress(0);
+        showLoadingScreen();
+        new Timer().schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                runOnUiThread(new Runnable()
+                {
+                    public void run()
+                    {
+                        progressBar.setProgress(progressBar.getProgress()+1);
+                        if ((progressBar.getProgress() > 99) && (renderer.isLoaded()))
+                            hideLoadingScreen();
+                    }
+                });
+            }
+        }, 0, 40);
+    }
+
+    public void showLoadingScreen()
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                overlayingFrame.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
     public void hideLoadingScreen()
     {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                FrameLayout overlayingFrame = (FrameLayout) findViewById(R.id.overlay_layout);
                 overlayingFrame.setVisibility(View.INVISIBLE);
             }
         });

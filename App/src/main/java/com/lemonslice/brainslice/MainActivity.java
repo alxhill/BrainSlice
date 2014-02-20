@@ -264,7 +264,7 @@ public class MainActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                overlayingFrame.removeAllViews();
+                loadingScreen.setVisibility(View.GONE);
             }
         });
     }

@@ -340,6 +340,10 @@ public class MainActivity extends Activity {
 
             fb = new FrameBuffer(w, h);
 
+            Log.d("BrainSlice", "New FB created");
+
+            BrainModel.setFrameBuffer(fb);
+
             if (master == null)
             {
                 world = new World();
@@ -356,14 +360,16 @@ public class MainActivity extends Activity {
 
                 world.setAmbientLight(61, 40, 40);
 
+                world.compileAllObjects();
+
                 // construct camera and move it into position
                 Camera cam = world.getCamera();
                 cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
                 cam.lookAt(BrainModel.getTransformedCenter());
 
-                MemoryHelper.compact();
+                BrainModel.setCameraFrameBuffer(cam, fb);
 
-                world.compileAllObjects();
+                MemoryHelper.compact();
 
                 if (master == null)
                 {

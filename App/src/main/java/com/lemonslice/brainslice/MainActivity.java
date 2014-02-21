@@ -178,6 +178,8 @@ public class MainActivity extends Activity {
                 android.R.layout.simple_list_item_1, segList);
         segListView.setAdapter(adapter);
 
+        Labels.setFrameLayout((FrameLayout) findViewById(R.id.overlay_layout));
+        Labels.setContext(this);
 
         segListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -367,7 +369,7 @@ public class MainActivity extends Activity {
                 cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
                 cam.lookAt(BrainModel.getTransformedCenter());
 
-                BrainModel.setCameraFrameBuffer(cam, fb);
+                BrainModel.setCamera(cam);
 
                 MemoryHelper.compact();
 

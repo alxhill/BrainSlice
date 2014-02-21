@@ -1,10 +1,12 @@
 package com.lemonslice.brainslice;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -16,6 +18,9 @@ import android.widget.TextView;
  */
 public class Labels
 {
+    private static FrameLayout frameLayout;
+    private static Context context;
+
     private static View createLabel(LayoutInflater inflater, BrainSegment brainSegment)
     {
         //get title and description of segment
@@ -50,5 +55,33 @@ public class Labels
             Log.e("Brain Slice", "No slice found");
 
         return null;
+    }
+
+    public static void displayLabel(String brainSegment)
+    {
+        String segment = brainSegment;
+
+        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        FrameLayout overlayingFrame = frameLayout;
+        overlayingFrame.removeAllViews();
+
+        if(Labels.getLabel(inflater, segment) != null)
+            overlayingFrame.addView(Labels.getLabel(inflater, segment));
+    }
+
+    public static void removeLabels()
+    {
+        frameLayout.removeAllViews();
+    }
+
+    public static void setFrameLayout(FrameLayout l)
+    {
+        frameLayout = l;
+    }
+
+    public static void setContext(Context c)
+    {
+        context = c;
     }
 }

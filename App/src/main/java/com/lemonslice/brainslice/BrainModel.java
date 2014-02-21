@@ -43,6 +43,16 @@ public class BrainModel {
 
     private static float lastScale = 0.0f;
 
+    private static String[] brainSegments =
+    {
+        "Frontal lobe",
+        "Parietal lobe",
+        "Occipital lobe",
+        "Temporal lobe",
+        "Cerebellum",
+        "Brain stem"
+    };
+
     public static void load(Resources res)
     {
         // brain is parented to small plane
@@ -50,18 +60,25 @@ public class BrainModel {
 
         plane.setCulling(true);
 
-        spheres = new Object3D[1];
-        for(int i=0; i<1; i++)
+        spheres = new Object3D[6];
+
+        for(int i=0; i<spheres.length; i++)
         {
             spheres[i] = Primitives.getSphere(sphereRad);
             spheres[i].addParent(plane);
             spheres[i].setLighting(Object3D.LIGHTING_NO_LIGHTS);
             spheres[i].build();
-            //spheres[i].compile();
-            //spheres[i].strip();
+            spheres[i].compile();
+            spheres[i].strip();
+            spheres[i].setAdditionalColor(100,100,200);
         }
 
-        spheres[0].translate(SimpleVector.create(0, -80.0f, 0));
+        spheres[0].translate(SimpleVector.create(0, -70.0f, 0));
+        spheres[1].translate(SimpleVector.create(0, 80.0f, -50.0f));
+        spheres[2].translate(SimpleVector.create(0, 100.0f, 0));
+        spheres[3].translate(SimpleVector.create(75.0f, 0, 0));
+        spheres[4].translate(SimpleVector.create(0, 100.0f, 50.0f));
+        spheres[5].translate(SimpleVector.create(0, 12.0f, 40.0f));
 
 
         // Load the 3d model
@@ -83,8 +100,8 @@ public class BrainModel {
             obj.setCulling(true);
             obj.setSpecularLighting(false); //was true
             obj.build();
-            //obj.compile();
-            //obj.strip();
+            obj.compile();
+            obj.strip();
             obj.addParent(plane);
         }
 
@@ -105,10 +122,9 @@ public class BrainModel {
         frontMatrix.orthonormalize();
     }
 
-    public static void setCameraFrameBuffer(Camera c, FrameBuffer b)
+    public static void setCamera(Camera c)
     {
         cam = c;
-        buf = b;
     }
 
     public static void setFrameBuffer(FrameBuffer b)
@@ -118,29 +134,33 @@ public class BrainModel {
 
     public static void notifyTap(float x, float y)
     {
-        Log.d("BrainSliceTurnips", "Hello my dear " + x + " " + y);
-        for(int i=0; i<spheres.length; i++)
+        int i=0;
+        for(i=0; i<spheres.length; i++)
         {
             SimpleVector v = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
-
-            Log.d("BrainSliceSourkraut", v.x + " " + v.y);
 
             float xd = v.x - x;
             float yd = v.y - y;
 
             float dist = (float) Math.sqrt(xd * xd + yd * yd);
 
-            Log.d("BrainSliceBIRDJESUS", " " + sphereRad*1.0f/lastScale);
-
             if(dist < (sphereRad*1.0f/lastScale)*(sphereRad*1.0f/lastScale)*5.0f)
             {
-                Log.d("BrainSliceTurnips2", "I am severely an ostrich, it is very dire");
                 spheres[i].setAdditionalColor(255, 0, 0);
+                Labels.displayLabel(brainSegments[i]);
+                Log.d("BrainSlicedfdf", brainSegments[i]);
+                break;
             }
             else
             {
-                spheres[i].setAdditionalColor(0,0,0);
+                spheres[i].setAdditionalColor(100,100,200);
+                Labels.removeLabels();
             }
+        }
+        i++;
+        for(; i<spheres.length; i++)
+        {
+            spheres[i].setAdditionalColor(100,100,200);
         }
     }
 

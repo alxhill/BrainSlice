@@ -141,7 +141,7 @@ public class BrainModel {
         if (x < eighthPi && x > -eighthPi)
             xAdjust = (float) ((eighthPi - Math.abs(x)) / eighthPi);
 
-        plane.setScale(scaleFactor*xAdjust + minSize);
+        //plane.setScale(scaleFactor*xAdjust + minSize);
 
 
     }

@@ -122,6 +122,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
         //Put things in here for single tap such as labels popping up
         velocityX = 0;
         velocityY = 0;
+        BrainModel.notifyTap(motionEvent.getX(), motionEvent.getY());
         return true;
     }
 

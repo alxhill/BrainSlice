@@ -5,6 +5,8 @@ import android.hardware.SensorManager;
 import android.os.SystemClock;
 import android.util.Log;
 
+import com.threed.jpct.Camera;
+import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.GLSLShader;
 import com.threed.jpct.Loader;
 import com.threed.jpct.Matrix;
@@ -12,6 +14,7 @@ import com.threed.jpct.Object3D;
 import com.threed.jpct.Primitives;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.World;
+import com.threed.jpct.Interact2D;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -31,13 +34,35 @@ public class BrainModel {
 
     private static Matrix frontMatrix;
 
+    private static Object3D[] spheres;
+
+    private static Camera cam;
+    private static FrameBuffer buf;
+
+    private static float sphereRad = 2.0f;
+
+    private static float lastScale = 0.0f;
+
     public static void load(Resources res)
     {
-
         // brain is parented to small plane
         plane = Primitives.getPlane(1, 1);
 
         plane.setCulling(true);
+
+        spheres = new Object3D[1];
+        for(int i=0; i<1; i++)
+        {
+            spheres[i] = Primitives.getSphere(sphereRad);
+            spheres[i].addParent(plane);
+            spheres[i].setLighting(Object3D.LIGHTING_NO_LIGHTS);
+            spheres[i].build();
+            //spheres[i].compile();
+            //spheres[i].strip();
+        }
+
+        spheres[0].translate(SimpleVector.create(0, -80.0f, 0));
+
 
         // Load the 3d model
         Log.d("BrainSlice", "Loading .3ds file");
@@ -58,20 +83,21 @@ public class BrainModel {
             obj.setCulling(true);
             obj.setSpecularLighting(false); //was true
             obj.build();
-            obj.strip();
+            //obj.compile();
+            //obj.strip();
             obj.addParent(plane);
         }
 
         // Set the model's initial position
         plane.rotateY((float) Math.PI);
-        plane.rotateX((float) -Math.PI / 2.0f);
+        plane.rotateX((float)-Math.PI / 2.0f);
         scale(0.5f);
 
         plane.build();
-        plane.strip();
+        //plane.strip();
 
         // Centre the model (as calculated with painful trial and error)
-        plane.setOrigin(SimpleVector.create(0, 20, 10));
+        plane.translate(SimpleVector.create(0, 20, 10));
 
         // get the rotation matrix for the current position
         frontMatrix = new Matrix(plane.getRotationMatrix());
@@ -79,10 +105,50 @@ public class BrainModel {
         frontMatrix.orthonormalize();
     }
 
+    public static void setCameraFrameBuffer(Camera c, FrameBuffer b)
+    {
+        cam = c;
+        buf = b;
+    }
+
+    public static void setFrameBuffer(FrameBuffer b)
+    {
+        buf = b;
+    }
+
+    public static void notifyTap(float x, float y)
+    {
+        Log.d("BrainSliceTurnips", "Hello my dear " + x + " " + y);
+        for(int i=0; i<spheres.length; i++)
+        {
+            SimpleVector v = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
+
+            Log.d("BrainSliceSourkraut", v.x + " " + v.y);
+
+            float xd = v.x - x;
+            float yd = v.y - y;
+
+            float dist = (float) Math.sqrt(xd * xd + yd * yd);
+
+            Log.d("BrainSliceBIRDJESUS", " " + sphereRad*1.0f/lastScale);
+
+            if(dist < (sphereRad*1.0f/lastScale)*(sphereRad*1.0f/lastScale)*5.0f)
+            {
+                Log.d("BrainSliceTurnips2", "I am severely an ostrich, it is very dire");
+                spheres[i].setAdditionalColor(255, 0, 0);
+            }
+            else
+            {
+                spheres[i].setAdditionalColor(0,0,0);
+            }
+        }
+    }
+
     public static void addToScene(World world)
     {
         world.addObject(plane);
         world.addObjects(objs);
+        world.addObjects(spheres);
     }
 
     public static SimpleVector getTransformedCenter()
@@ -142,14 +208,18 @@ public class BrainModel {
             xAdjust = (float) ((eighthPi - Math.abs(x)) / eighthPi);
 
         plane.setScale(scaleFactor*xAdjust + minSize);
-
-
     }
 
     public static void scale(float scale)
     {
         plane.scale(scale);
         shader.setUniform("heightScale", 1.0f);
+        for(int i=0; i<spheres.length; i++)
+        {
+            spheres[i].scale(1.0f/scale);
+        }
+
+        lastScale = scale;
     }
 
     public static void moveToFront()

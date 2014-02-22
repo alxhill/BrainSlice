@@ -21,7 +21,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
     private float velocityY = 0;
 
     //Used to prevent flinging at the end of a scale
-    private boolean scaleEnd = false;
+    private int scaleEnd = 0;
 
     //Constants that dictate cutoffs and speed multipliers
     private static final double decelCutoff = 0.001;
@@ -68,6 +68,9 @@ public class LearnController extends AbstractController implements OnScaleGestur
         /*if(velocityX > decelCutoff || velocityX < -decelCutoff || velocityY > decelCutoff || velocityY < -decelCutoff)
             Log.d("Update Scene", velocityX + " " + velocityY + " " + dragX + " " + dragY);*/
 
+        if(scaleEnd > 0){
+            scaleEnd--;
+        }
 
         if(totalVelocity > decelCutoff || totalVelocity < -decelCutoff)
         {
@@ -94,6 +97,11 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float distanceY, float distanceX)
     {
+        if(scaleEnd > 0)
+        {
+            scaleEnd--;
+            return true;
+        }
         dragX = distanceX * moveMult;
         dragY = distanceY * moveMult;
         Log.d("Touch Input", "onScroll: " + dragY + " " + dragX + " " + distanceX + " " + distanceY);
@@ -104,9 +112,9 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float vY, float vX)
     {
-        if(scaleEnd)
+        if(scaleEnd > 0)
         {
-            scaleEnd = false;
+            scaleEnd = 0;
             return true;
         }
 
@@ -172,7 +180,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public void onScaleEnd(ScaleGestureDetector detector)
     {
-        scaleEnd = true;
+        scaleEnd = 5;
     }
 
     @Override

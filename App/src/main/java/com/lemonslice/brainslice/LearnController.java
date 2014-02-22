@@ -21,22 +21,20 @@ public class LearnController extends AbstractController implements OnScaleGestur
     private float velocityY = 0;
 
     //Used to prevent flinging at the end of a scale
-    private boolean scaleEnd = false;
+    private int scaleEnd = 0;
 
-    // cutoff point for deceleration
-    private static final double decelCutoff = 0.01;
-    // rate of speed decrease
-    private static final double decelRate = 0.95;
-    // multiplier for velocity decrease
+    //Constants that dictate cutoffs and speed multipliers
+    private static final double decelCutoff = 0.001;
+    private static final double decelRate = 0.97;
     private static final float velocityMult = 0.00005f;
-    // stopping threshold for velocity
-    private static final float velocityThreshold = 0.1f;
-    // multipliers for scaling and moving
+    private static final float velocityThreshold = 0.05f;
     private static final float moveMult = 0.005f;
     private static final float scaleMult = 0.001f;
     // limits for scaling
     private static final float minScale = 0.2f;
     private static final float maxScale = 0.69f;
+
+    private float cumulativeScale = 1.0f;
 
     private boolean isLoaded;
 
@@ -67,15 +65,23 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public void updateScene()
     {
-
+        double totalVelocity = Math.sqrt(velocityX*velocityX + velocityY*velocityY);
         /*if(velocityX > decelCutoff || velocityX < -decelCutoff || velocityY > decelCutoff || velocityY < -decelCutoff)
             Log.d("Update Scene", velocityX + " " + velocityY + " " + dragX + " " + dragY);*/
 
-        if (velocityX > decelCutoff || velocityX < -decelCutoff) velocityX *= decelRate;
-        else velocityX = 0;
+        if(scaleEnd > 0){
+            scaleEnd--;
+        }
 
-        if (velocityY > decelCutoff || velocityY < -decelCutoff) velocityY *= decelRate;
-        else velocityY = 0;
+        if(totalVelocity > decelCutoff || totalVelocity < -decelCutoff)
+        {
+            velocityX *= decelRate;
+            velocityY *= decelRate;
+            Log.e("ffs", "X " + velocityX + " Y " + velocityY);
+        } else {
+            velocityX = 0;
+            velocityY = 0;
+        }
 
         dragX += velocityX;
         dragY += velocityY;
@@ -92,8 +98,14 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float distanceY, float distanceX)
     {
+        if(scaleEnd > 0)
+        {
+            scaleEnd--;
+            return true;
+        }
         dragX = distanceX * moveMult;
         dragY = distanceY * moveMult;
+        Log.d("Touch Input", "onScroll: " + dragY + " " + dragX + " " + distanceX + " " + distanceY);
         return true;
     }
 
@@ -101,9 +113,9 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float vY, float vX)
     {
-        if(scaleEnd)
+        if(scaleEnd > 0)
         {
-            scaleEnd = false;
+            scaleEnd = 0;
             return true;
         }
 
@@ -169,7 +181,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public void onScaleEnd(ScaleGestureDetector detector)
     {
-        scaleEnd = true;
+        scaleEnd = 5;
     }
 
     @Override

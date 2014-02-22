@@ -57,6 +57,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
     public void loadView()
     {
         isLoaded = true;
+        BrainModel.setLabelsToDisplay(true);
     }
 
     @Override

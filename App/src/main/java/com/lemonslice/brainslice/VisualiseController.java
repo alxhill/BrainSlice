@@ -37,6 +37,7 @@ public class VisualiseController extends AbstractController implements SensorEve
         sensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_GAME);
         axisX = axisY = axisZ = 0;
         BrainModel.moveToFront();
+        BrainModel.setLabelsToDisplay(false);
     }
 
     @Override

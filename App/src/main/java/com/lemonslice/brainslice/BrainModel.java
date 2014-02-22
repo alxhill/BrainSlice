@@ -34,7 +34,7 @@ public class BrainModel {
 
     private static Matrix frontMatrix;
 
-    private static Object3D[] spheres;
+    private static Object3D[] spheres = null;
 
     private static Camera cam;
     private static FrameBuffer buf;
@@ -50,7 +50,7 @@ public class BrainModel {
         "Occipital lobe",
         "Temporal lobe",
         "Cerebellum",
-        "Brain stem"
+        "Brainstem"
     };
 
     public static void load(Resources res)
@@ -80,7 +80,6 @@ public class BrainModel {
         spheres[4].translate(SimpleVector.create(0, 100.0f, 50.0f));
         spheres[5].translate(SimpleVector.create(0, 12.0f, 40.0f));
 
-
         // Load the 3d model
         Log.d("BrainSlice", "Loading .3ds file");
 
@@ -103,6 +102,8 @@ public class BrainModel {
             obj.compile();
             obj.strip();
             obj.addParent(plane);
+            //shader seems to be broken at the moment
+            //obj.setShader(shader);
         }
 
         // Set the model's initial position
@@ -132,6 +133,20 @@ public class BrainModel {
         buf = b;
     }
 
+    public static void setLabelsToDisplay(boolean x)
+    {
+        if(spheres==null)
+            return;
+
+        for (Object3D sphere : spheres)
+        {
+            if(x && !sphere.hasParent(plane))
+                plane.addChild(sphere);
+            else if(!x)
+                plane.removeChild(sphere);
+        }
+    }
+
     public static void notifyTap(float x, float y)
     {
         int i=0;
@@ -148,7 +163,6 @@ public class BrainModel {
             {
                 spheres[i].setAdditionalColor(255, 0, 0);
                 Labels.displayLabel(brainSegments[i]);
-                Log.d("BrainSlicedfdf", brainSegments[i]);
                 break;
             }
             else
@@ -157,7 +171,9 @@ public class BrainModel {
                 Labels.removeLabels();
             }
         }
+
         i++;
+
         for(; i<spheres.length; i++)
         {
             spheres[i].setAdditionalColor(100,100,200);

@@ -60,6 +60,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public void unloadView()
     {
+        velocityX=0;
+        velocityY=0;
         isLoaded = false;
     }
 

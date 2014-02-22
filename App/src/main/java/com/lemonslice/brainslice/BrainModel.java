@@ -188,8 +188,8 @@ public class BrainModel {
 
 //        Log.d("BrainSlice", String.format("axis-angle: %s %s", axis.toString(), angle));
 
-        //final int time = 200 + (int) Math.round(Math.abs(angle)*150.0f);
-        final int time = 600;
+        final int time = 200 + (int) Math.round(Math.abs(angle)*300.0f);
+        //final int time = 600;
 
         Timer timer = new Timer();
 

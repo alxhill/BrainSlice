@@ -14,8 +14,8 @@ public class VisualiseController extends AbstractController implements SensorEve
     // current gyro rotation
     private float axisX, axisY, axisZ;
 
-    private SensorManager mSensorManager;
-    private Sensor mSensor;
+    private SensorManager sensorManager;
+    private Sensor gyroSensor;
 
     long oldTime;
 
@@ -26,15 +26,15 @@ public class VisualiseController extends AbstractController implements SensorEve
         axisZ = 0;
 
         // initialise the sensor manager and listen for gyro events
-        mSensorManager = manager;
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        sensorManager = manager;
+        gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
     }
 
     @Override
     public void loadView()
     {
         oldTime = System.currentTimeMillis();
-        mSensorManager.registerListener(this, mSensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_GAME);
         axisX = axisY = axisZ = 0;
         BrainModel.moveToFront();
     }
@@ -42,7 +42,7 @@ public class VisualiseController extends AbstractController implements SensorEve
     @Override
     public void unloadView()
     {
-        mSensorManager.unregisterListener(this);
+        sensorManager.unregisterListener(this);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class VisualiseController extends AbstractController implements SensorEve
 
         BrainModel.rotate(x, y, z);
 
-//        BrainModel.adjustCamera();
+        BrainModel.adjustCamera();
     }
 
     @Override

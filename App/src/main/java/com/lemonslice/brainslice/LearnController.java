@@ -11,7 +11,7 @@ import android.view.GestureDetector.OnGestureListener;
 /**
  * Created by alexander on 28/01/2014.
  */
-public class LearnController extends AbstractController implements OnScaleGestureListener, OnGestureListener {
+public class LearnController extends AbstractController implements OnScaleGestureListener, OnGestureListener, GestureDetector.OnDoubleTapListener {
 
     //Variables that we transform the brain with
     private float scale = 1.0f;
@@ -30,8 +30,9 @@ public class LearnController extends AbstractController implements OnScaleGestur
     private static final float velocityThreshold = 0.05f;
     private static final float moveMult = 0.005f;
     private static final float scaleMult = 0.001f;
-    private static final float minScale = 0.1f;
-    private static final float maxScale = 1.6f;
+    // limits for scaling
+    private static final float minScale = 0.2f;
+    private static final float maxScale = 0.69f;
 
     private float cumulativeScale = 1.0f;
 
@@ -47,6 +48,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
         //Initialise detectors
         scaleDetector = new ScaleGestureDetector(applicationContext, this);
         gestureDetector = new GestureDetector(applicationContext, this);
+        gestureDetector.setOnDoubleTapListener(this);
     }
 
     @Override
@@ -163,10 +165,10 @@ public class LearnController extends AbstractController implements OnScaleGestur
         float difference = detector.getCurrentSpan() - detector.getPreviousSpan();
         scale += scaleMult * difference;
 
+        float cumulativeScale = BrainModel.getScale();
+
         if(scale * cumulativeScale > maxScale ||  scale * cumulativeScale < minScale)
             scale = 1.0f;
-        else
-            cumulativeScale *= scale;
 
         return true;
     }
@@ -181,6 +183,22 @@ public class LearnController extends AbstractController implements OnScaleGestur
     public void onScaleEnd(ScaleGestureDetector detector)
     {
         scaleEnd = 5;
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent event) {
+        BrainModel.moveToFront();
+        return true;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent event) {
+        return true;
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent event) {
+        return true;
     }
 
     @Override

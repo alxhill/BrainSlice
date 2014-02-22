@@ -6,5 +6,6 @@
     <string name="action_settings">Settings</string>
     <string name="learn_icon">&#xe012;</string>
     <string name="visualise_icon">&#xe046;</string>
+    <string name="centre_icon">&#xe087;</string>
     <string name="loadingMessage">Loading ...</string>
 </resources>

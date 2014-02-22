@@ -1,13 +1,16 @@
 package com.lemonslice.brainslice;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.DropBoxManager;
+import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -19,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +46,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -65,9 +71,13 @@ public class MainActivity extends Activity {
     private World world = null;
     private RGBColor back = new RGBColor(0, 17, 34);
 
-    //Frame overlaying 3d rendering for labels, instructions etc...
+    // Frame overlaying 3d rendering for labels, instructions etc...
     private FrameLayout overlayingFrame;
     private String selectedSegment = null;
+
+    // Horizontal progress bar on loading screen
+    private ProgressBar progressBar;
+    private FrameLayout loadingScreen;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -78,6 +88,11 @@ public class MainActivity extends Activity {
             copy(master);
 
         setContentView(R.layout.activity_main);
+
+        hideSystemBars();
+        loadingScreen = (FrameLayout)findViewById(R.id.loading_screen);
+        progressBar = (ProgressBar)findViewById(R.id.progressBarMain);
+        startLoadingScreen();
 
         super.onCreate(savedInstanceState);
         mGLView = (GLSurfaceView)findViewById(R.id.openGlView);
@@ -133,7 +148,7 @@ public class MainActivity extends Activity {
         assert visIcon != null;
         visIcon.setTypeface(fontAwesome);
         visIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-        
+
         //frame layout to pass view to
 //        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
 
@@ -163,6 +178,7 @@ public class MainActivity extends Activity {
                 android.R.layout.simple_list_item_1, segList);
         segListView.setAdapter(adapter);
 
+
         segListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -184,10 +200,8 @@ public class MainActivity extends Activity {
 
                     selectedSegment = segment;
                 }
-
             }
         });
-
     }
 
     @Override
@@ -213,6 +227,48 @@ public class MainActivity extends Activity {
         super.onStop();
     }
 
+    public void startLoadingScreen()
+    {
+        progressBar.setProgress(0);
+        showLoadingScreen();
+        new Timer().schedule(new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                runOnUiThread(new Runnable()
+                {
+                    public void run()
+                    {
+                        progressBar.setProgress(progressBar.getProgress()+1);
+                        if ((progressBar.getProgress() > 99) && (renderer.isLoaded()))
+                            hideLoadingScreen();
+                    }
+                });
+            }
+        }, 0, 40);
+    }
+
+    public void showLoadingScreen()
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadingScreen.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    public void hideLoadingScreen()
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadingScreen.setVisibility(View.GONE);
+            }
+        });
+    }
+
     private void copy(Object src)
     {
         try
@@ -236,12 +292,43 @@ public class MainActivity extends Activity {
         return baseController.touchEvent(me);
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus)
+    {
+        // Immersive mode is only supported in Android KitKat and above
+            super.onWindowFocusChanged(hasFocus);
+            if (hasFocus)
+                hideSystemBars();
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void hideSystemBars()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            );
+        }
+    }
+
     class MyRenderer implements GLSurfaceView.Renderer {
+        private boolean isLoaded = false;
 
         public MyRenderer()
         {
             Texture.defaultToMipmapping(true);
             Texture.defaultTo4bpp(true);
+        }
+
+        public boolean isLoaded()
+        {
+            return isLoaded;
         }
 
         public void onSurfaceChanged(GL10 gl, int w, int h)
@@ -284,6 +371,7 @@ public class MainActivity extends Activity {
                     master = MainActivity.this;
                 }
             }
+            isLoaded=true;
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config)

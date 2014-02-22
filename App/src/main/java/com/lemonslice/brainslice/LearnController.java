@@ -11,7 +11,7 @@ import android.view.GestureDetector.OnGestureListener;
 /**
  * Created by alexander on 28/01/2014.
  */
-public class LearnController extends AbstractController implements OnScaleGestureListener, OnGestureListener {
+public class LearnController extends AbstractController implements OnScaleGestureListener, OnGestureListener, GestureDetector.OnDoubleTapListener {
 
     //Variables that we transform the brain with
     private float scale = 1.0f;
@@ -48,6 +48,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
         //Initialise detectors
         scaleDetector = new ScaleGestureDetector(applicationContext, this);
         gestureDetector = new GestureDetector(applicationContext, this);
+        gestureDetector.setOnDoubleTapListener(this);
     }
 
     @Override
@@ -182,6 +183,22 @@ public class LearnController extends AbstractController implements OnScaleGestur
     public void onScaleEnd(ScaleGestureDetector detector)
     {
         scaleEnd = 5;
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent event) {
+        BrainModel.moveToFront();
+        return true;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent event) {
+        return true;
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent event) {
+        return true;
     }
 
     @Override

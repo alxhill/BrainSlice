@@ -115,7 +115,7 @@ public class BrainModel {
         plane.strip();
 
         // Centre the model (as calculated with painful trial and error)
-        plane.translate(SimpleVector.create(0, 20, 10));
+        plane.setOrigin(SimpleVector.create(0, 20, 10));
 
         // get the rotation matrix for the current position
         frontMatrix = new Matrix(plane.getRotationMatrix());

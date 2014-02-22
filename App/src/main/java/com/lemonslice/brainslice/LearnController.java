@@ -190,7 +190,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
         if (scaleDetector.isInProgress())
             return true;
 
-        gestureDetector.onTouchEvent(me);
+        if(me.getPointerCount() == 1)
+            gestureDetector.onTouchEvent(me);
 
         return true;
     }

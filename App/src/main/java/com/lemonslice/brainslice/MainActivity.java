@@ -369,6 +369,9 @@ public class MainActivity extends Activity {
                 cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
                 cam.lookAt(BrainModel.getTransformedCenter());
 
+                //shader seems to be broken at the moment
+                //light.setPosition(cam.getPosition());
+
                 BrainModel.setCamera(cam);
 
                 MemoryHelper.compact();

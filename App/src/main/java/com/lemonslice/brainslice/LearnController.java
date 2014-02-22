@@ -49,11 +49,6 @@ public class LearnController extends AbstractController implements OnScaleGestur
         gestureDetector = new GestureDetector(applicationContext, this);
     }
 
-    //Returns the multiple needed to return the brain to it's original size
-    public float getCumulativeScale(){
-        return cumulativeScale;
-    }
-
     @Override
     public void loadView()
     {

@@ -188,11 +188,13 @@ public class BrainModel {
 
 //        Log.d("BrainSlice", String.format("axis-angle: %s %s", axis.toString(), angle));
 
+
         final int time = 200 + (int) Math.round(Math.abs(angle)*300.0f);
-        //final int time = 600;
+
+        Log.d("BrainSlice", String.format("currentScale %f, targetScale %f",getScale(),1.0f));
+        final double scaleDiff = (0.69f - getScale())/time;
 
         Timer timer = new Timer();
-
         timer.schedule(new TimerTask() {
             // time in ms for each step
             final int stepTime = 15;
@@ -204,6 +206,7 @@ public class BrainModel {
             {
                 // calculate the next rotation step to move by
                 //double stepRotation = easeOutExpo(angle, i, time) - easeOutExpo(angle, i - stepTime, time);
+                scale((getScale()+scaleDiff)/getScale());
                 double stepRotation = easeOutElastic(angle, i, time) - easeOutElastic(angle, i - stepTime, time);
                 plane.rotateAxis(axis, (float) stepRotation);
                 i += stepTime;

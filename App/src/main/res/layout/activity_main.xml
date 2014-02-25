@@ -32,7 +32,8 @@
         <LinearLayout
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_width="125dp"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:id="@+id/learn_button"
             android:background="@android:color/transparent"
@@ -43,18 +44,20 @@
                 android:gravity="center"
                 android:text="@string/learn_icon"
                 android:layout_height="50dp"
-                android:layout_width="40dp" />
+                android:layout_width="wrap_content"
+                android:layout_marginRight="3dp"/>
             <TextView
                 android:gravity="center"
                 android:text="Learn"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:textSize="24sp" />
-            </LinearLayout>
+                android:textSize="24sp"/>
+        </LinearLayout>
         <LinearLayout
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_width="150dp"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:id="@+id/visualise_button"
             android:background="@android:color/transparent"
@@ -65,7 +68,8 @@
                 android:gravity="center"
                 android:text="@string/visualise_icon"
                 android:layout_height="50dp"
-                android:layout_width="40dp" />
+                android:layout_width="wrap_content"
+                android:layout_marginRight="3dp"/>
             <TextView
                 android:gravity="center"
                 android:text="Visualise"
@@ -76,7 +80,8 @@
         <LinearLayout
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_width="125dp"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:id="@+id/centre_button"
             android:background="@android:color/transparent"
@@ -87,7 +92,8 @@
                 android:gravity="center"
                 android:text="@string/centre_icon"
                 android:layout_height="50dp"
-                android:layout_width="40dp" />
+                android:layout_width="wrap_content"
+                android:layout_marginRight="3dp"/>
             <TextView
                 android:gravity="center"
                 android:text="Centre"
@@ -95,7 +101,7 @@
                 android:layout_height="50dp"
                 android:textSize="24sp" />
         </LinearLayout>
-        </LinearLayout>
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/overlay_layout"

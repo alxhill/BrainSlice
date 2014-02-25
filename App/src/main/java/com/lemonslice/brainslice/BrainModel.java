@@ -188,27 +188,43 @@ public class BrainModel {
 
 //        Log.d("BrainSlice", String.format("axis-angle: %s %s", axis.toString(), angle));
 
-        final int time = 200 + (int) Math.round(Math.abs(angle)*300.0f);
-        //final int time = 600;
 
-        Timer timer = new Timer();
 
-        timer.schedule(new TimerTask() {
+        final int zoomTime=1200;
+        Timer zoomTimer = new Timer();
+        zoomTimer.schedule(new TimerTask() {
+            final double scaleDiff = 0.6f - getScale();
             // time in ms for each step
             final int stepTime = 15;
             // current number of milliseconds elapsed
             int i = stepTime;
+            @Override
+            public void run() {
+                //double stepZoom = (easeOutElastic(scaleDiff,i,zoomTime) - easeOutElastic(scaleDiff,i - stepTime,zoomTime) + getScale()) / getScale();
+                double stepZoom = (easeOutExpo(scaleDiff,i,zoomTime) - easeOutExpo(scaleDiff,i - stepTime,zoomTime) + getScale()) / getScale();
+                scale((float) stepZoom);
+                i += stepTime;
+                if (i >= zoomTime) cancel();
+            }
+        },100,15);
 
+
+        final int rotateTime = 300 + (int) Math.round(Math.abs(angle)*350.0f);
+        Timer rotateTimer = new Timer();
+        rotateTimer.schedule(new TimerTask() {
+            // time in ms for each step
+            final int stepTime = 15;
+            // current number of milliseconds elapsed
+            int i = stepTime;
             @Override
             public void run()
             {
                 // calculate the next rotation step to move by
                 //double stepRotation = easeOutExpo(angle, i, time) - easeOutExpo(angle, i - stepTime, time);
-                double stepRotation = easeOutElastic(angle, i, time) - easeOutElastic(angle, i - stepTime, time);
-                plane.rotateAxis(axis, (float) stepRotation);
+                double stepRotation = easeOutElastic(angle, i, rotateTime) - easeOutElastic(angle, i - stepTime, rotateTime);
+                plane.rotateAxis(axis, (float) stepRotation); 
                 i += stepTime;
-
-                if (i >= time) cancel();
+                if (i >= rotateTime) cancel();
             }
 
         }, 0, 15);

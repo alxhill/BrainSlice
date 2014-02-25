@@ -54,6 +54,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public void loadView()
     {
+        velocityX = 0;
+        velocityY = 0;
         isLoaded = true;
     }
 
@@ -210,7 +212,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
         if (scaleDetector.isInProgress())
             return true;
 
-        gestureDetector.onTouchEvent(me);
+        if(me.getPointerCount() == 1)
+            gestureDetector.onTouchEvent(me);
 
         return true;
     }

@@ -45,6 +45,8 @@ public class BrainModel {
 
     private static boolean isLoaded = false;
 
+    private static int selection = -1;
+
     private static String[] brainSegments =
     {
         "Frontal lobe",
@@ -165,6 +167,15 @@ public class BrainModel {
             //if(dist < (sphereRad*1.0f/lastScale)*(sphereRad*1.0f/lastScale)*5.0f)
             if(dist < sphereRad*30.0f)
             {
+                if(selection == i)
+                {
+                    spheres[i].setAdditionalColor(100, 100, 200);
+                    Labels.removeLabels();
+                    selection = -1;
+                    break;
+                }
+
+                selection = i;
                 spheres[i].setAdditionalColor(255, 0, 0);
                 Labels.displayLabel(brainSegments[i]);
                 break;
@@ -264,12 +275,18 @@ public class BrainModel {
         lastScale = scale;
     }
 
+    public static void moveToSide()
+    {
+        Log.d("BrainSlice", "moveToSide");
+        plane.setOrigin(SimpleVector.create(0, 20, 10));
+    }
+
     public static void moveToFront(final float targetScale)
     {
         Log.d("BrainSlice", "moveToFront");
 
         if (!isLoaded)
-            return;m
+            return;
 
         double e1, e2, e3;
 
@@ -347,10 +364,9 @@ public class BrainModel {
                     return;
 
                 // This is 100% necessary to prevent a bug where the brain model disappears
-                if(stepRotation == 0.0)
-                    return;
+                if(stepRotation != 0.0)
+                    plane.rotateAxis(axis, (float) stepRotation);
 
-                plane.rotateAxis(axis, (float) stepRotation); 
                 i += stepTime;
                 if (i >= rotateTime) cancel();
             }

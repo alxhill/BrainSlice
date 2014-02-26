@@ -269,7 +269,7 @@ public class BrainModel {
         Log.d("BrainSlice", "moveToFront");
 
         if (!isLoaded)
-            return;
+            return;m
 
         double e1, e2, e3;
 

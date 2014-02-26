@@ -99,6 +99,12 @@ public class LearnController extends AbstractController implements OnScaleGestur
         scale = 1.0f;
     }
 
+    @Override
+    public void stop(){
+        velocityX = 0;
+        velocityY = 0;
+    }
+
 
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float distanceY, float distanceX)

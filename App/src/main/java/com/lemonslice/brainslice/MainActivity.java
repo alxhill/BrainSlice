@@ -137,6 +137,16 @@ public class MainActivity extends Activity {
             }
         });
 
+        LinearLayout centreButton = (LinearLayout) findViewById(R.id.centre_button);
+        centreButton.setOnClickListener(new FrameLayout.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                baseController.stop();
+                BrainModel.moveToFront();
+            }
+        });
+
         Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/glyphicons-halflings-regular.ttf");
 
         TextView learnIcon = (TextView) learnButton.getChildAt(0);

@@ -14,4 +14,6 @@ public abstract class AbstractController {
     public abstract void updateScene();
 
     public abstract boolean touchEvent(MotionEvent me);
+
+    public abstract void stop();
 }

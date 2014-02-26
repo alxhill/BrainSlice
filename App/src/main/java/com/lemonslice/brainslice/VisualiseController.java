@@ -80,6 +80,11 @@ public class VisualiseController extends AbstractController implements SensorEve
     }
 
     @Override
+    public void stop() {
+        return;
+    }
+
+    @Override
     public void onSensorChanged(SensorEvent event)
     {
         // Axes set for landscape gyro data

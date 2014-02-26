@@ -147,7 +147,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/glyphicons-halflings-regular.ttf");
+        Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
 
         TextView learnIcon = (TextView) learnButton.getChildAt(0);
         assert learnIcon != null;
@@ -158,6 +158,11 @@ public class MainActivity extends Activity {
         assert visIcon != null;
         visIcon.setTypeface(fontAwesome);
         visIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+
+        TextView cenIcon = (TextView) centreButton.getChildAt(0);
+        assert cenIcon != null;
+        cenIcon.setTypeface(fontAwesome);
+        cenIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
         //frame layout to pass view to
 //        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);

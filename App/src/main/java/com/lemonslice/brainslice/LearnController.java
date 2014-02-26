@@ -7,6 +7,11 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener;
 import android.view.GestureDetector.OnGestureListener;
+import android.view.WindowManager;
+import android.view.Display;
+import android.graphics.Point;
+import android.os.Build;
+
 
 /**
  * Created by alexander on 28/01/2014.
@@ -30,11 +35,15 @@ public class LearnController extends AbstractController implements OnScaleGestur
     private static final float velocityThreshold = 0.05f;
     private static final float moveMult = 0.005f;
     private static final float scaleMult = 0.001f;
-    // limits for scaling
+    //Limits for scaling
     private static final float minScale = 0.2f;
     private static final float maxScale = 0.69f;
+    //Trying to prevent issues with screen resolution
+    private static final int resMultX = 960;
+    private static final int resMultY = 540;
+    private static int screenWidth;
+    private static int screenHeight;
 
-    private float cumulativeScale = 1.0f;
 
     private boolean isLoaded;
 
@@ -45,6 +54,24 @@ public class LearnController extends AbstractController implements OnScaleGestur
 
     public LearnController(Context applicationContext)
     {
+        //Resolution stuffs
+        WindowManager wm = (WindowManager) applicationContext.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point sharp = new Point();
+
+        if(Build.VERSION.SDK_INT >= 10)
+        {
+            display.getRealSize(sharp);
+            screenWidth = sharp.x;
+            screenHeight = sharp.y;
+        }
+        else
+        {
+            screenWidth = display.getWidth();
+            screenHeight = display.getHeight();
+        }
+        Log.d("res", "w " + screenWidth + " h " + screenHeight);
+
         //Initialise detectors
         scaleDetector = new ScaleGestureDetector(applicationContext, this);
         gestureDetector = new GestureDetector(applicationContext, this);
@@ -65,8 +92,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public void unloadView()
     {
-        velocityX=0;
-        velocityY=0;
+        velocityX = 0;
+        velocityY = 0;
         isLoaded = false;
     }
 
@@ -85,7 +112,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
         {
             velocityX *= decelRate;
             velocityY *= decelRate;
-            Log.e("ffs", "X " + velocityX + " Y " + velocityY);
+            //Log.e("ffs", "X " + velocityX + " Y " + velocityY);
         } else {
             velocityX = 0;
             velocityY = 0;
@@ -117,8 +144,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
             scaleEnd--;
             return true;
         }
-        dragX = distanceX * moveMult;
-        dragY = distanceY * moveMult;
+        dragX = distanceX * moveMult * resMultX / screenWidth;
+        dragY = distanceY * moveMult * resMultY / screenHeight;
         Log.d("Touch Input", "onScroll: " + dragY + " " + dragX + " " + distanceX + " " + distanceY);
         return true;
     }
@@ -133,8 +160,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
             return true;
         }
 
-        velocityX = -vX * velocityMult;
-        velocityY = -vY * velocityMult;
+        velocityX = -vX * velocityMult * resMultX / screenWidth;
+        velocityY = -vY * velocityMult * resMultY / screenHeight;
         if(velocityX < velocityThreshold && velocityX > -velocityThreshold) velocityX = 0;
         if(velocityY < velocityThreshold && velocityY > -velocityThreshold) velocityY = 0;
 
@@ -175,8 +202,19 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public boolean onScale(ScaleGestureDetector detector)
     {
+        float difference;
         if (!isLoaded) return false;
-        float difference = detector.getCurrentSpan() - detector.getPreviousSpan();
+        if(Build.VERSION.SDK_INT >= 11)
+        {
+            difference = (float)Math.sqrt(Math.pow(((detector.getCurrentSpanX() - detector.getPreviousSpanX()) * resMultX / screenWidth), 2) +
+                                          Math.pow(((detector.getCurrentSpanY() - detector.getPreviousSpanY()) * resMultY / screenHeight), 2));
+            if(detector.getCurrentSpan() - detector.getPreviousSpan() < 0)
+                difference *= -1;
+        }
+        else
+        {
+            difference = detector.getCurrentSpan() - detector.getPreviousSpan();
+        }
         scale += scaleMult * difference;
 
         float cumulativeScale = BrainModel.getScale();

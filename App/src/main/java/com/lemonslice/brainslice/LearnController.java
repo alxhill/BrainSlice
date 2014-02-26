@@ -57,7 +57,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
         velocityX = 0;
         velocityY = 0;
         isLoaded = true;
-        BrainModel.moveToFront(0.3f);
+        BrainModel.smoothRotateToFront(200);
+        BrainModel.smoothZoom(0.3f, 1200);
         BrainModel.setLabelsToDisplay(true);
     }
 
@@ -200,7 +201,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
 
     @Override
     public boolean onDoubleTap(MotionEvent event) {
-        BrainModel.moveToFront(BrainModel.getScale());
+        BrainModel.smoothRotateToFront(200);
         return true;
     }
 

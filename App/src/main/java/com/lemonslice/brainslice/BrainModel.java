@@ -2,7 +2,6 @@ package com.lemonslice.brainslice;
 
 import android.content.res.Resources;
 import android.hardware.SensorManager;
-import android.os.SystemClock;
 import android.util.Log;
 
 import com.threed.jpct.Camera;
@@ -203,9 +202,12 @@ public class BrainModel {
             spheres[i].setAdditionalColor(100,100,200);
         }
         if(selected)
-            smoothMoveToGeneric(sidePosition);
+        {
+            smoothMoveToGeneric(sidePosition, 0);
+            smoothZoom(0.3f,400);
+        }
         else
-            smoothMoveToGeneric(startPosition);
+            smoothMoveToGeneric(startPosition, 0);
     }
 
     public static void addToScene(World world)
@@ -316,7 +318,7 @@ public class BrainModel {
         brainSemaphore.release();
     }
 
-    public static void smoothMoveToGeneric(SimpleVector simpleVector)
+    public static void smoothMoveToGeneric(SimpleVector simpleVector, int delay)
     {
         Log.d("BrainSlice", "smoothMoveToGeneric");
         SimpleVector currentPosition = plane.getTransformedCenter();
@@ -358,14 +360,37 @@ public class BrainModel {
                 if (i >= time) cancel();
             }
 
-        }, 0, 15);
-
-
+        }, delay, 15);
     }
 
-    public static void moveToFront(final float targetScale)
+    public static void smoothZoom(final float targetScale, final int zoomTime)
     {
-        Log.d("BrainSlice", "moveToFront");
+        if (!isLoaded)
+            return;
+        Timer zoomTimer = new Timer();
+        zoomTimer.schedule(new TimerTask() {
+            final double scaleDiff = targetScale - getScale();
+            // time in ms for each step
+            final int stepTime = 15;
+            // current number of milliseconds elapsed
+            int i = stepTime;
+            @Override
+            public void run() {
+                double stepZoom = (easeOutExpo(scaleDiff,i,zoomTime) - easeOutExpo(scaleDiff,i - stepTime,zoomTime) + getScale()) / getScale();
+
+                if(Double.isNaN(stepZoom))
+                    return;
+
+                scale((float) stepZoom);
+                i += stepTime;
+                if (i >= zoomTime) cancel();
+            }
+        },100,15);
+    }
+
+    public static void smoothRotateToFront(int delay)
+    {
+        Log.d("BrainSlice", "smoothRotateToFront");
 
         if (!isLoaded)
             return;
@@ -402,27 +427,7 @@ public class BrainModel {
 
 //        Log.d("BrainSlice", String.format("axis-angle: %s %s", axis.toString(), angle));
 
-        final int zoomTime=1200;
-        Timer zoomTimer = new Timer();
-        zoomTimer.schedule(new TimerTask() {
-            final double scaleDiff = targetScale - getScale();
-            // time in ms for each step
-            final int stepTime = 15;
-            // current number of milliseconds elapsed
-            int i = stepTime;
-            @Override
-            public void run() {
-                //double stepZoom = (easeOutElastic(scaleDiff,i,zoomTime) - easeOutElastic(scaleDiff,i - stepTime,zoomTime) + getScale()) / getScale();
-                double stepZoom = (easeOutExpo(scaleDiff,i,zoomTime) - easeOutExpo(scaleDiff,i - stepTime,zoomTime) + getScale()) / getScale();
 
-                if(Double.isNaN(stepZoom))
-                    return;
-
-                scale((float) stepZoom);
-                i += stepTime;
-                if (i >= zoomTime) cancel();
-            }
-        },100,15);
 
 
         final int rotateTime = 300 + (int) Math.round(Math.abs(angle)*350.0f);
@@ -472,6 +477,15 @@ public class BrainModel {
     {
         if (currentTime == totalTime) return delta;
         return delta * (-Math.pow(2, -10 * currentTime/totalTime) + 1);
+    }
+
+    // adapted from http://easings.net/
+    private static double easeInOutExpo(double delta, double currentTime, double totalTime)
+    {
+        if ((currentTime/=totalTime/2) < 1)
+            return delta/2 * Math.pow(2, 10 * (currentTime - 1)) + 1;
+
+        return delta/2 * (-Math.pow(2, -10 * --currentTime) + 2) + 1;
     }
 
 

@@ -143,7 +143,7 @@ public class MainActivity extends Activity {
             public void onClick(View v)
             {
                 baseController.stop();
-                BrainModel.moveToFront();
+                BrainModel.moveToFront(BrainModel.getScale());
             }
         });
 

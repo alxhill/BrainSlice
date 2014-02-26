@@ -57,6 +57,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
         velocityX = 0;
         velocityY = 0;
         isLoaded = true;
+        BrainModel.moveToFront(0.3f);
         BrainModel.setLabelsToDisplay(true);
     }
 
@@ -199,7 +200,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
 
     @Override
     public boolean onDoubleTap(MotionEvent event) {
-        BrainModel.moveToFront();
+        BrainModel.moveToFront(BrainModel.getScale());
         return true;
     }
 

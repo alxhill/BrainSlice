@@ -43,6 +43,8 @@ public class BrainModel {
 
     private static float lastScale = 0.0f;
 
+    private static boolean isLoaded = false;
+
     private static String[] brainSegments =
     {
         "Frontal lobe",
@@ -121,6 +123,7 @@ public class BrainModel {
         frontMatrix = new Matrix(plane.getRotationMatrix());
         // removes scale from the rotation matrix
         frontMatrix.orthonormalize();
+        isLoaded=true;
     }
 
     public static void setCamera(Camera c)
@@ -261,9 +264,12 @@ public class BrainModel {
         lastScale = scale;
     }
 
-    public static void moveToFront()
+    public static void moveToFront(final float targetScale)
     {
         Log.d("BrainSlice", "moveToFront");
+
+        if (!isLoaded)
+            return;
 
         double e1, e2, e3;
 
@@ -297,15 +303,10 @@ public class BrainModel {
 
 //        Log.d("BrainSlice", String.format("axis-angle: %s %s", axis.toString(), angle));
 
-        //final int time = 200 + (int) Math.round(Math.abs(angle)*150.0f);
-        final int time = 600;
-
-        Timer timer = new Timer();
-
         final int zoomTime=1200;
         Timer zoomTimer = new Timer();
         zoomTimer.schedule(new TimerTask() {
-            final double scaleDiff = 0.6f - getScale();
+            final double scaleDiff = targetScale - getScale();
             // time in ms for each step
             final int stepTime = 15;
             // current number of milliseconds elapsed

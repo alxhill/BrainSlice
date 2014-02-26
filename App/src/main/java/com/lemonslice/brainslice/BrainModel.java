@@ -19,6 +19,8 @@ import com.threed.jpct.Interact2D;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import java.util.concurrent.Semaphore;
+
 /**
  * Renders the brain to the screen and handles moving the model
  * Created by alexander on 27/01/2014.
@@ -31,6 +33,8 @@ public class BrainModel {
     private static Object3D plane;
     private static Object3D[] objs;
     private static GLSLShader shader = null;
+
+    private static Semaphore brainSemaphore = new Semaphore(1);
 
     private static Matrix frontMatrix;
 
@@ -218,9 +222,20 @@ public class BrainModel {
 
     public static void rotate(float x, float y, float z)
     {
+        try
+        {
+            brainSemaphore.acquire();
+        }
+        catch(InterruptedException e)
+        {
+            return;
+        }
+
         plane.rotateX(x);
         plane.rotateY(y);
         plane.rotateZ(z);
+
+        brainSemaphore.release();
     }
 
     // moves the camera so it's a constant distance from the brain.
@@ -274,6 +289,21 @@ public class BrainModel {
 
     public static void scale(float scale)
     {
+        try
+        {
+            brainSemaphore.acquire();
+        }
+        catch(InterruptedException e)
+        {
+            return;
+        }
+
+        if(scale <= 0)
+        {
+            brainSemaphore.release();
+            return;
+        }
+
         plane.scale(scale);
         shader.setUniform("heightScale", 1.0f);
         for(int i=0; i<spheres.length; i++)
@@ -282,6 +312,8 @@ public class BrainModel {
         }
 
         lastScale = scale;
+
+        brainSemaphore.release();
     }
 
     public static void smoothMoveToGeneric(SimpleVector simpleVector)
@@ -309,7 +341,18 @@ public class BrainModel {
                 float stepMovementY = (float) (easeOutExpo(yDiff, i, time) - easeOutExpo(yDiff, i - stepTime, time));
                 float stepMovementZ = (float) (easeOutExpo(zDiff, i, time) - easeOutExpo(zDiff, i - stepTime, time));
 
+                try
+                {
+                    brainSemaphore.acquire();
+                }
+                catch(InterruptedException e)
+                {
+                    return;
+                }
+
                 plane.translate(stepMovementX,stepMovementY,stepMovementZ);
+
+                brainSemaphore.release();
 
                 i += stepTime;
                 if (i >= time) cancel();
@@ -402,9 +445,20 @@ public class BrainModel {
                 if(Double.isInfinite(stepRotation))
                     return;
 
+                try
+                {
+                    brainSemaphore.acquire();
+                }
+                catch(InterruptedException e)
+                {
+                    return;
+                }
+
                 // This is 100% necessary to prevent a bug where the brain model disappears
                 if(stepRotation != 0.0)
                     plane.rotateAxis(axis, (float) stepRotation);
+
+                brainSemaphore.release();
 
                 i += stepTime;
                 if (i >= rotateTime) cancel();

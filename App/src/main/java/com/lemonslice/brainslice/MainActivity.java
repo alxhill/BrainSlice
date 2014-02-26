@@ -110,7 +110,7 @@ public class MainActivity extends Activity {
                 visualiseController.unloadView();
                 learnController.loadView();
                 baseController = learnController;
-                (findViewById(R.id.segment_list)).setVisibility(View.VISIBLE);
+                //(findViewById(R.id.segment_list)).setVisibility(View.VISIBLE);
             }
         });
 

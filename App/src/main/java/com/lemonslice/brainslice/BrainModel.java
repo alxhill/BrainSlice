@@ -47,6 +47,9 @@ public class BrainModel {
 
     private static int selection = -1;
 
+    private static SimpleVector sidePosition = SimpleVector.create(-20,20,10);
+    private static SimpleVector startPosition = SimpleVector.create(0,20,10);
+
     private static String[] brainSegments =
     {
         "Frontal lobe",
@@ -119,7 +122,7 @@ public class BrainModel {
         plane.strip();
 
         // Centre the model (as calculated with painful trial and error)
-        plane.setOrigin(SimpleVector.create(0, 20, 10));
+        plane.setOrigin(startPosition);
 
         // get the rotation matrix for the current position
         frontMatrix = new Matrix(plane.getRotationMatrix());
@@ -154,6 +157,7 @@ public class BrainModel {
 
     public static void notifyTap(float x, float y)
     {
+        boolean selected = false;
         int i=0;
         for(i=0; i<spheres.length; i++)
         {
@@ -178,6 +182,7 @@ public class BrainModel {
                 selection = i;
                 spheres[i].setAdditionalColor(255, 0, 0);
                 Labels.displayLabel(brainSegments[i]);
+                selected = true;
                 break;
             }
             else
@@ -193,6 +198,10 @@ public class BrainModel {
         {
             spheres[i].setAdditionalColor(100,100,200);
         }
+        if(selected)
+            smoothMoveToGeneric(sidePosition);
+        else
+            smoothMoveToGeneric(startPosition);
     }
 
     public static void addToScene(World world)
@@ -275,10 +284,40 @@ public class BrainModel {
         lastScale = scale;
     }
 
-    public static void moveToSide()
+    public static void smoothMoveToGeneric(SimpleVector simpleVector)
     {
-        Log.d("BrainSlice", "moveToSide");
-        plane.setOrigin(SimpleVector.create(0, 20, 10));
+        Log.d("BrainSlice", "smoothMoveToGeneric");
+        SimpleVector currentPosition = plane.getTransformedCenter();
+
+        final float xDiff = simpleVector.x - currentPosition.x;
+        final float yDiff = simpleVector.y - currentPosition.y;
+        final float zDiff = simpleVector.z - currentPosition.z;
+
+        //plane.translate(xDiff,yDiff,zDiff);
+
+        final int time = 400;
+        Timer moveTimer = new Timer();
+        moveTimer.schedule(new TimerTask() {
+            // time in ms for each step
+            final int stepTime = 15;
+            // current number of milliseconds elapsed
+            int i = stepTime;
+            @Override
+            public void run()
+            {
+                float stepMovementX = (float) (easeOutExpo(xDiff, i, time) - easeOutExpo(xDiff, i - stepTime, time));
+                float stepMovementY = (float) (easeOutExpo(yDiff, i, time) - easeOutExpo(yDiff, i - stepTime, time));
+                float stepMovementZ = (float) (easeOutExpo(zDiff, i, time) - easeOutExpo(zDiff, i - stepTime, time));
+
+                plane.translate(stepMovementX,stepMovementY,stepMovementZ);
+
+                i += stepTime;
+                if (i >= time) cancel();
+            }
+
+        }, 0, 15);
+
+
     }
 
     public static void moveToFront(final float targetScale)

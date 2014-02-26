@@ -188,6 +188,8 @@ public class MainActivity extends Activity {
                 android.R.layout.simple_list_item_1, segList);
         segListView.setAdapter(adapter);
 
+        Labels.setFrameLayout((FrameLayout) findViewById(R.id.overlay_layout));
+        Labels.setContext(this);
 
         segListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -350,6 +352,10 @@ public class MainActivity extends Activity {
 
             fb = new FrameBuffer(w, h);
 
+            Log.d("BrainSlice", "New FB created");
+
+            BrainModel.setFrameBuffer(fb);
+
             if (master == null)
             {
                 world = new World();
@@ -366,14 +372,19 @@ public class MainActivity extends Activity {
 
                 world.setAmbientLight(61, 40, 40);
 
+                world.compileAllObjects();
+
                 // construct camera and move it into position
                 Camera cam = world.getCamera();
                 cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
                 cam.lookAt(BrainModel.getTransformedCenter());
 
-                MemoryHelper.compact();
+                //shader seems to be broken at the moment
+                //light.setPosition(cam.getPosition());
 
-                world.compileAllObjects();
+                BrainModel.setCamera(cam);
+
+                MemoryHelper.compact();
 
                 if (master == null)
                 {

@@ -159,7 +159,8 @@ public class BrainModel {
 
             float dist = (float) Math.sqrt(xd * xd + yd * yd);
 
-            if(dist < (sphereRad*1.0f/lastScale)*(sphereRad*1.0f/lastScale)*5.0f)
+            //if(dist < (sphereRad*1.0f/lastScale)*(sphereRad*1.0f/lastScale)*5.0f)
+            if(dist < sphereRad*20.0f)
             {
                 spheres[i].setAdditionalColor(255, 0, 0);
                 Labels.displayLabel(brainSegments[i]);

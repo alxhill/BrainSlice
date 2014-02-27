@@ -100,8 +100,6 @@ public class BrainModel {
             shads[i] = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
                     Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_spheres)));
 
-            shads[i].setStaticUniform("invRadius", 0.0003f);
-
             shads[i].setUniform("isSelected", 0);
 
             spheres[i].setShader(shads[i]);
@@ -194,6 +192,10 @@ public class BrainModel {
         boolean selected = false;
         int i=0;
         int pos = -1;
+
+        if(cam == null || buf == null || spheres == null)
+            return;
+
         for(i=0; i<spheres.length; i++)
         {
             SimpleVector v = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());

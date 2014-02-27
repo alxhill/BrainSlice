@@ -1,22 +1,6 @@
 precision mediump float;
 
-varying vec3 lightVec[2];
-varying vec3 eyeVec;
-varying vec2 texCoord;
-
-uniform sampler2D textureUnit0;
-uniform sampler2D textureUnit1;
-
-uniform vec3 diffuseColors[8];
-uniform vec3 specularColors[8];
-
-uniform vec4 ambientColor;
-
-uniform float invRadius;
-uniform float heightScale;
-
 uniform vec3 spherePos;
-
 uniform int isSelected;
 
 void main ()

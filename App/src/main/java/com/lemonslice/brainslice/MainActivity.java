@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
+import android.opengl.GLES10;
+import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
@@ -368,7 +370,7 @@ public class MainActivity extends Activity {
 
                 world.setAmbientLight(61, 40, 40);
 
-                world.compileAllObjects();
+                //world.compileAllObjects();
 
                 // construct camera and move it into position
                 Camera cam = world.getCamera();
@@ -399,7 +401,9 @@ public class MainActivity extends Activity {
         public void onDrawFrame(GL10 gl)
         {
             baseController.updateScene();
-
+            GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+            GLES20.glEnable(GLES20.GL_BLEND);
+            GLES20.glBlendFunc(GLES20.GL_ONE, GLES20.GL_ONE_MINUS_SRC_ALPHA);
             // clear buffers and draw framerate
             fb.clear(back);
             world.renderScene(fb);

@@ -39,8 +39,8 @@ public class BrainModel {
 
     private static Object3D[] spheres = null;
 
-    private static Camera cam;
-    private static FrameBuffer buf;
+    private static Camera cam = null;
+    private static FrameBuffer buf = null;
 
     private static float sphereRad = 2.0f;
 
@@ -52,6 +52,8 @@ public class BrainModel {
 
     private static SimpleVector sidePosition = SimpleVector.create(-20,20,10);
     private static SimpleVector startPosition = SimpleVector.create(0,20,10);
+
+    private static GLSLShader[] shads = new GLSLShader[6];
 
     private static String[] brainSegments =
     {
@@ -65,6 +67,9 @@ public class BrainModel {
 
     public static void load(Resources res)
     {
+        shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
+                                Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_spheres)));
+
         // brain is parented to small plane
         plane = Primitives.getPlane(1, 1);
 
@@ -90,6 +95,18 @@ public class BrainModel {
         spheres[4].translate(SimpleVector.create(0, 100.0f, 50.0f));
         spheres[5].translate(SimpleVector.create(0, 12.0f, 40.0f));
 
+        for(int i=0; i<spheres.length; i++)
+        {
+            shads[i] = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
+                    Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_spheres)));
+
+            shads[i].setStaticUniform("invRadius", 0.0003f);
+
+            shads[i].setUniform("isSelected", 0);
+
+            spheres[i].setShader(shads[i]);
+        }
+
         // Load the 3d model
         Log.d("BrainSlice", "Loading .3ds file");
 
@@ -97,8 +114,6 @@ public class BrainModel {
         Log.d("BrainSlice", "Loaded .3ds file");
 
         // compile and load shaders for plane
-        shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
-                Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_offset)));
         plane.setShader(shader);
         plane.setSpecularLighting(true);
         shader.setStaticUniform("invRadius", 0.0003f);
@@ -112,8 +127,6 @@ public class BrainModel {
             obj.compile();
             obj.strip();
             obj.addParent(plane);
-            //shader seems to be broken at the moment
-            //obj.setShader(shader);
         }
 
         // Set the model's initial position
@@ -137,11 +150,29 @@ public class BrainModel {
     public static void setCamera(Camera c)
     {
         cam = c;
+        if(buf == null)
+            return;
+
+        for(int i=0; i<spheres.length; i++)
+        {
+            SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
+            vec.y = buf.getHeight() - vec.y;
+            shads[i].setUniform("spherePos", vec);
+        }
     }
 
     public static void setFrameBuffer(FrameBuffer b)
     {
         buf = b;
+        if(cam == null)
+            return;
+
+        for(int i=0; i<spheres.length; i++)
+        {
+            SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
+            vec.y = buf.getHeight() - vec.y;
+            shads[i].setUniform("spherePos", vec);
+        }
     }
 
     public static void setLabelsToDisplay(boolean x)
@@ -162,6 +193,7 @@ public class BrainModel {
     {
         boolean selected = false;
         int i=0;
+        int pos = -1;
         for(i=0; i<spheres.length; i++)
         {
             SimpleVector v = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
@@ -186,10 +218,12 @@ public class BrainModel {
                 spheres[i].setAdditionalColor(255, 0, 0);
                 Labels.displayLabel(brainSegments[i]);
                 selected = true;
+                pos = i;
                 break;
             }
             else
             {
+                shads[i].setUniform("isSelected", 0);
                 spheres[i].setAdditionalColor(100,100,200);
                 Labels.removeLabels();
             }
@@ -199,10 +233,12 @@ public class BrainModel {
 
         for(; i<spheres.length; i++)
         {
+            shads[i].setUniform("isSelected", 0);
             spheres[i].setAdditionalColor(100,100,200);
         }
         if(selected)
         {
+            shads[pos].setUniform("isSelected", 1);
             smoothMoveToGeneric(sidePosition, 0);
             smoothZoom(0.3f,400);
         }
@@ -236,6 +272,16 @@ public class BrainModel {
         plane.rotateX(x);
         plane.rotateY(y);
         plane.rotateZ(z);
+
+        for(int i=0; i<spheres.length; i++)
+        {
+            if(cam!=null && buf!=null)
+            {
+                SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
+                vec.y = buf.getHeight() - vec.y;
+                shads[i].setUniform("spherePos", vec);
+            }
+        }
 
         brainSemaphore.release();
     }
@@ -336,23 +382,20 @@ public class BrainModel {
             final int stepTime = 15;
             // current number of milliseconds elapsed
             int i = stepTime;
+
             @Override
-            public void run()
-            {
+            public void run() {
                 float stepMovementX = (float) (easeOutExpo(xDiff, i, time) - easeOutExpo(xDiff, i - stepTime, time));
                 float stepMovementY = (float) (easeOutExpo(yDiff, i, time) - easeOutExpo(yDiff, i - stepTime, time));
                 float stepMovementZ = (float) (easeOutExpo(zDiff, i, time) - easeOutExpo(zDiff, i - stepTime, time));
 
-                try
-                {
+                try {
                     brainSemaphore.acquire();
-                }
-                catch(InterruptedException e)
-                {
+                } catch (InterruptedException e) {
                     return;
                 }
 
-                plane.translate(stepMovementX,stepMovementY,stepMovementZ);
+                plane.translate(stepMovementX, stepMovementY, stepMovementZ);
 
                 brainSemaphore.release();
 

@@ -1,0 +1,1 @@
+malisc --driver Mali-T600_r2p1-00rel0 --core Mali-T600 -r r0p1 --frag fragmentshader_spheres.glsl

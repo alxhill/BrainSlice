@@ -389,9 +389,12 @@ public class BrainModel {
                 float stepMovementY = (float) (easeOutExpo(yDiff, i, time) - easeOutExpo(yDiff, i - stepTime, time));
                 float stepMovementZ = (float) (easeOutExpo(zDiff, i, time) - easeOutExpo(zDiff, i - stepTime, time));
 
-                try {
+                try
+                {
                     brainSemaphore.acquire();
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e)
+                {
                     return;
                 }
 

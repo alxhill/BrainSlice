@@ -213,6 +213,7 @@ public class BrainModel {
                     spheres[i].setAdditionalColor(100, 100, 200);
                     Labels.removeLabels();
                     selection = -1;
+                    shads[i].setUniform("isSelected", 0);
                     break;
                 }
 
@@ -245,7 +246,9 @@ public class BrainModel {
             smoothZoom(0.3f,400);
         }
         else
+        {
             smoothMoveToGeneric(startPosition, 0);
+        }
     }
 
     public static void addToScene(World world)

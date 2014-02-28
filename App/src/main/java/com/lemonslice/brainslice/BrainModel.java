@@ -187,6 +187,33 @@ public class BrainModel {
         }
     }
 
+    private static boolean isVisibilityHodgePodge(Object3D sphere)
+    {
+        float hodgeFactor = 1.0f;
+
+        SimpleVector bvec = plane.getTransformedCenter();
+        SimpleVector cvec = cam.getPosition();
+
+        float dx, dy, dz;
+        dx = bvec.x - cvec.x;
+        dy = bvec.y - cvec.y;
+        dz = bvec.z - cvec.z;
+
+        ///Not really a Z value but nevermind
+        float brainZFromCamera = (float)Math.sqrt(dx*dx + dy*dy + dz*dz);
+
+        SimpleVector svec = sphere.getTransformedCenter();
+        float sx, sy, sz;
+
+        sx = svec.x - cvec.x;
+        sy = svec.y - cvec.y;
+        sz = svec.z - cvec.z;
+
+        float sphereZFromCamera = (float)Math.sqrt(sx*sx + sy*sy + sz*sz);
+
+        return sphereZFromCamera < brainZFromCamera*hodgeFactor;
+    }
+
     public static void notifyTap(float x, float y)
     {
         boolean selected = false;
@@ -205,8 +232,7 @@ public class BrainModel {
 
             float dist = (float) Math.sqrt(xd * xd + yd * yd);
 
-            //if(dist < (sphereRad*1.0f/lastScale)*(sphereRad*1.0f/lastScale)*5.0f)
-            if(dist < sphereRad*30.0f)
+            if(dist < sphereRad*30.0f && isVisibilityHodgePodge(spheres[i]))
             {
                 if(selection == i)
                 {

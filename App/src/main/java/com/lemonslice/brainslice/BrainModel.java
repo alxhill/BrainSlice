@@ -51,7 +51,7 @@ public class BrainModel {
     private static int selection = -1;
 
     private static SimpleVector sidePosition = SimpleVector.create(-20,20,10);
-    private static SimpleVector startPosition = SimpleVector.create(0,20,10);
+    public static SimpleVector startPosition = SimpleVector.create(0,20,10);
 
     private static GLSLShader[] shads = new GLSLShader[6];
 

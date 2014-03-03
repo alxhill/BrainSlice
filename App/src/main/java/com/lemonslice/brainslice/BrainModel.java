@@ -65,6 +65,8 @@ public class BrainModel {
         "Brainstem"
     };
 
+    private static Matrix[] segmentRotations = new Matrix[6];
+
     public static void load(Resources res)
     {
         shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
@@ -142,6 +144,18 @@ public class BrainModel {
         frontMatrix = new Matrix(plane.getRotationMatrix());
         // removes scale from the rotation matrix
         frontMatrix.orthonormalize();
+
+        for(int i = 0; i < 6; i++)
+            segmentRotations[i] = new Matrix(frontMatrix.cloneMatrix());
+
+        segmentRotations[1].rotateY((float) Math.PI);
+        segmentRotations[1].rotateX((float) -Math.PI / 4.0f);
+        segmentRotations[2].rotateY((float) Math.PI);
+        segmentRotations[3].rotateY((float) -Math.PI / 2.0f);
+        segmentRotations[4].rotateY((float) Math.PI);
+        segmentRotations[4].rotateX((float) Math.PI / 4.0f);
+        segmentRotations[5].rotateX((float) Math.PI / 2.0f);
+
         isLoaded=true;
     }
 
@@ -190,13 +204,13 @@ public class BrainModel {
     public static void notifyTap(float x, float y)
     {
         boolean selected = false;
-        int i=0;
+        int i = 0;
         int pos = -1;
 
         if(cam == null || buf == null || spheres == null)
             return;
 
-        for(i=0; i<spheres.length; i++)
+        for(i = 0; i<spheres.length; i++)
         {
             SimpleVector v = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
 
@@ -219,6 +233,9 @@ public class BrainModel {
                 selection = i;
                 spheres[i].setAdditionalColor(255, 0, 0);
                 Labels.displayLabel(brainSegments[i]);
+                smoothRotateToGeneric(segmentRotations[i], 0);
+                Log.d("Rotations", "brainSegments[i]: " + plane.getRotationMatrix().toString());
+
                 selected = true;
                 pos = i;
                 break;
@@ -247,6 +264,7 @@ public class BrainModel {
         else
             smoothMoveToGeneric(startPosition, 0);
     }
+
 
     public static void addToScene(World world)
     {
@@ -436,9 +454,8 @@ public class BrainModel {
         },100,15);
     }
 
-    public static void smoothRotateToFront(int delay)
-    {
-        Log.d("BrainSlice", "smoothRotateToFront");
+    public static void smoothRotateToGeneric(Matrix targetMatrix, int delay){
+        Log.d("BrainSlice", "smoothRotateToGeneric");
 
         if (!isLoaded)
             return;
@@ -446,11 +463,12 @@ public class BrainModel {
         double e1, e2, e3;
 
         Matrix r = plane.getRotationMatrix().cloneMatrix().invert3x3();
+        targetMatrix.orthonormalize();
         r.orthonormalize();
-        r.matMul(frontMatrix);
+        r.matMul(targetMatrix);
 
-        Log.d("BrainSlice", "front matrix: " + frontMatrix.toString());
-        Log.d("BrainSlice", "rotation matrix: " + r.toString());
+        //Log.d("BrainSlice", "front matrix: " + targetMatrix.toString());
+        //Log.d("BrainSlice", "rotation matrix: " + r.toString());
 
         /*
         convert matrix into axis-angle representation.
@@ -518,6 +536,11 @@ public class BrainModel {
             }
 
         }, 0, 15);
+    }
+
+    public static void smoothRotateToFront(int delay)
+    {
+        smoothRotateToGeneric(frontMatrix, delay);
     }
 
     // adapted from http://easings.net/

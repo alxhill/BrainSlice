@@ -297,7 +297,8 @@ public class BrainModel {
     {
         world.addObject(plane);
         world.addObjects(objs);
-        world.addObjects((Object3D[]) spheres.toArray());
+        Object3D[] sphereArray = spheres.toArray(new Object3D[spheres.size()]);
+        world.addObjects(sphereArray);
     }
 
     public static SimpleVector getTransformedCenter()

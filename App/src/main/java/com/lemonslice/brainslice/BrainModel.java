@@ -16,6 +16,8 @@ import com.threed.jpct.SimpleVector;
 import com.threed.jpct.World;
 import com.threed.jpct.Interact2D;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,7 +40,7 @@ public class BrainModel {
 
     private static Matrix frontMatrix;
 
-    private static Object3D[] spheres = null;
+    private static ArrayList<Object3D> spheres = null;
 //    private static RGBColor sphereNormalColor = new RGBColor(255, 255, 255);
 //    private static RGBColor sphereTouchedColor = new RGBColor(255, 255, 0);
 
@@ -54,7 +56,7 @@ public class BrainModel {
     private static SimpleVector sidePosition = SimpleVector.create(-20,20,10);
     public static SimpleVector startPosition = SimpleVector.create(0,20,10);
 
-    private static GLSLShader[] shads = new GLSLShader[6];
+    private static GLSLShader[] shads;
 
     private static String[] brainSegments =
     {
@@ -78,33 +80,33 @@ public class BrainModel {
 
         plane.setCulling(true);
 
-        spheres = new Object3D[6];
+        HashMap<String,BrainSegment> segments = BrainInfo.getSegments();
+        spheres = new ArrayList<Object3D>(segments.size());
 
-        for(int i=0; i<spheres.length; i++)
+        for (BrainSegment segment : segments.values())
         {
-            spheres[i] = Primitives.getSphere(sphereRad);
-            spheres[i].addParent(plane);
-            spheres[i].setLighting(Object3D.LIGHTING_NO_LIGHTS);
-            spheres[i].build();
-            spheres[i].compile();
-            spheres[i].strip();
+            if (segment.getPosition() == null) continue;
+            Object3D sphere = Primitives.getSphere(sphereRad);
+            sphere.addParent(plane);
+            sphere.setLighting(Object3D.LIGHTING_NO_LIGHTS);
+            sphere.build();
+            sphere.compile();
+            sphere.strip();
+            sphere.setName(segment.getTitle());
+
+            spheres.add(sphere);
         }
 
-        spheres[0].translate(SimpleVector.create(0, -70.0f, 0));
-        spheres[1].translate(SimpleVector.create(0, 80.0f, -50.0f));
-        spheres[2].translate(SimpleVector.create(0, 100.0f, 0));
-        spheres[3].translate(SimpleVector.create(75.0f, 0, 0));
-        spheres[4].translate(SimpleVector.create(0, 100.0f, 50.0f));
-        spheres[5].translate(SimpleVector.create(0, 12.0f, 40.0f));
+        shads = new GLSLShader[spheres.size()];
 
-        for(int i=0; i<spheres.length; i++)
+        for(int i=0; i<spheres.size(); i++)
         {
             shads[i] = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
                     Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_spheres)));
 
             shads[i].setUniform("isSelected", 0);
 
-            spheres[i].setShader(shads[i]);
+            spheres.get(i).setShader(shads[i]);
         }
 
         // Load the 3d model
@@ -165,9 +167,9 @@ public class BrainModel {
         if(buf == null)
             return;
 
-        for(int i=0; i<spheres.length; i++)
+        for(int i=0; i<spheres.size(); i++)
         {
-            SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
+            SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres.get(i).getTransformedCenter());
             vec.y = buf.getHeight() - vec.y;
             shads[i].setUniform("spherePos", vec);
         }
@@ -179,9 +181,9 @@ public class BrainModel {
         if(cam == null)
             return;
 
-        for(int i=0; i<spheres.length; i++)
+        for(int i=0; i<spheres.size(); i++)
         {
-            SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
+            SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres.get(i).getTransformedCenter());
             vec.y = buf.getHeight() - vec.y;
             shads[i].setUniform("spherePos", vec);
         }
@@ -237,16 +239,16 @@ public class BrainModel {
         if(cam == null || buf == null || spheres == null)
             return;
 
-        for(i = 0; i<spheres.length; i++)
+        for(i = 0; i<spheres.size(); i++)
         {
-            SimpleVector v = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
+            SimpleVector v = Interact2D.project3D2D(cam, buf, spheres.get(i).getTransformedCenter());
 
             float xd = v.x - x;
             float yd = v.y - y;
 
             float dist = (float) Math.sqrt(xd * xd + yd * yd);
 
-            if(dist < sphereRad*30.0f && isVisibilityHodgePodge(spheres[i]))
+            if(dist < sphereRad*30.0f && isVisibilityHodgePodge(spheres.get(i)))
             {
                 if(selection == i)
                 {
@@ -274,7 +276,7 @@ public class BrainModel {
 
         i++;
 
-        for(; i<spheres.length; i++)
+        for(; i<spheres.size(); i++)
         {
             shads[i].setUniform("isSelected", 0);
         }
@@ -295,7 +297,7 @@ public class BrainModel {
     {
         world.addObject(plane);
         world.addObjects(objs);
-        world.addObjects(spheres);
+        world.addObjects((Object3D[]) spheres.toArray());
     }
 
     public static SimpleVector getTransformedCenter()
@@ -318,11 +320,11 @@ public class BrainModel {
         plane.rotateY(y);
         plane.rotateZ(z);
 
-        for(int i=0; i<spheres.length; i++)
+        for(int i=0; i<spheres.size(); i++)
         {
             if(cam!=null && buf!=null)
             {
-                SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
+                SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres.get(i).getTransformedCenter());
                 vec.y = buf.getHeight() - vec.y;
                 shads[i].setUniform("spherePos", vec);
             }
@@ -399,9 +401,9 @@ public class BrainModel {
 
         plane.scale(scale);
         shader.setUniform("heightScale", 1.0f);
-        for(int i=0; i<spheres.length; i++)
+        for(int i=0; i<spheres.size(); i++)
         {
-            spheres[i].scale(1.0f/scale);
+            spheres.get(i).scale(1.0f / scale);
         }
 
         brainSemaphore.release();

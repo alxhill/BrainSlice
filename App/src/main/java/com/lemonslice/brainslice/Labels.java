@@ -31,7 +31,7 @@ public class Labels
         LinearLayout label = (LinearLayout)inflater.inflate(R.layout.labels, null);
 
         //Set the text of the title of the Segment (in small Caps)
-        TextView titleView = (TextView)label.findViewById(R.id.segment_title);
+        TextView titleView = (TextView) label.findViewById(R.id.segment_title);
         titleView.setText(title);
 //        titleView = Utils.getSmallCaps(titleView);
 
@@ -59,15 +59,13 @@ public class Labels
 
     public static void displayLabel(String brainSegment)
     {
-        String segment = brainSegment;
-
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         FrameLayout overlayingFrame = frameLayout;
         overlayingFrame.removeAllViews();
 
-        if(Labels.getLabel(inflater, segment) != null)
-            overlayingFrame.addView(Labels.getLabel(inflater, segment));
+        if(Labels.getLabel(inflater, brainSegment) != null)
+            overlayingFrame.addView(Labels.getLabel(inflater, brainSegment));
     }
 
     public static void removeLabels()

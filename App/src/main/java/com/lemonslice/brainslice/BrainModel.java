@@ -11,6 +11,7 @@ import com.threed.jpct.Loader;
 import com.threed.jpct.Matrix;
 import com.threed.jpct.Object3D;
 import com.threed.jpct.Primitives;
+import com.threed.jpct.RGBColor;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.World;
 import com.threed.jpct.Interact2D;
@@ -38,13 +39,13 @@ public class BrainModel {
     private static Matrix frontMatrix;
 
     private static Object3D[] spheres = null;
+//    private static RGBColor sphereNormalColor = new RGBColor(255, 255, 255);
+//    private static RGBColor sphereTouchedColor = new RGBColor(255, 255, 0);
 
     private static Camera cam = null;
     private static FrameBuffer buf = null;
 
     private static float sphereRad = 2.0f;
-
-    private static float lastScale = 0.0f;
 
     private static boolean isLoaded = false;
 
@@ -87,7 +88,6 @@ public class BrainModel {
             spheres[i].build();
             spheres[i].compile();
             spheres[i].strip();
-            spheres[i].setAdditionalColor(100,100,200);
         }
 
         spheres[0].translate(SimpleVector.create(0, -70.0f, 0));
@@ -250,7 +250,6 @@ public class BrainModel {
             {
                 if(selection == i)
                 {
-                    spheres[i].setAdditionalColor(100, 100, 200);
                     Labels.removeLabels();
                     selection = -1;
                     shads[i].setUniform("isSelected", 0);
@@ -258,7 +257,6 @@ public class BrainModel {
                 }
 
                 selection = i;
-                spheres[i].setAdditionalColor(255, 0, 0);
                 Labels.displayLabel(brainSegments[i]);
                 smoothRotateToGeneric(segmentRotations[i], 0);
                 Log.d("Rotations", "brainSegments[i]: " + plane.getRotationMatrix().toString());
@@ -270,7 +268,6 @@ public class BrainModel {
             else
             {
                 shads[i].setUniform("isSelected", 0);
-                spheres[i].setAdditionalColor(100,100,200);
                 Labels.removeLabels();
             }
         }
@@ -280,7 +277,6 @@ public class BrainModel {
         for(; i<spheres.length; i++)
         {
             shads[i].setUniform("isSelected", 0);
-            spheres[i].setAdditionalColor(100,100,200);
         }
         if(selected)
         {
@@ -408,8 +404,6 @@ public class BrainModel {
             spheres[i].scale(1.0f/scale);
         }
 
-        lastScale = scale;
-
         brainSemaphore.release();
     }
 
@@ -433,7 +427,8 @@ public class BrainModel {
             int i = stepTime;
 
             @Override
-            public void run() {
+            public void run()
+            {
                 float stepMovementX = (float) (easeOutExpo(xDiff, i, time) - easeOutExpo(xDiff, i - stepTime, time));
                 float stepMovementY = (float) (easeOutExpo(yDiff, i, time) - easeOutExpo(yDiff, i - stepTime, time));
                 float stepMovementZ = (float) (easeOutExpo(zDiff, i, time) - easeOutExpo(zDiff, i - stepTime, time));
@@ -441,8 +436,7 @@ public class BrainModel {
                 try
                 {
                     brainSemaphore.acquire();
-                }
-                catch (InterruptedException e)
+                } catch (InterruptedException e)
                 {
                     return;
                 }

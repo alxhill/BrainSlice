@@ -424,22 +424,19 @@ public class BrainModel {
             // current number of milliseconds elapsed
             int i = stepTime;
 
-            Ease xEase = new Ease(xDiff,time, Ease.Easing.OUT_EXPO);
-            Ease yEase = new Ease(yDiff,time, Ease.Easing.OUT_EXPO);
-            Ease zEase = new Ease(zDiff,time, Ease.Easing.OUT_EXPO);
+            Ease xEase = new Ease(xDiff, time, Ease.Easing.OUT_EXPO);
+            Ease yEase = new Ease(yDiff, time, Ease.Easing.OUT_EXPO);
+            Ease zEase = new Ease(zDiff, time, Ease.Easing.OUT_EXPO);
 
             @Override
-            public void run()
-            {
-                float stepMovementX = (float) (xEase.step(i) - xEase.step(i-stepTime));
-                float stepMovementY = (float) (yEase.step(i) - yEase.step(i-stepTime));
+            public void run() {
+                float stepMovementX = (float) (xEase.step(i) - xEase.step(i - stepTime));
+                float stepMovementY = (float) (yEase.step(i) - yEase.step(i - stepTime));
                 float stepMovementZ = (float) (zEase.step(i) - zEase.step(i - stepTime));
 
-                try
-                {
+                try {
                     brainSemaphore.acquire();
-                } catch (InterruptedException e)
-                {
+                } catch (InterruptedException e) {
                     return;
                 }
 
@@ -469,7 +466,7 @@ public class BrainModel {
             Ease ease = new Ease(scaleDiff,zoomTime, Ease.Easing.OUT_EXPO);
             @Override
             public void run() {
-                double stepZoom = (ease.step(i) - ease.step(i-stepTime) + getScale()) / getScale();
+                double stepZoom = (ease.step(i) - ease.step(i - stepTime) + getScale()) / getScale();
 
                 if(Double.isNaN(stepZoom))
                     return;
@@ -521,18 +518,21 @@ public class BrainModel {
 //        Log.d("BrainSlice", String.format("axis-angle: %s %s", axis.toString(), angle));
 
 
-
-
         final int rotateTime = 300 + (int) Math.round(Math.abs(angle)*350.0f);
+
+        final Ease ease;
+        if (elasticBounce) {
+            ease = new Ease(angle,rotateTime, Ease.Easing.OUT_ELASTIC);
+        } else {
+            ease = new Ease(angle,rotateTime, Ease.Easing.OUT_EXPO);
+        }
+
         Timer rotateTimer = new Timer();
         rotateTimer.schedule(new TimerTask() {
             // time in ms for each step
             final int stepTime = 15;
             // current number of milliseconds elapsed
             int i = stepTime;
-
-            Ease ease = new Ease(angle,rotateTime, Ease.Easing.OUT_ELASTIC);
-
             @Override
             public void run()
             {
@@ -566,6 +566,11 @@ public class BrainModel {
             }
 
         }, 0, 15);
+    }
+    
+    public static void smoothRotateToFront(int delay){
+        if (isLoaded)
+            smoothMoveToGeneric(startPosition,0);
     }
 
     public static float getScale()

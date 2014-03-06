@@ -25,7 +25,7 @@
             android:id="@+id/segment_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="No title recieved"
+            android:text="Temporal Lobe"
             android:textColor="#ffffff"
             android:fontFamily="Helvetica Neue"
             android:typeface="sans"

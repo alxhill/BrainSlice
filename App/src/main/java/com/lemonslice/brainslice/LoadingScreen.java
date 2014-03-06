@@ -40,7 +40,6 @@ public class LoadingScreen
 
     public static void removeView()
     {
-
         frameLayout.removeAllViews();
     }
 

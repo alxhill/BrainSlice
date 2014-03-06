@@ -324,6 +324,8 @@ public class BrainModel {
             {
                 SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
                 vec.y = buf.getHeight() - vec.y;
+                //GOT A NULL POINTER HERE ^, ON THIS LINE ABOVE WHEN TAPPING A PRETTY BUTTON
+                //ASSUMING IT WAS buf.getHeight(); ... Berrow?
                 shads[i].setUniform("spherePos", vec);
             }
         }

@@ -139,7 +139,6 @@ public class MainActivity extends Activity {
             {
                 baseController.stop();
                 BrainModel.smoothRotateToFront(200);
-                OverlayScreen.showScreen();
             }
         });
 

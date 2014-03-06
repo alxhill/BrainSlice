@@ -412,6 +412,10 @@ public class BrainModel {
     public static void smoothMoveToGeneric(SimpleVector simpleVector, int delay)
     {
         Log.d("BrainSlice", "smoothMoveToGeneric");
+
+        if (!isLoaded)
+            return;
+
         SimpleVector currentPosition = plane.getTransformedCenter();
 
         final float xDiff = simpleVector.x - currentPosition.x;
@@ -481,7 +485,7 @@ public class BrainModel {
     }
 
     public static void smoothRotateToGeneric(Matrix targetMatrix, final Boolean elasticBounce){
-        Log.d("BrainSlice", "smoothRotateToGeneric");
+        Log.d("BrainSlice", String.format("smoothRotateToGeneric" + isLoaded));
 
         if (!isLoaded)
             return;
@@ -571,8 +575,7 @@ public class BrainModel {
     }
     
     public static void smoothRotateToFront(int delay){
-        if (isLoaded)
-            smoothMoveToGeneric(startPosition,0);
+        smoothRotateToGeneric(frontMatrix,true);
     }
 
     public static float getScale()

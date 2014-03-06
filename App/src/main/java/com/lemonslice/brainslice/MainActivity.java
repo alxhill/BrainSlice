@@ -85,8 +85,10 @@ public class MainActivity extends Activity {
         LoadingScreen.setRenderer(renderer);
         LoadingScreen.showLoadingScreen();
 
-        Labels.setFrameLayout((FrameLayout) findViewById(R.id.overlay_layout));
         Labels.setContext(this);
+        Labels.setFrameLayout(overlayingFrame);
+        OverlayScreen.setContext(this);
+        OverlayScreen.setFrameLayout(overlayingFrame);
 
         super.onCreate(savedInstanceState);
         mGLView = (GLSurfaceView)findViewById(R.id.openGlView);
@@ -135,6 +137,7 @@ public class MainActivity extends Activity {
             {
                 baseController.stop();
                 BrainModel.smoothRotateToFront(200);
+                OverlayScreen.showScreen();
             }
         });
 

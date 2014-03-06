@@ -258,7 +258,7 @@ public class BrainModel {
 
                 selection = i;
                 Labels.displayLabel(brainSegments[i]);
-                smoothRotateToGeneric(segmentRotations[i], 0);
+                smoothRotateToGeneric(segmentRotations[i], false);
                 Log.d("Rotations", "brainSegments[i]: " + plane.getRotationMatrix().toString());
 
                 selected = true;
@@ -477,7 +477,7 @@ public class BrainModel {
         },100,15);
     }
 
-    public static void smoothRotateToGeneric(Matrix targetMatrix, int delay){
+    public static void smoothRotateToGeneric(Matrix targetMatrix, final Boolean elasticBounce){
         Log.d("BrainSlice", "smoothRotateToGeneric");
 
         if (!isLoaded)
@@ -530,8 +530,12 @@ public class BrainModel {
             public void run()
             {
                 // calculate the next rotation step to move by
-                //double stepRotation = easeOutExpo(angle, i, time) - easeOutExpo(angle, i - stepTime, time);
-                double stepRotation = easeOutElastic(angle, i, rotateTime) - easeOutElastic(angle, i - stepTime, rotateTime);
+                double stepRotation;
+                if (elasticBounce) {
+                    stepRotation = easeOutElastic(angle, i, rotateTime) - easeOutElastic(angle, i - stepTime, rotateTime);
+                } else {
+                    stepRotation = easeOutExpo(angle, i, rotateTime) - easeOutExpo(angle, i - stepTime, rotateTime);
+                }
 
                 if(Double.isNaN(stepRotation))
                     return;
@@ -563,7 +567,7 @@ public class BrainModel {
 
     public static void smoothRotateToFront(int delay)
     {
-        smoothRotateToGeneric(frontMatrix, delay);
+        smoothRotateToGeneric(frontMatrix, Boolean.TRUE);
     }
 
     // adapted from http://easings.net/

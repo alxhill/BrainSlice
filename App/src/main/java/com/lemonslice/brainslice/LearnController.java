@@ -60,7 +60,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
         Display display = wm.getDefaultDisplay();
         Point sharp = new Point();
 
-        if(Build.VERSION.SDK_INT >= 10)
+        if(Build.VERSION.SDK_INT >= 17)
         {
             display.getRealSize(sharp);
             screenWidth = sharp.x;

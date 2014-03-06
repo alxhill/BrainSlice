@@ -2,9 +2,10 @@ package com.lemonslice.brainslice;
 
 import android.content.res.Resources;
 import android.hardware.SensorManager;
-import android.os.SystemClock;
 import android.util.Log;
 
+import com.threed.jpct.Camera;
+import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.GLSLShader;
 import com.threed.jpct.Loader;
 import com.threed.jpct.Matrix;
@@ -12,9 +13,12 @@ import com.threed.jpct.Object3D;
 import com.threed.jpct.Primitives;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.World;
+import com.threed.jpct.Interact2D;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import java.util.concurrent.Semaphore;
 
 /**
  * Renders the brain to the screen and handles moving the model
@@ -29,15 +33,62 @@ public class BrainModel {
     private static Object3D[] objs;
     private static GLSLShader shader = null;
 
+    private static Semaphore brainSemaphore = new Semaphore(1);
+
     private static Matrix frontMatrix;
+
+    private static Object3D[] spheres = null;
+
+    private static Camera cam;
+    private static FrameBuffer buf;
+
+    private static float sphereRad = 2.0f;
+
+    private static float lastScale = 0.0f;
+
+    private static boolean isLoaded = false;
+
+    private static int selection = -1;
+
+    private static SimpleVector sidePosition = SimpleVector.create(-20,20,10);
+    public static SimpleVector startPosition = SimpleVector.create(0,20,10);
+
+    private static String[] brainSegments =
+    {
+        "Frontal lobe",
+        "Parietal lobe",
+        "Occipital lobe",
+        "Temporal lobe",
+        "Cerebellum",
+        "Brainstem"
+    };
 
     public static void load(Resources res)
     {
-
         // brain is parented to small plane
         plane = Primitives.getPlane(1, 1);
 
         plane.setCulling(true);
+
+        spheres = new Object3D[6];
+
+        for(int i=0; i<spheres.length; i++)
+        {
+            spheres[i] = Primitives.getSphere(sphereRad);
+            spheres[i].addParent(plane);
+            spheres[i].setLighting(Object3D.LIGHTING_NO_LIGHTS);
+            spheres[i].build();
+            spheres[i].compile();
+            spheres[i].strip();
+            spheres[i].setAdditionalColor(100,100,200);
+        }
+
+        spheres[0].translate(SimpleVector.create(0, -70.0f, 0));
+        spheres[1].translate(SimpleVector.create(0, 80.0f, -50.0f));
+        spheres[2].translate(SimpleVector.create(0, 100.0f, 0));
+        spheres[3].translate(SimpleVector.create(75.0f, 0, 0));
+        spheres[4].translate(SimpleVector.create(0, 100.0f, 50.0f));
+        spheres[5].translate(SimpleVector.create(0, 12.0f, 40.0f));
 
         // Load the 3d model
         Log.d("BrainSlice", "Loading .3ds file");
@@ -58,31 +109,112 @@ public class BrainModel {
             obj.setCulling(true);
             obj.setSpecularLighting(false); //was true
             obj.build();
+            obj.compile();
             obj.strip();
             obj.addParent(plane);
+            //shader seems to be broken at the moment
+            //obj.setShader(shader);
         }
 
         // Set the model's initial position
         plane.rotateY((float) Math.PI);
-        plane.rotateX((float) -Math.PI / 2.0f);
+        plane.rotateX((float)-Math.PI / 2.0f);
         scale(0.5f);
 
         plane.build();
         plane.strip();
 
         // Centre the model (as calculated with painful trial and error)
-        plane.setOrigin(SimpleVector.create(0, 20, 10));
+        plane.setOrigin(startPosition);
 
         // get the rotation matrix for the current position
         frontMatrix = new Matrix(plane.getRotationMatrix());
         // removes scale from the rotation matrix
         frontMatrix.orthonormalize();
+        isLoaded=true;
+    }
+
+    public static void setCamera(Camera c)
+    {
+        cam = c;
+    }
+
+    public static void setFrameBuffer(FrameBuffer b)
+    {
+        buf = b;
+    }
+
+    public static void setLabelsToDisplay(boolean x)
+    {
+        if(spheres==null)
+            return;
+
+        for (Object3D sphere : spheres)
+        {
+            if(x && !sphere.hasParent(plane))
+                plane.addChild(sphere);
+            else if(!x && plane.hasChild(sphere))
+                plane.removeChild(sphere);
+        }
+    }
+
+    public static void notifyTap(float x, float y)
+    {
+        boolean selected = false;
+        int i=0;
+        for(i=0; i<spheres.length; i++)
+        {
+            SimpleVector v = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
+
+            float xd = v.x - x;
+            float yd = v.y - y;
+
+            float dist = (float) Math.sqrt(xd * xd + yd * yd);
+
+            //if(dist < (sphereRad*1.0f/lastScale)*(sphereRad*1.0f/lastScale)*5.0f)
+            if(dist < sphereRad*30.0f)
+            {
+                if(selection == i)
+                {
+                    spheres[i].setAdditionalColor(100, 100, 200);
+                    Labels.removeLabels();
+                    selection = -1;
+                    break;
+                }
+
+                selection = i;
+                spheres[i].setAdditionalColor(255, 0, 0);
+                Labels.displayLabel(brainSegments[i]);
+                selected = true;
+                break;
+            }
+            else
+            {
+                spheres[i].setAdditionalColor(100,100,200);
+                Labels.removeLabels();
+            }
+        }
+
+        i++;
+
+        for(; i<spheres.length; i++)
+        {
+            spheres[i].setAdditionalColor(100,100,200);
+        }
+        if(selected)
+        {
+            smoothMoveToGeneric(sidePosition, 0);
+            smoothZoom(0.3f,400);
+        }
+        else
+            smoothMoveToGeneric(startPosition, 0);
     }
 
     public static void addToScene(World world)
     {
         world.addObject(plane);
         world.addObjects(objs);
+        world.addObjects(spheres);
     }
 
     public static SimpleVector getTransformedCenter()
@@ -92,9 +224,20 @@ public class BrainModel {
 
     public static void rotate(float x, float y, float z)
     {
+        try
+        {
+            brainSemaphore.acquire();
+        }
+        catch(InterruptedException e)
+        {
+            return;
+        }
+
         plane.rotateX(x);
         plane.rotateY(y);
         plane.rotateZ(z);
+
+        brainSemaphore.release();
     }
 
     // moves the camera so it's a constant distance from the brain.
@@ -141,20 +284,116 @@ public class BrainModel {
         if (x < eighthPi && x > -eighthPi)
             xAdjust = (float) ((eighthPi - Math.abs(x)) / eighthPi);
 
-        plane.setScale(scaleFactor*xAdjust + minSize);
+        //plane.setScale(scaleFactor*xAdjust + minSize);
 
 
     }
 
     public static void scale(float scale)
     {
+        try
+        {
+            brainSemaphore.acquire();
+        }
+        catch(InterruptedException e)
+        {
+            return;
+        }
+
+        if(scale <= 0)
+        {
+            brainSemaphore.release();
+            return;
+        }
+
         plane.scale(scale);
         shader.setUniform("heightScale", 1.0f);
+        for(int i=0; i<spheres.length; i++)
+        {
+            spheres[i].scale(1.0f/scale);
+        }
+
+        lastScale = scale;
+
+        brainSemaphore.release();
     }
 
-    public static void moveToFront()
+    public static void smoothMoveToGeneric(SimpleVector simpleVector, int delay)
     {
-        Log.d("BrainSlice", "moveToFront");
+        Log.d("BrainSlice", "smoothMoveToGeneric");
+        SimpleVector currentPosition = plane.getTransformedCenter();
+
+        final float xDiff = simpleVector.x - currentPosition.x;
+        final float yDiff = simpleVector.y - currentPosition.y;
+        final float zDiff = simpleVector.z - currentPosition.z;
+
+        //plane.translate(xDiff,yDiff,zDiff);
+
+        final int time = 400;
+        Timer moveTimer = new Timer();
+        moveTimer.schedule(new TimerTask() {
+            // time in ms for each step
+            final int stepTime = 15;
+            // current number of milliseconds elapsed
+            int i = stepTime;
+            @Override
+            public void run()
+            {
+                float stepMovementX = (float) (easeOutExpo(xDiff, i, time) - easeOutExpo(xDiff, i - stepTime, time));
+                float stepMovementY = (float) (easeOutExpo(yDiff, i, time) - easeOutExpo(yDiff, i - stepTime, time));
+                float stepMovementZ = (float) (easeOutExpo(zDiff, i, time) - easeOutExpo(zDiff, i - stepTime, time));
+
+                try
+                {
+                    brainSemaphore.acquire();
+                }
+                catch(InterruptedException e)
+                {
+                    return;
+                }
+
+                plane.translate(stepMovementX,stepMovementY,stepMovementZ);
+
+                brainSemaphore.release();
+
+                i += stepTime;
+                if (i >= time) cancel();
+            }
+
+        }, delay, 15);
+    }
+
+    public static void smoothZoom(final float targetScale, final int zoomTime)
+    {
+        if (!isLoaded)
+            return;
+        Timer zoomTimer = new Timer();
+        zoomTimer.schedule(new TimerTask() {
+            final double scaleDiff = targetScale - getScale();
+            // time in ms for each step
+            final int stepTime = 15;
+            // current number of milliseconds elapsed
+            int i = stepTime;
+            @Override
+            public void run() {
+                double stepZoom = (easeOutExpo(scaleDiff,i,zoomTime) - easeOutExpo(scaleDiff,i - stepTime,zoomTime) + getScale()) / getScale();
+
+                if(Double.isNaN(stepZoom))
+                    return;
+
+                scale((float) stepZoom);
+                i += stepTime;
+                if (i >= zoomTime) cancel();
+            }
+        },100,15);
+    }
+
+    public static void smoothRotateToFront(int delay)
+    {
+        Log.d("BrainSlice", "smoothRotateToFront");
+
+        if (!isLoaded)
+            return;
 
         double e1, e2, e3;
 
@@ -188,27 +427,46 @@ public class BrainModel {
 
 //        Log.d("BrainSlice", String.format("axis-angle: %s %s", axis.toString(), angle));
 
-        //final int time = 200 + (int) Math.round(Math.abs(angle)*150.0f);
-        final int time = 600;
 
-        Timer timer = new Timer();
 
-        timer.schedule(new TimerTask() {
+
+        final int rotateTime = 300 + (int) Math.round(Math.abs(angle)*350.0f);
+        Timer rotateTimer = new Timer();
+        rotateTimer.schedule(new TimerTask() {
             // time in ms for each step
             final int stepTime = 15;
             // current number of milliseconds elapsed
             int i = stepTime;
-
             @Override
             public void run()
             {
                 // calculate the next rotation step to move by
                 //double stepRotation = easeOutExpo(angle, i, time) - easeOutExpo(angle, i - stepTime, time);
-                double stepRotation = easeOutElastic(angle, i, time) - easeOutElastic(angle, i - stepTime, time);
-                plane.rotateAxis(axis, (float) stepRotation);
-                i += stepTime;
+                double stepRotation = easeOutElastic(angle, i, rotateTime) - easeOutElastic(angle, i - stepTime, rotateTime);
 
-                if (i >= time) cancel();
+                if(Double.isNaN(stepRotation))
+                    return;
+
+                if(Double.isInfinite(stepRotation))
+                    return;
+
+                try
+                {
+                    brainSemaphore.acquire();
+                }
+                catch(InterruptedException e)
+                {
+                    return;
+                }
+
+                // This is 100% necessary to prevent a bug where the brain model disappears
+                if(stepRotation != 0.0)
+                    plane.rotateAxis(axis, (float) stepRotation);
+
+                brainSemaphore.release();
+
+                i += stepTime;
+                if (i >= rotateTime) cancel();
             }
 
         }, 0, 15);
@@ -219,6 +477,15 @@ public class BrainModel {
     {
         if (currentTime == totalTime) return delta;
         return delta * (-Math.pow(2, -10 * currentTime/totalTime) + 1);
+    }
+
+    // adapted from http://easings.net/
+    private static double easeInOutExpo(double delta, double currentTime, double totalTime)
+    {
+        if ((currentTime/=totalTime/2) < 1)
+            return delta/2 * Math.pow(2, 10 * (currentTime - 1)) + 1;
+
+        return delta/2 * (-Math.pow(2, -10 * --currentTime) + 2) + 1;
     }
 
 

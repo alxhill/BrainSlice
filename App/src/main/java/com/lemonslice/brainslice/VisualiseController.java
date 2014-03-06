@@ -36,7 +36,9 @@ public class VisualiseController extends AbstractController implements SensorEve
         oldTime = System.currentTimeMillis();
         sensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_GAME);
         axisX = axisY = axisZ = 0;
-        BrainModel.moveToFront();
+        BrainModel.smoothRotateToFront(200);
+        BrainModel.smoothZoom(0.62f, 1200);
+        BrainModel.setLabelsToDisplay(false);
     }
 
     @Override
@@ -77,6 +79,11 @@ public class VisualiseController extends AbstractController implements SensorEve
     {
         // visualise mode does not use touch events
         return false;
+    }
+
+    @Override
+    public void stop() {
+        return;
     }
 
     @Override

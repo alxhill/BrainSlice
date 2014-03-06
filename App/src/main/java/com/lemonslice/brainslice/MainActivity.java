@@ -9,11 +9,8 @@ import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.DropBoxManager;
-import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
@@ -36,16 +32,11 @@ import com.threed.jpct.Texture;
 import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.security.KeyStore;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -77,6 +68,7 @@ public class MainActivity extends Activity {
 
     // Horizontal progress bar on loading screen
     private ProgressBar progressBar;
+    private FrameLayout loadingScreen;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -89,7 +81,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         hideSystemBars();
-        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
+        loadingScreen = (FrameLayout)findViewById(R.id.loading_screen);
         progressBar = (ProgressBar)findViewById(R.id.progressBarMain);
         startLoadingScreen();
 
@@ -118,7 +110,7 @@ public class MainActivity extends Activity {
                 visualiseController.unloadView();
                 learnController.loadView();
                 baseController = learnController;
-                (findViewById(R.id.segment_list)).setVisibility(View.VISIBLE);
+                //(findViewById(R.id.segment_list)).setVisibility(View.VISIBLE);
             }
         });
 
@@ -136,7 +128,17 @@ public class MainActivity extends Activity {
             }
         });
 
-        Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/glyphicons-halflings-regular.ttf");
+        LinearLayout centreButton = (LinearLayout) findViewById(R.id.centre_button);
+        centreButton.setOnClickListener(new FrameLayout.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                baseController.stop();
+                BrainModel.smoothRotateToFront(200);
+            }
+        });
+
+        Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
 
         TextView learnIcon = (TextView) learnButton.getChildAt(0);
         assert learnIcon != null;
@@ -147,6 +149,11 @@ public class MainActivity extends Activity {
         assert visIcon != null;
         visIcon.setTypeface(fontAwesome);
         visIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+
+        TextView cenIcon = (TextView) centreButton.getChildAt(0);
+        assert cenIcon != null;
+        cenIcon.setTypeface(fontAwesome);
+        cenIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
         //frame layout to pass view to
 //        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
@@ -177,6 +184,8 @@ public class MainActivity extends Activity {
                 android.R.layout.simple_list_item_1, segList);
         segListView.setAdapter(adapter);
 
+        Labels.setFrameLayout((FrameLayout) findViewById(R.id.overlay_layout));
+        Labels.setContext(this);
 
         segListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -185,6 +194,7 @@ public class MainActivity extends Activity {
                 String segment = ((TextView)view).getText().toString();
 
                 LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
                 overlayingFrame.removeAllViews();
 
                 if((segment.equals(selectedSegment)))
@@ -252,7 +262,7 @@ public class MainActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                overlayingFrame.setVisibility(View.VISIBLE);
+                loadingScreen.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -262,7 +272,7 @@ public class MainActivity extends Activity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                overlayingFrame.setVisibility(View.INVISIBLE);
+                loadingScreen.setVisibility(View.GONE);
             }
         });
     }
@@ -302,18 +312,27 @@ public class MainActivity extends Activity {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void hideSystemBars()
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        //API 14 = android 4.0 (ICS), API 19 = 4.4 (Kitkat)
+        int uiOptions;
+        if (Build.VERSION.SDK_INT >= 19)
         {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            );
+
+            uiOptions = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            getWindow().getDecorView().setSystemUiVisibility(uiOptions);
         }
+        else if(Build.VERSION.SDK_INT >= 14)
+        {
+            uiOptions = View.SYSTEM_UI_FLAG_LOW_PROFILE;
+            getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+        }
+
     }
+
 
     class MyRenderer implements GLSurfaceView.Renderer {
         private boolean isLoaded = false;
@@ -338,6 +357,10 @@ public class MainActivity extends Activity {
 
             fb = new FrameBuffer(w, h);
 
+            Log.d("BrainSlice", "New FB created");
+
+            BrainModel.setFrameBuffer(fb);
+
             if (master == null)
             {
                 world = new World();
@@ -354,14 +377,19 @@ public class MainActivity extends Activity {
 
                 world.setAmbientLight(61, 40, 40);
 
+                world.compileAllObjects();
+
                 // construct camera and move it into position
                 Camera cam = world.getCamera();
                 cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
                 cam.lookAt(BrainModel.getTransformedCenter());
 
-                MemoryHelper.compact();
+                //shader seems to be broken at the moment
+                //light.setPosition(cam.getPosition());
 
-                world.compileAllObjects();
+                BrainModel.setCamera(cam);
+
+                MemoryHelper.compact();
 
                 if (master == null)
                 {

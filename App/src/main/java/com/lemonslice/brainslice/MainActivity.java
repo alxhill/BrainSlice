@@ -64,11 +64,6 @@ public class MainActivity extends Activity {
 
     // Frame overlaying 3d rendering for labels, instructions etc...
     private FrameLayout overlayingFrame;
-    private String selectedSegment = null;
-
-    // Horizontal progress bar on loading screen
-    private ProgressBar progressBar;
-    private FrameLayout loadingScreen;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -80,10 +75,18 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
+        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
         hideSystemBars();
-        loadingScreen = (FrameLayout)findViewById(R.id.loading_screen);
-        progressBar = (ProgressBar)findViewById(R.id.progressBarMain);
-        startLoadingScreen();
+
+        renderer = new MyRenderer();
+
+        LoadingScreen.setContext(this);
+        LoadingScreen.setFrameLayout(overlayingFrame);
+        LoadingScreen.setRenderer(renderer);
+        LoadingScreen.showLoadingScreen();
+
+        Labels.setFrameLayout((FrameLayout) findViewById(R.id.overlay_layout));
+        Labels.setContext(this);
 
         super.onCreate(savedInstanceState);
         mGLView = (GLSurfaceView)findViewById(R.id.openGlView);
@@ -92,7 +95,6 @@ public class MainActivity extends Activity {
         mGLView.setEGLContextClientVersion(2);
 
         // initialise and show the 3D renderer
-        renderer = new MyRenderer();
         mGLView.setRenderer(renderer);
 
         learnController = new LearnController(getApplicationContext());
@@ -110,7 +112,6 @@ public class MainActivity extends Activity {
                 visualiseController.unloadView();
                 learnController.loadView();
                 baseController = learnController;
-                //(findViewById(R.id.segment_list)).setVisibility(View.VISIBLE);
             }
         });
 
@@ -120,7 +121,6 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v)
             {
-                (findViewById(R.id.segment_list)).setVisibility(View.GONE);
                 ((FrameLayout)(findViewById(R.id.overlay_layout))).removeAllViews();
                 learnController.unloadView();
                 visualiseController.loadView();
@@ -155,61 +155,6 @@ public class MainActivity extends Activity {
         cenIcon.setTypeface(fontAwesome);
         cenIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
-        //frame layout to pass view to
-//        overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
-
-//        LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        overlayingFrame.addView(Labels.getLabel(inflater, "Cerebellum"));
-
-////        set custom font
-//        Typeface typeface=Typeface.createFromAsset(getAssets(),"fonts/Futura.otf");
-//        TextView segmentTitleView =(TextView)findViewById(R.id.segment_title);
-//        segmentTitleView.setTypeface(typeface);
-
-
-        ListView segListView = (ListView)findViewById(R.id.segment_list);
-        ArrayList<String> segList = new ArrayList<String>();
-
-        BrainInfo bi = new BrainInfo();
-        HashMap<String, BrainSegment> bs = bi.getSegments();
-
-        for(BrainSegment s : bs.values()) {
-            segList.add(s.getTitle());
-            Log.d("BRAIN SLICE", s.getTitle());
-        }
-
-        Collections.sort(segList);
-
-        StableArrayAdapter adapter = new StableArrayAdapter(this,
-                android.R.layout.simple_list_item_1, segList);
-        segListView.setAdapter(adapter);
-
-        Labels.setFrameLayout((FrameLayout) findViewById(R.id.overlay_layout));
-        Labels.setContext(this);
-
-        segListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                String segment = ((TextView)view).getText().toString();
-
-                LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
-                overlayingFrame.removeAllViews();
-
-                if((segment.equals(selectedSegment)))
-                {
-                    selectedSegment = null;
-                }
-                else
-                {
-                    if(Labels.getLabel(inflater, segment) != null)
-                        overlayingFrame.addView(Labels.getLabel(inflater, segment));
-
-                    selectedSegment = segment;
-                }
-            }
-        });
     }
 
     @Override
@@ -233,48 +178,6 @@ public class MainActivity extends Activity {
     {
         Logger.log("onStop");
         super.onStop();
-    }
-
-    public void startLoadingScreen()
-    {
-        progressBar.setProgress(0);
-        showLoadingScreen();
-        new Timer().schedule(new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                runOnUiThread(new Runnable()
-                {
-                    public void run()
-                    {
-                        progressBar.setProgress(progressBar.getProgress()+1);
-                        if ((progressBar.getProgress() > 99) && (renderer.isLoaded()))
-                            hideLoadingScreen();
-                    }
-                });
-            }
-        }, 0, 40);
-    }
-
-    public void showLoadingScreen()
-    {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                loadingScreen.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
-    public void hideLoadingScreen()
-    {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                loadingScreen.setVisibility(View.GONE);
-            }
-        });
     }
 
     private void copy(Object src)
@@ -441,24 +344,4 @@ public class MainActivity extends Activity {
         }
 
     }
-
-//    public class AndroidExternalFontsActivity extends Activity {
-//        @Override
-//        public void onCreate(Bundle savedInstanceState) {
-//            super.onCreate(savedInstanceState);
-//            setContentView(R.layout.activity_main);
-//
-//            // Font path
-//            String fontPath = "fonts/Futura.otf";
-//
-//            // text view label
-//            TextView txtFutura = (TextView) findViewById(R.id.segment_title);
-//
-//            // Loading Font Face
-//            Typeface tf = Typeface.createFromAsset(getAssets(), fontPath);
-//
-//            // Applying font
-//            txtFutura.setTypeface(tf);
-//        }
-//    }
 }

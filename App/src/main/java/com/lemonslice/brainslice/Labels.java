@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.text.Html;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -33,6 +34,12 @@ public class Labels
         //Set the text of the title of the Segment (in small Caps)
         TextView titleView = (TextView)label.findViewById(R.id.segment_title);
         titleView.setText(title);
+
+        if(title == BrainInfo.getSegment("Temporal lobe").getTitle())
+            titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 35);
+        else
+            titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40);
+
 //        titleView = Utils.getSmallCaps(titleView);
 
         //Set the text of the description text view

@@ -324,6 +324,8 @@ public class BrainModel {
             {
                 SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
                 vec.y = buf.getHeight() - vec.y;
+                //GOT A NULL POINTER HERE ^, ON THIS LINE ABOVE WHEN TAPPING A PRETTY BUTTON
+                //ASSUMING IT WAS buf.getHeight(); ... Berrow?
                 shads[i].setUniform("spherePos", vec);
             }
         }
@@ -416,8 +418,6 @@ public class BrainModel {
         final float yDiff = simpleVector.y - currentPosition.y;
         final float zDiff = simpleVector.z - currentPosition.z;
 
-        //plane.translate(xDiff,yDiff,zDiff);
-
         final int time = 400;
         Timer moveTimer = new Timer();
         moveTimer.schedule(new TimerTask() {
@@ -426,18 +426,19 @@ public class BrainModel {
             // current number of milliseconds elapsed
             int i = stepTime;
 
-            @Override
-            public void run()
-            {
-                float stepMovementX = (float) (easeOutExpo(xDiff, i, time) - easeOutExpo(xDiff, i - stepTime, time));
-                float stepMovementY = (float) (easeOutExpo(yDiff, i, time) - easeOutExpo(yDiff, i - stepTime, time));
-                float stepMovementZ = (float) (easeOutExpo(zDiff, i, time) - easeOutExpo(zDiff, i - stepTime, time));
+            Ease xEase = new Ease(xDiff, time, Ease.Easing.OUT_EXPO);
+            Ease yEase = new Ease(yDiff, time, Ease.Easing.OUT_EXPO);
+            Ease zEase = new Ease(zDiff, time, Ease.Easing.OUT_EXPO);
 
-                try
-                {
+            @Override
+            public void run() {
+                float stepMovementX = (float) (xEase.step(i) - xEase.step(i - stepTime));
+                float stepMovementY = (float) (yEase.step(i) - yEase.step(i - stepTime));
+                float stepMovementZ = (float) (zEase.step(i) - zEase.step(i - stepTime));
+
+                try {
                     brainSemaphore.acquire();
-                } catch (InterruptedException e)
-                {
+                } catch (InterruptedException e) {
                     return;
                 }
 
@@ -463,9 +464,11 @@ public class BrainModel {
             final int stepTime = 15;
             // current number of milliseconds elapsed
             int i = stepTime;
+
+            Ease ease = new Ease(scaleDiff,zoomTime, Ease.Easing.OUT_EXPO);
             @Override
             public void run() {
-                double stepZoom = (easeOutExpo(scaleDiff,i,zoomTime) - easeOutExpo(scaleDiff,i - stepTime,zoomTime) + getScale()) / getScale();
+                double stepZoom = (ease.step(i) - ease.step(i - stepTime) + getScale()) / getScale();
 
                 if(Double.isNaN(stepZoom))
                     return;
@@ -517,9 +520,15 @@ public class BrainModel {
 //        Log.d("BrainSlice", String.format("axis-angle: %s %s", axis.toString(), angle));
 
 
-
-
         final int rotateTime = 300 + (int) Math.round(Math.abs(angle)*350.0f);
+
+        final Ease ease;
+        if (elasticBounce) {
+            ease = new Ease(angle,rotateTime, Ease.Easing.OUT_ELASTIC);
+        } else {
+            ease = new Ease(angle,rotateTime, Ease.Easing.OUT_EXPO);
+        }
+
         Timer rotateTimer = new Timer();
         rotateTimer.schedule(new TimerTask() {
             // time in ms for each step
@@ -530,12 +539,8 @@ public class BrainModel {
             public void run()
             {
                 // calculate the next rotation step to move by
-                double stepRotation;
-                if (elasticBounce) {
-                    stepRotation = easeOutElastic(angle, i, rotateTime) - easeOutElastic(angle, i - stepTime, rotateTime);
-                } else {
-                    stepRotation = easeOutExpo(angle, i, rotateTime) - easeOutExpo(angle, i - stepTime, rotateTime);
-                }
+                double stepRotation = ease.step(i) - ease.step(i-stepTime);
+
 
                 if(Double.isNaN(stepRotation))
                     return;
@@ -564,54 +569,84 @@ public class BrainModel {
 
         }, 0, 15);
     }
-
-    public static void smoothRotateToFront(int delay)
-    {
-        smoothRotateToGeneric(frontMatrix, Boolean.TRUE);
+    
+    public static void smoothRotateToFront(int delay){
+        if (isLoaded)
+            smoothMoveToGeneric(startPosition,0);
     }
-
-    // adapted from http://easings.net/
-    private static double easeOutExpo(double delta, double currentTime, double totalTime)
-    {
-        if (currentTime == totalTime) return delta;
-        return delta * (-Math.pow(2, -10 * currentTime/totalTime) + 1);
-    }
-
-    // adapted from http://easings.net/
-    private static double easeInOutExpo(double delta, double currentTime, double totalTime)
-    {
-        if ((currentTime/=totalTime/2) < 1)
-            return delta/2 * Math.pow(2, 10 * (currentTime - 1)) + 1;
-
-        return delta/2 * (-Math.pow(2, -10 * --currentTime) + 2) + 1;
-    }
-
 
     public static float getScale()
     {
         return plane.getScale();
     }
 
+    static class Ease {
 
-    // adapted from http://easings.net/
-    private static double easeOutElastic(double delta, double currentTime, double totalTime)
-    {
-        if (currentTime==0)
-            return 1;
+        private double delta;
+        private double totalTime;
+        private Easing type;
 
-        currentTime = currentTime/totalTime;
-        if (currentTime==1)
-            return 1+delta;
+        public enum Easing {
+            OUT_EXPO, IN_OUT_EXPO, OUT_ELASTIC, OUT_BACK
+        }
 
-        double p=totalTime*0.5;
-        double s = p/4;
-        return delta*Math.pow(2,-10*currentTime) * Math.sin( (currentTime*totalTime-s)*(2*Math.PI)/p ) + delta + 1;
-    }
+        Ease(double delta, double totalTime, Easing type) {
+            this.delta = delta;
+            this.totalTime = totalTime;
+            this.type = type;
+        }
 
-    // adapted from http://easings.net/
-    private static double easeOutBack(double delta, double currentTime, double totalTime)
-    {
-        double s = 1.70158;
-        return delta*((currentTime=currentTime/totalTime-1)*currentTime*((s+1)*currentTime + s) + 1) + 1;
+        public double step(double currentTime){
+            switch (type){
+                case OUT_EXPO:
+                    return easeOutExpo(delta, currentTime, totalTime);
+                case IN_OUT_EXPO:
+                    return easeInOutExpo(delta, currentTime, totalTime);
+                case OUT_ELASTIC:
+                    return easeOutElastic(delta,currentTime,totalTime);
+                case OUT_BACK:
+                    return easeOutBack(delta,currentTime,totalTime);
+            }
+            return 0;
+        }
+
+
+        // adapted from http://easings.net/
+        private static double easeOutExpo(double delta, double currentTime, double totalTime)
+        {
+            if (currentTime == totalTime) return delta;
+            return delta * (-Math.pow(2, -10 * currentTime/totalTime) + 1);
+        }
+
+        // adapted from http://easings.net/
+        private static double easeInOutExpo(double delta, double currentTime, double totalTime)
+        {
+            if ((currentTime/=totalTime/2) < 1)
+                return delta/2 * Math.pow(2, 10 * (currentTime - 1)) + 1;
+
+            return delta/2 * (-Math.pow(2, -10 * --currentTime) + 2) + 1;
+        }
+
+        // adapted from http://easings.net/
+        private static double easeOutElastic(double delta, double currentTime, double totalTime)
+        {
+            if (currentTime==0)
+                return 1;
+
+            currentTime = currentTime/totalTime;
+            if (currentTime==1)
+                return 1+delta;
+
+            double p=totalTime*0.5;
+            double s = p/4;
+            return delta*Math.pow(2,-10*currentTime) * Math.sin( (currentTime*totalTime-s)*(2*Math.PI)/p ) + delta + 1;
+        }
+
+        // adapted from http://easings.net/
+        private static double easeOutBack(double delta, double currentTime, double totalTime)
+        {
+            double s = 1.70158;
+            return delta*((currentTime=currentTime/totalTime-1)*currentTime*((s+1)*currentTime + s) + 1) + 1;
+        }
     }
 }

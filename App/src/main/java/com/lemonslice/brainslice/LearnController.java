@@ -43,6 +43,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
     private static int screenWidth;
     private static int screenHeight;
 
+    private static boolean isScaling = false;
+
 
     private boolean isLoaded;
 
@@ -139,6 +141,11 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float distanceY, float distanceX)
     {
+        if(isScaling)
+        {
+            isScaling =false;
+            return true;
+        }
         if(scaleEnd > 0)
         {
             scaleEnd--;
@@ -156,6 +163,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
     {
         if(scaleEnd > 0)
         {
+            Log.d("Andy","Andy");
             scaleEnd = 0;
             return true;
         }
@@ -204,6 +212,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
     {
         float difference;
         if (!isLoaded) return false;
+        isScaling = true;
         if(Build.VERSION.SDK_INT >= 11)
         {
             difference = (float)Math.sqrt(Math.pow(((detector.getCurrentSpanX() - detector.getPreviousSpanX()) * resMultX / screenWidth), 2) +

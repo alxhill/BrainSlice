@@ -93,7 +93,8 @@ public class BrainModel {
             sphere.compile();
             sphere.strip();
             sphere.setName(segment.getTitle());
-
+            sphere.translate(segment.getPosition());
+            
             spheres.add(sphere);
         }
 
@@ -297,8 +298,10 @@ public class BrainModel {
     {
         world.addObject(plane);
         world.addObjects(objs);
-        Object3D[] sphereArray = spheres.toArray(new Object3D[spheres.size()]);
-        world.addObjects(sphereArray);
+        for (Object3D sphere : spheres)
+            world.addObject(sphere);
+
+//        world.addObjects(sphereArray);
     }
 
     public static SimpleVector getTransformedCenter()

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
-import android.opengl.GLES10;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
@@ -138,7 +137,7 @@ public class MainActivity extends Activity {
             public void onClick(View v)
             {
                 baseController.stop();
-                BrainModel.smoothRotateToFront(200);
+                BrainModel.smoothRotateToFront();
             }
         });
 

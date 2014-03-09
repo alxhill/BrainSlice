@@ -3,6 +3,7 @@ package com.lemonslice.brainslice;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -33,6 +34,14 @@ public class OverlayScreen
     {
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         FrameLayout calibrateScreen = (FrameLayout)inflater.inflate(layoutID, null);
+
+        assert calibrateScreen != null;
+        calibrateScreen.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event){
+                return true;
+            }
+        });
 
         Button calibrateBtn =(Button)calibrateScreen.findViewById(R.id.calibrateOverlayBtn);
         calibrateBtn.setOnClickListener(new View.OnClickListener() {

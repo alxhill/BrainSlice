@@ -137,8 +137,9 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v)
             {
-                baseController.stop();
-                BrainModel.smoothRotateToFront(200);
+//                baseController.stop();
+//                BrainModel.smoothRotateToFront(200);
+                 OverlayScreen.showScreen(R.layout.calibrate_screen);
             }
         });
 

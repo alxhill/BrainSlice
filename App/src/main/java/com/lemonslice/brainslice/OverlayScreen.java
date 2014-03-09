@@ -23,11 +23,16 @@ public class OverlayScreen
         frameLayout = l;
     }
 
-    public static void showScreen()
+    public static void showScreen(int layoutID)
     {
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        FrameLayout calibrateScreen = (FrameLayout)inflater.inflate(R.layout.calibrate_screen, null);
+        FrameLayout calibrateScreen = (FrameLayout)inflater.inflate(layoutID, null);
         frameLayout.removeAllViews();
         if (calibrateScreen != null) frameLayout.addView(calibrateScreen);
+    }
+
+    public static void hideScreen()
+    {
+        frameLayout.removeAllViews();
     }
 }

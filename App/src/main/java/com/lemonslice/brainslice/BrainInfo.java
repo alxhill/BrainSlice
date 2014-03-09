@@ -14,7 +14,7 @@ public class BrainInfo
     {
         BrainSegment Cerebellum = new BrainSegment(
             "Cerebellum",
-            "The cerebellum (Latin for little brain) is a region of the brain that plays an important role in motor control. It may also be involved in some cognitive functions such as attention and language, and in regulating fear and pleasure responses, but its movement-related functions are the most solidly established."
+            "This part of your brain helps you stay balanced and helps you move"
         );
         BrainSegment Cerebrum = new BrainSegment(
                 "Cerebrum",
@@ -28,23 +28,23 @@ public class BrainInfo
 
         BrainSegment BrainStem = new BrainSegment(
                 "Brainstem",
-                "The brainstem is the back part of the brain, connected to the spinal cord. It keeps you breathing, sleeping, and eating."
+                "The brainstem connects the brain to the rest of the body. It also keeps you breathing, sleeping, and eating."
         );
 
         BrainSegment Hippocampus = new BrainSegment(
                 "Hippocampus",
-                "The hippocampus lies under the cerebral cortex, and is important in making short-term memories long-term. It looks a bit like a seahorse."
+                "The hippocampus is important in making short-term memories long-term. It looks a bit like a seahorse."
         );
 
         BrainSegment Amygdala = new BrainSegment(
                 "Amygdala",
-                "The amygdalae (the plural of amygdala) are almond-shaped groups of nuclei that help you process your memories and emotions."
+                "The amygdalae are almond-shaped and help you process your memories and emotions."
         );
 
-        BrainSegment MedullaOblongata = new BrainSegment(
+        /*BrainSegment MedullaOblongata = new BrainSegment(
                 "Medulla oblongata",
                 "The medulla oblongata is the lower half of the brainstem, which helps regulate your bodily functions, like breathing and blood flow."
-        );
+        );*/
 
         BrainSegment Hypothalamus = new BrainSegment(
                 "Hypothalamus",
@@ -63,12 +63,12 @@ public class BrainInfo
 
         BrainSegment OccipitalLobe = new BrainSegment(
                 "Occipital lobe",
-                "The occipital lobe is the back part of your brain, which mostly decodes what you see and helps you understand what you see."
+                "The occipital lobe is connected directly to your eyes and turns the picture from your eyes the right way up."
         );
 
         BrainSegment TemporalLobe = new BrainSegment(
                 "Temporal lobe",
-                "The temporal lobe is the bottom part of your brain, which lets you keep visual memories, understand languages, and stores new memories and emotion."
+                "The temporal lobe lets you keep visual memories, understand languages, and stores new memories and emotion."
         );
 
 
@@ -78,7 +78,7 @@ public class BrainInfo
         segments.put(BrainStem.getTitle(), BrainStem);
         segments.put(Hippocampus.getTitle(), Hippocampus);
         segments.put(Amygdala.getTitle(), Amygdala);
-        segments.put(MedullaOblongata.getTitle(), MedullaOblongata);
+        //segments.put(MedullaOblongata.getTitle(), MedullaOblongata);
         segments.put(Hypothalamus.getTitle(), Hypothalamus);
         segments.put(FrontalLobe.getTitle(), FrontalLobe);
         segments.put(ParietalLobe.getTitle(), ParietalLobe);

@@ -106,6 +106,7 @@ public class MainActivity extends Activity {
         baseController = learnController;
 
         visualiseController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
+        OverlayScreen.setVisualiseController(visualiseController);
 
         LinearLayout learnButton = (LinearLayout) findViewById(R.id.learn_button);
         learnButton.setOnClickListener(new FrameLayout.OnClickListener() {
@@ -125,9 +126,9 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v)
             {
-                ((FrameLayout)(findViewById(R.id.overlay_layout))).removeAllViews();
+//                ((FrameLayout)(findViewById(R.id.overlay_layout))).removeAllViews();
+                OverlayScreen.showScreen(R.layout.calibrate_screen);
                 learnController.unloadView();
-                visualiseController.loadView();
                 baseController = visualiseController;
             }
         });
@@ -137,9 +138,9 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v)
             {
-//                baseController.stop();
-//                BrainModel.smoothRotateToFront(200);
-                 OverlayScreen.showScreen(R.layout.calibrate_screen);
+                baseController.stop();
+                BrainModel.smoothRotateToFront(200);
+//                 OverlayScreen.showScreen(R.layout.calibrate_screen);
             }
         });
 
@@ -161,6 +162,8 @@ public class MainActivity extends Activity {
         cenIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
     }
+
+
 
     @Override
     protected void onPause()

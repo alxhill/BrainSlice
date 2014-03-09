@@ -1,33 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
     android:background="@drawable/translucent_bg">
-    <LinearLayout
+
+
+    <Button
+        android:id="@+id/calibrateOverlayBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Calibrate"
+        android:textSize="30sp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:background="#2980b9"
+        android:textColor="#ffffff"
+        android:layout_marginTop="210dp"
+        android:layout_marginLeft="390dp"
+        />
+    <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        >
+        android:src="@drawable/calibratepng"
+        />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_gravity="center"
-            android:orientation="horizontal"
-            >
 
-                <Button
-                    android:layout_gravity="center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Calibrate"
-                    android:textSize="30sp"
-                    android:padding="25dp"
-                    android:background="#2980b9"
-                    android:textColor="#ffffff"
-                    />
-
-            </LinearLayout>
-        </LinearLayout>
 </FrameLayout>

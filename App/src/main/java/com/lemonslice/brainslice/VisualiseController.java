@@ -18,12 +18,15 @@ public class VisualiseController extends AbstractController implements SensorEve
     private Sensor gyroSensor;
 
     long oldTime;
+    private boolean isLoaded;
 
     public VisualiseController(SensorManager manager)
     {
         axisX = 0;
         axisY = 0;
         axisZ = 0;
+
+        isLoaded = false;
 
         // initialise the sensor manager and listen for gyro events
         sensorManager = manager;
@@ -33,6 +36,7 @@ public class VisualiseController extends AbstractController implements SensorEve
     @Override
     public void loadView()
     {
+        isLoaded = true;
         oldTime = System.currentTimeMillis();
         sensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_GAME);
         axisX = axisY = axisZ = 0;
@@ -44,12 +48,15 @@ public class VisualiseController extends AbstractController implements SensorEve
     @Override
     public void unloadView()
     {
+        isLoaded = false;
         sensorManager.unregisterListener(this);
     }
 
     @Override
     public void updateScene()
     {
+        if (!isLoaded) return;
+        
         long newTime = System.currentTimeMillis();
         long timeDiff = newTime - oldTime;
 
@@ -71,7 +78,7 @@ public class VisualiseController extends AbstractController implements SensorEve
 
         BrainModel.rotate(x, y, z);
 
-        BrainModel.adjustCamera();
+//        BrainModel.adjustCamera();
     }
 
     @Override

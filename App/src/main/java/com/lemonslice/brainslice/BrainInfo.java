@@ -35,7 +35,7 @@ public class BrainInfo
         BrainSegment brainStem = new BrainSegment(
             "Brainstem",
             "The brainstem is the back part of the brain, connected to the spinal cord. It keeps you breathing, sleeping, and eating.",
-            null);
+            SimpleVector.create(0, 15.0f, 40.0f));
 
         BrainSegment hippocampus = new BrainSegment(
             "Hippocampus",

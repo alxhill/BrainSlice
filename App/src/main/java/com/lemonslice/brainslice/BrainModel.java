@@ -57,6 +57,7 @@ public class BrainModel {
     public static SimpleVector startPosition = SimpleVector.create(0,20,10);
 
     private static GLSLShader[] shads;
+    private static SimpleVector camPos;
 
     public static void load(Resources res)
     {
@@ -217,6 +218,14 @@ public class BrainModel {
         if(cam == null || buf == null || spheres == null)
             return;
 
+        if (camPos == null)
+        {
+            // get a vector pointing directly to the camera
+            camPos = cam.getDirection();
+            Log.d("CAMPOS", camPos.toString());
+            camPos = camPos.reflect(camPos);
+        }
+
         for(i = 0; i<spheres.size(); i++)
         {
             Object3D sphere = spheres.get(i);
@@ -244,10 +253,6 @@ public class BrainModel {
                 SimpleVector spherePos = sphere.getTransformedCenter();
                 // ignore the translation of the plane when calculating rotation
                 spherePos = spherePos.calcSub(plane.getTransformedCenter());
-
-                // get a vector pointing directly to the camera
-                SimpleVector camPos = cam.getDirection();
-                camPos = camPos.reflect(camPos);
 
                 // convert the vectors into axis-angle representation
                 SimpleVector axis = spherePos.calcCross(camPos);

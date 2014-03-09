@@ -16,6 +16,8 @@ import com.threed.jpct.SimpleVector;
 import com.threed.jpct.World;
 import com.threed.jpct.Interact2D;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,7 +40,7 @@ public class BrainModel {
 
     private static Matrix frontMatrix;
 
-    private static Object3D[] spheres = null;
+    private static ArrayList<Object3D> spheres = null;
 //    private static RGBColor sphereNormalColor = new RGBColor(255, 255, 255);
 //    private static RGBColor sphereTouchedColor = new RGBColor(255, 255, 0);
 
@@ -54,19 +56,8 @@ public class BrainModel {
     private static SimpleVector sidePosition = SimpleVector.create(-20,20,10);
     public static SimpleVector startPosition = SimpleVector.create(0,20,10);
 
-    private static GLSLShader[] shads = new GLSLShader[6];
-
-    private static String[] brainSegments =
-    {
-        "Frontal lobe",
-        "Parietal lobe",
-        "Occipital lobe",
-        "Temporal lobe",
-        "Cerebellum",
-        "Brainstem"
-    };
-
-    private static Matrix[] segmentRotations = new Matrix[6];
+    private static GLSLShader[] shads;
+    private static SimpleVector camPos;
 
     public static void load(Resources res)
     {
@@ -78,33 +69,34 @@ public class BrainModel {
 
         plane.setCulling(true);
 
-        spheres = new Object3D[6];
+        HashMap<String,BrainSegment> segments = BrainInfo.getSegments();
+        spheres = new ArrayList<Object3D>(segments.size());
 
-        for(int i=0; i<spheres.length; i++)
+        for (BrainSegment segment : segments.values())
         {
-            spheres[i] = Primitives.getSphere(sphereRad);
-            spheres[i].addParent(plane);
-            spheres[i].setLighting(Object3D.LIGHTING_NO_LIGHTS);
-            spheres[i].build();
-            spheres[i].compile();
-            spheres[i].strip();
+            if (segment.getPosition() == null) continue;
+            Object3D sphere = Primitives.getSphere(sphereRad);
+            sphere.addParent(plane);
+            sphere.setLighting(Object3D.LIGHTING_NO_LIGHTS);
+            sphere.build();
+            sphere.compile();
+            sphere.strip();
+            sphere.setName(segment.getTitle());
+            sphere.translate(segment.getPosition());
+            
+            spheres.add(sphere);
         }
 
-        spheres[0].translate(SimpleVector.create(0, -70.0f, 0));
-        spheres[1].translate(SimpleVector.create(0, 80.0f, -50.0f));
-        spheres[2].translate(SimpleVector.create(0, 100.0f, 0));
-        spheres[3].translate(SimpleVector.create(75.0f, 0, 0));
-        spheres[4].translate(SimpleVector.create(0, 100.0f, 50.0f));
-        spheres[5].translate(SimpleVector.create(0, 12.0f, 40.0f));
+        shads = new GLSLShader[spheres.size()];
 
-        for(int i=0; i<spheres.length; i++)
+        for(int i=0; i<spheres.size(); i++)
         {
             shads[i] = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
                     Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_spheres)));
 
             shads[i].setUniform("isSelected", 0);
 
-            spheres[i].setShader(shads[i]);
+            spheres.get(i).setShader(shads[i]);
         }
 
         // Load the 3d model
@@ -145,17 +137,6 @@ public class BrainModel {
         // removes scale from the rotation matrix
         frontMatrix.orthonormalize();
 
-        for(int i = 0; i < 6; i++)
-            segmentRotations[i] = new Matrix(frontMatrix.cloneMatrix());
-
-        segmentRotations[1].rotateY((float) Math.PI);
-        segmentRotations[1].rotateX((float) -Math.PI / 4.0f);
-        segmentRotations[2].rotateY((float) Math.PI);
-        segmentRotations[3].rotateY((float) -Math.PI / 2.0f);
-        segmentRotations[4].rotateY((float) Math.PI);
-        segmentRotations[4].rotateX((float) Math.PI / 4.0f);
-        segmentRotations[5].rotateX((float) Math.PI / 2.0f);
-
         isLoaded=true;
     }
 
@@ -165,9 +146,9 @@ public class BrainModel {
         if(buf == null)
             return;
 
-        for(int i=0; i<spheres.length; i++)
+        for(int i=0; i<spheres.size(); i++)
         {
-            SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
+            SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres.get(i).getTransformedCenter());
             vec.y = buf.getHeight() - vec.y;
             shads[i].setUniform("spherePos", vec);
         }
@@ -179,9 +160,9 @@ public class BrainModel {
         if(cam == null)
             return;
 
-        for(int i=0; i<spheres.length; i++)
+        for(int i=0; i<spheres.size(); i++)
         {
-            SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
+            SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres.get(i).getTransformedCenter());
             vec.y = buf.getHeight() - vec.y;
             shads[i].setUniform("spherePos", vec);
         }
@@ -237,16 +218,26 @@ public class BrainModel {
         if(cam == null || buf == null || spheres == null)
             return;
 
-        for(i = 0; i<spheres.length; i++)
+        if (camPos == null)
         {
-            SimpleVector v = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
+            // get a vector pointing directly to the camera
+            camPos = cam.getDirection();
+            Log.d("CAMPOS", camPos.toString());
+            camPos = camPos.reflect(camPos);
+        }
+
+        for(i = 0; i<spheres.size(); i++)
+        {
+            Object3D sphere = spheres.get(i);
+
+            SimpleVector v = Interact2D.project3D2D(cam, buf, sphere.getTransformedCenter());
 
             float xd = v.x - x;
             float yd = v.y - y;
 
             float dist = (float) Math.sqrt(xd * xd + yd * yd);
 
-            if(dist < sphereRad*30.0f && isVisibilityHodgePodge(spheres[i]))
+            if(dist < sphereRad*30.0f && isVisibilityHodgePodge(sphere))
             {
                 if(selection == i)
                 {
@@ -257,9 +248,17 @@ public class BrainModel {
                 }
 
                 selection = i;
-                Labels.displayLabel(brainSegments[i]);
-                smoothRotateToGeneric(segmentRotations[i], false);
-                Log.d("Rotations", "brainSegments[i]: " + plane.getRotationMatrix().toString());
+                Labels.displayLabel(sphere.getName());
+
+                SimpleVector spherePos = sphere.getTransformedCenter();
+                // ignore the translation of the plane when calculating rotation
+                spherePos = spherePos.calcSub(plane.getTransformedCenter());
+
+                // convert the vectors into axis-angle representation
+                SimpleVector axis = spherePos.calcCross(camPos);
+                double angle = camPos.calcAngle(spherePos);
+
+                smoothRotateToGeneric(axis, angle, false);
 
                 selected = true;
                 pos = i;
@@ -274,10 +273,12 @@ public class BrainModel {
 
         i++;
 
-        for(; i<spheres.length; i++)
+        for(; i<spheres.size(); i++)
         {
+            Log.d("LOOPDY LOOP", "lol");
             shads[i].setUniform("isSelected", 0);
         }
+
         if(selected)
         {
             shads[pos].setUniform("isSelected", 1);
@@ -295,7 +296,10 @@ public class BrainModel {
     {
         world.addObject(plane);
         world.addObjects(objs);
-        world.addObjects(spheres);
+        for (Object3D sphere : spheres)
+            world.addObject(sphere);
+
+//        world.addObjects(sphereArray);
     }
 
     public static SimpleVector getTransformedCenter()
@@ -318,11 +322,12 @@ public class BrainModel {
         plane.rotateY(y);
         plane.rotateZ(z);
 
-        for(int i=0; i<spheres.length; i++)
+        // updates the sphere shaders so the gradient is drawn in the right location
+        for(int i=0; i<spheres.size(); i++)
         {
             if(cam!=null && buf!=null)
             {
-                SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres[i].getTransformedCenter());
+                SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres.get(i).getTransformedCenter());
                 vec.y = buf.getHeight() - vec.y;
                 //GOT A NULL POINTER HERE ^, ON THIS LINE ABOVE WHEN TAPPING A PRETTY BUTTON
                 //ASSUMING IT WAS buf.getHeight(); ... Berrow?
@@ -401,9 +406,9 @@ public class BrainModel {
 
         plane.scale(scale);
         shader.setUniform("heightScale", 1.0f);
-        for(int i=0; i<spheres.length; i++)
+        for(int i=0; i<spheres.size(); i++)
         {
-            spheres[i].scale(1.0f/scale);
+            spheres.get(i).scale(1.0f / scale);
         }
 
         brainSemaphore.release();
@@ -484,18 +489,19 @@ public class BrainModel {
         },100,15);
     }
 
-    public static void smoothRotateToGeneric(Matrix targetMatrix, final Boolean elasticBounce){
+    public static void smoothRotateToGeneric(Matrix targetMatrix, final boolean elasticBounce)
+    {
         Log.d("BrainSlice", String.format("smoothRotateToGeneric" + isLoaded));
 
         if (!isLoaded)
             return;
 
         double e1, e2, e3;
-
         Matrix r = plane.getRotationMatrix().cloneMatrix().invert3x3();
-        targetMatrix.orthonormalize();
+        Matrix target = targetMatrix.cloneMatrix();
+        target.orthonormalize();
         r.orthonormalize();
-        r.matMul(targetMatrix);
+        r.matMul(target);
 
         //Log.d("BrainSlice", "front matrix: " + targetMatrix.toString());
         //Log.d("BrainSlice", "rotation matrix: " + r.toString());
@@ -522,8 +528,11 @@ public class BrainModel {
         final SimpleVector axis = new SimpleVector((float) e1, (float) e2, (float) e3);
 
 //        Log.d("BrainSlice", String.format("axis-angle: %s %s", axis.toString(), angle));
+        smoothRotateToGeneric(axis, angle, elasticBounce);
+    }
 
-
+    public static void smoothRotateToGeneric(final SimpleVector axis, final double angle, final boolean elasticBounce)
+    {
         final int rotateTime = 300 + (int) Math.round(Math.abs(angle)*350.0f);
 
         final Ease ease;
@@ -573,9 +582,10 @@ public class BrainModel {
 
         }, 0, 15);
     }
-    
-    public static void smoothRotateToFront(int delay){
-        smoothRotateToGeneric(frontMatrix,true);
+
+    public static void smoothRotateToFront()
+    {
+        smoothRotateToGeneric(frontMatrix, true);
     }
 
     public static float getScale()

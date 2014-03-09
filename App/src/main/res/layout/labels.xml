@@ -8,8 +8,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="8"
-            />
+            android:layout_weight="12"/>
 
         <LinearLayout
             android:layout_weight="10"
@@ -18,52 +17,48 @@
             android:paddingTop="20dp"
             android:paddingRight="20dp"
             android:layout_gravity="center_vertical"
-            android:orientation="vertical"
-        >
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/segment_title"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Temporal Lobe"
-            android:textColor="#ffffff"
-            android:fontFamily="Helvetica Neue"
-            android:typeface="sans"
-            android:textSize="40sp"
-            android:singleLine="true"
-            android:background="@drawable/segtitle"
-            android:shadowColor="#7c9dae"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="1"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:paddingRight="10dp"
-            android:paddingLeft="10dp"
-            />
-
-
-        <ScrollView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/label_scroll"
-            >
             <TextView
-                android:id="@+id/segment_description"
+                android:id="@+id/segment_title"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="No description recieved"
+                android:gravity="center"
+                android:text="Temporal Lobe"
                 android:textColor="#ffffff"
                 android:fontFamily="Helvetica Neue"
                 android:typeface="sans"
-                android:textSize="15sp"
+                android:textSize="40sp"
+                android:singleLine="true"
+                android:background="@drawable/segtitle"
+                android:shadowColor="#7c9dae"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="1"
+                android:paddingBottom="10dp"
                 android:paddingTop="10dp"
+                android:paddingRight="10dp"
                 android:paddingLeft="10dp"
-                android:paddingRight="0dp"
-                android:overScrollMode="always"
-
                 />
-        </ScrollView>
 
-    </LinearLayout>
+            <ScrollView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/label_scroll"
+                >
+                <TextView
+                    android:id="@+id/segment_description"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No description recieved"
+                    android:textColor="#ffffff"
+                    android:fontFamily="Helvetica Neue"
+                    android:typeface="sans"
+                    android:textSize="20sp"
+                    android:paddingTop="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="0dp"
+                    android:overScrollMode="always"/>
+            </ScrollView>
+        </LinearLayout>
 </LinearLayout>

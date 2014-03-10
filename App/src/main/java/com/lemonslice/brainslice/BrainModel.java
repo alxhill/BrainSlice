@@ -256,9 +256,9 @@ public class BrainModel {
 
                 // convert the vectors into axis-angle representation
                 SimpleVector axis = spherePos.calcCross(camPos);
-                double angle = camPos.calcAngle(spherePos);
+                double angle = spherePos.calcAngle(camPos);
 
-                smoothRotateToGeneric(axis, angle, false);
+                smoothRotateToGeneric(axis, -angle, false);
 
                 selected = true;
                 pos = i;

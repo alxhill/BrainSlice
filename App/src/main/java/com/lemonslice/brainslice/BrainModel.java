@@ -53,7 +53,7 @@ public class BrainModel {
 
     private static int selection = -1;
 
-    private static SimpleVector sidePosition = SimpleVector.create(-20,20,10);
+    private static SimpleVector sidePosition = SimpleVector.create(-25,20,10);
     public static SimpleVector startPosition = SimpleVector.create(0,20,10);
 
     private static GLSLShader[] shads;
@@ -283,7 +283,7 @@ public class BrainModel {
         {
             shads[pos].setUniform("isSelected", 1);
             smoothMoveToGeneric(sidePosition, 0);
-            smoothZoom(0.3f,400);
+            smoothZoom(0.25f,400);
         }
         else
         {

@@ -36,10 +36,11 @@ public class OverlayScreen
         FrameLayout calibrateScreen = (FrameLayout)inflater.inflate(layoutID, null);
 
         assert calibrateScreen != null;
-        calibrateScreen.setOnTouchListener(new View.OnTouchListener() {
+
+        calibrateScreen.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event){
-                return true;
+            public void onClick(View v) {
+                hideScreen();
             }
         });
 

@@ -1,5 +1,6 @@
 package com.lemonslice.brainslice;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.hardware.SensorManager;
 import android.util.Log;
@@ -20,6 +21,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import android.media.MediaPlayer;
+import android.media.AudioManager;
 
 import java.util.concurrent.Semaphore;
 
@@ -59,8 +63,12 @@ public class BrainModel {
     private static GLSLShader[] shads;
     private static SimpleVector camPos;
 
-    public static void load(Resources res)
+    private static MediaPlayer speak = new MediaPlayer();
+    private static Context context;
+    public static void load(Resources res, Context con)
     {
+        context = con;
+
         shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
                                 Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_spheres)));
 
@@ -249,6 +257,11 @@ public class BrainModel {
 
                 selection = i;
                 Labels.displayLabel(sphere.getName());
+
+                speak.stop();
+                speak.release();
+                speak = MediaPlayer.create(context, R.raw.do_do_do_do_do_dudo_dudah);
+                speak.start();
 
                 SimpleVector spherePos = sphere.getTransformedCenter();
                 // ignore the translation of the plane when calculating rotation

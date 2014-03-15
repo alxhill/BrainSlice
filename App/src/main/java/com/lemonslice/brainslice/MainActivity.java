@@ -274,7 +274,7 @@ public class MainActivity extends Activity {
             {
                 world = new World();
 
-                BrainModel.load(res);
+                BrainModel.load(res, getApplicationContext());
 
                 BrainModel.addToScene(world);
 

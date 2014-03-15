@@ -247,20 +247,38 @@ public class BrainModel {
 
             if(dist < sphereRad*30.0f && isVisibilityHodgePodge(sphere))
             {
+                int audioID;
+                String name = sphere.getName();
+
                 if(selection == i)
                 {
                     Labels.removeLabels();
                     selection = -1;
                     shads[i].setUniform("isSelected", 0);
-                    break;
+                    ;
                 }
 
                 selection = i;
-                Labels.displayLabel(sphere.getName());
+                Labels.displayLabel(name);
+
+                if(name == "Brainstem")
+                    audioID = R.raw.brain_stem;
+                else if(name == "Temporal lobe")
+                    audioID = R.raw.temporal_lobe;
+                else if(name == "Parietal lobe")
+                    audioID = R.raw.parietal_lobe;
+                else if(name == "Occipital lobe")
+                    audioID = R.raw.occipital_lobe;
+                else if(name == "Frontal lobe")
+                    audioID = R.raw.frontal_lobe;
+                else if(name == "Cerebellum")
+                    audioID = R.raw.cerebellum;
+                else
+                    audioID = R.raw.brain_stem;
 
                 speak.stop();
                 speak.release();
-                speak = MediaPlayer.create(context, R.raw.do_do_do_do_do_dudo_dudah);
+                speak = MediaPlayer.create(context, audioID);
                 speak.start();
 
                 SimpleVector spherePos = sphere.getTransformedCenter();

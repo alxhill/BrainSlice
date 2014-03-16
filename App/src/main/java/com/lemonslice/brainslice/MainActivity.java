@@ -263,12 +263,10 @@ public class MainActivity extends Activity  implements EventListener {
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
                 learnController.unloadView();
                 baseController = visualiseController;
-
             }
             else if (tapType.equals("calibrate"))
             {
                 visualiseController.loadView();
-                OverlayScreen.hideScreen();
             }
 
         }

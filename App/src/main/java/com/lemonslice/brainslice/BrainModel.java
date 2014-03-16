@@ -65,6 +65,7 @@ public class BrainModel {
 
     private static GLSLShader[] shads;
     private static SimpleVector camPos;
+    private static GLSLShader brainShad;
 
     private static MediaPlayer speak = new MediaPlayer();
     private static Context context;
@@ -78,6 +79,9 @@ public class BrainModel {
 
         shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
                                 Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_spheres)));
+
+        brainShad = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
+                                Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_brain)));
 
         // brain is parented to small plane
         plane = Primitives.getPlane(1, 1);
@@ -135,6 +139,8 @@ public class BrainModel {
             obj.strip();
             obj.addParent(plane);
         }
+
+        Log.d("BrainSliceD", Integer.toString(objs.length));
 
         // Set the model's initial position
         plane.rotateY((float) Math.PI);

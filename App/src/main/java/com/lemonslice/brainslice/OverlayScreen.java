@@ -54,7 +54,6 @@ public class OverlayScreen
             }
         });
 
-
         frameLayout.removeAllViews();
         frameLayout.addView(calibrateScreen);
     }

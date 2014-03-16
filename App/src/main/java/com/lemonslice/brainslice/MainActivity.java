@@ -105,6 +105,7 @@ public class MainActivity extends Activity  implements EventListener {
         // set up listening for click events
         Event.register("tap:learn", this);
         Event.register("tap:visualise", this);
+        Event.register("tap:calibrate", this);
 
         learnController = new LearnController(getApplicationContext());
         learnController.loadView();
@@ -138,7 +139,7 @@ public class MainActivity extends Activity  implements EventListener {
             @Override
             public void onClick(View v)
             {
-                Event.trigger("tap:centre");
+                BrainModel.smoothRotateToFront();
             }
         });
 
@@ -257,6 +258,8 @@ public class MainActivity extends Activity  implements EventListener {
             }
             else if (tapType.equals("visualise"))
             {
+                // overlays the calibrate screen, only loads the visualise controller
+                // after the calibrate button has been pressed.
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
                 learnController.unloadView();
                 baseController = visualiseController;
@@ -266,10 +269,6 @@ public class MainActivity extends Activity  implements EventListener {
             {
                 visualiseController.loadView();
                 OverlayScreen.hideScreen();
-            }
-            else if (tapType.equals("centre"))
-            {
-                BrainModel.smoothRotateToFront();
             }
 
         }

@@ -21,6 +21,9 @@ public class Event {
     public static void trigger(String name, Object ...args)
     {
         ArrayList<EventListener> listeners = eventListeners.get(name);
+
+        if (listeners == null) return;
+
         for (EventListener listener : listeners)
             listener.receiveEvent(name, args);
     }

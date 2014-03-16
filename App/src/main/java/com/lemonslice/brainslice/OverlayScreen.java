@@ -41,10 +41,16 @@ public class OverlayScreen
 
         calibrateScreen.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                Event.trigger("tap:calibrate");
+            public void onClick(View v) {
                 hideScreen();
+            }
+        });
+
+        Button calibrateBtn = (Button)calibrateScreen.findViewById(R.id.calibrateOverlayBtn);
+        calibrateBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Event.trigger("tap:calibrate");
             }
         });
 

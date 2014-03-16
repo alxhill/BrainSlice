@@ -23,6 +23,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.lemonslice.brainslice.event.Event;
+import com.lemonslice.brainslice.event.EventListener;
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.Light;
@@ -47,7 +49,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * @author Based off JPCT HelloShader freely licenced example by EgonOlsen, heavily modified by LemonSlice
  */
-public class MainActivity extends Activity {
+public class MainActivity extends Activity  implements EventListener {
 
     // Used to handle pause and resume...
     private static MainActivity master = null;
@@ -100,6 +102,10 @@ public class MainActivity extends Activity {
         // initialise and show the 3D renderer
         mGLView.setRenderer(renderer);
 
+        // set up listening for click events
+        Event.register("tap:learn", this);
+        Event.register("tap:visualise", this);
+
         learnController = new LearnController(getApplicationContext());
         learnController.loadView();
         baseController = learnController;
@@ -113,22 +119,17 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v)
             {
-                visualiseController.unloadView();
-                learnController.loadView();
-                baseController = learnController;
+                Event.trigger("tap:learn");
             }
         });
 
-
         LinearLayout visualiseButton = (LinearLayout) findViewById(R.id.visualise_button);
         visualiseButton.setOnClickListener(new FrameLayout.OnClickListener() {
+
             @Override
             public void onClick(View v)
             {
-//                ((FrameLayout)(findViewById(R.id.overlay_layout))).removeAllViews();
-                OverlayScreen.showScreen(R.layout.calibrate_screen);
-                learnController.unloadView();
-                baseController = visualiseController;
+                Event.trigger("tap:visualise");
             }
         });
 
@@ -137,8 +138,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v)
             {
-                baseController.stop();
-                BrainModel.smoothRotateToFront();
+                Event.trigger("tap:centre");
             }
         });
 
@@ -218,7 +218,7 @@ public class MainActivity extends Activity {
                 hideSystemBars();
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void hideSystemBars()
     {
         //API 14 = android 4.0 (ICS), API 19 = 4.4 (Kitkat)
@@ -240,6 +240,39 @@ public class MainActivity extends Activity {
             getWindow().getDecorView().setSystemUiVisibility(uiOptions);
         }
 
+    }
+
+    @Override
+    public void receiveEvent(String name, Object... data)
+    {
+        String[] events = name.split(":");
+        if (events[0].equals("tap"))
+        {
+            String tapType = events[1];
+            if (tapType.equals("learn"))
+            {
+                visualiseController.unloadView();
+                learnController.loadView();
+                baseController = learnController;
+            }
+            else if (tapType.equals("visualise"))
+            {
+                OverlayScreen.showScreen(R.layout.calibrate_screen);
+                learnController.unloadView();
+                baseController = visualiseController;
+
+            }
+            else if (tapType.equals("calibrate"))
+            {
+                visualiseController.loadView();
+                OverlayScreen.hideScreen();
+            }
+            else if (tapType.equals("centre"))
+            {
+                BrainModel.smoothRotateToFront();
+            }
+
+        }
     }
 
 

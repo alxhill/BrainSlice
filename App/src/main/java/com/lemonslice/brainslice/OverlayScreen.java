@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.lemonslice.brainslice.event.Event;
+
 import java.util.zip.Inflater;
 
 /**
@@ -48,14 +50,13 @@ public class OverlayScreen
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                visualiseController.loadView();
-                hideScreen();
+                Event.trigger("tap:calibrate");
             }
         });
 
 
         frameLayout.removeAllViews();
-        if (calibrateScreen != null) frameLayout.addView(calibrateScreen);
+        frameLayout.addView(calibrateScreen);
     }
 
     public static void hideScreen()

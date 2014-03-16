@@ -12,10 +12,13 @@ import android.view.Display;
 import android.graphics.Point;
 import android.os.Build;
 
+import com.lemonslice.brainslice.event.Event;
+import com.lemonslice.brainslice.event.EventListener;
+
 /**
  * Created by alexander on 28/01/2014.
  */
-public class LearnController extends AbstractController implements OnScaleGestureListener, OnGestureListener, GestureDetector.OnDoubleTapListener {
+public class LearnController extends AbstractController implements OnScaleGestureListener, OnGestureListener, GestureDetector.OnDoubleTapListener, EventListener {
 
     //Variables that we transform the brain with
     private float scale = 1.0f;
@@ -55,6 +58,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
 
     public LearnController(Context applicationContext)
     {
+        Event.register("tap:centre", this);
+
         //Resolution stuffs
         WindowManager wm = (WindowManager) applicationContext.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
@@ -130,13 +135,6 @@ public class LearnController extends AbstractController implements OnScaleGestur
         BrainModel.scale(scale);
         scale = 1.0f;
     }
-
-    @Override
-    public void stop(){
-        velocityX = 0;
-        velocityY = 0;
-    }
-
 
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float distanceY, float distanceX)
@@ -275,4 +273,13 @@ public class LearnController extends AbstractController implements OnScaleGestur
         return true;
     }
 
+    @Override
+    public void receiveEvent(String name, Object... data)
+    {
+        if (name.equals("tap:centre"))
+        {
+            velocityX = 0;
+            velocityY = 0;
+        }
+    }
 }

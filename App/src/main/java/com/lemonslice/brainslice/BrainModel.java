@@ -331,7 +331,8 @@ public class BrainModel {
                 vec.y = buf.getHeight() - vec.y;
                 //GOT A NULL POINTER HERE ^, ON THIS LINE ABOVE WHEN TAPPING A PRETTY BUTTON
                 //ASSUMING IT WAS buf.getHeight(); ... Berrow?
-                shads[i].setUniform("spherePos", vec);
+                if(vec!=null)
+                    shads[i].setUniform("spherePos", vec);
             }
         }
 

@@ -80,7 +80,7 @@ public class BrainModel {
         shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
                                 Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_spheres)));
 
-        brainShad = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
+        brainShad = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_brain)),
                                 Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_brain)));
 
         // brain is parented to small plane
@@ -140,7 +140,9 @@ public class BrainModel {
             obj.addParent(plane);
         }
 
-        Log.d("BrainSliceD", Integer.toString(objs.length));
+        objs[0].setShader(brainShad);
+
+        brainShad.setUniform("transparent", 1);
 
         // Set the model's initial position
         plane.rotateY((float) Math.PI);

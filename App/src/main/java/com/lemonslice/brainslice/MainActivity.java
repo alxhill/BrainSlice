@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
@@ -158,6 +159,8 @@ public class MainActivity extends Activity {
         assert cenIcon != null;
         cenIcon.setTypeface(fontAwesome);
         cenIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+
+        this.setVolumeControlStream(AudioManager.STREAM_RING);
 
     }
 

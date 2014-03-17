@@ -142,13 +142,14 @@ public class BrainModel {
         }
 
         objs[4].setShader(brainShad);
-        objs[1].setShader(brainShad);
+        objs[0].setShader(brainShad);
 
         brainShad.setUniform("transparent", 1);
 
         // Set the model's initial position
         plane.rotateY((float) Math.PI);
         plane.rotateX((float)-Math.PI / 2.0f);
+        plane.rotateZ((float)Math.PI);
         scale(0.5f);
 
         plane.build();

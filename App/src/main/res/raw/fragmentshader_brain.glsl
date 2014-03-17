@@ -19,7 +19,7 @@ void main()
     normalized_vertex_to_light_vector.z = 0.0;
 
     // Calculating The Diffuse Term And Clamping It To [0;1]
-    float DiffuseTerm = clamp(dot(n, vertex_to_light_vector), 0.0, 1.0);
+    float DiffuseTerm = clamp(dot(normalized_normal, normalized_vertex_to_light_vector), 0.0, 1.0);
 
 
     vec3 col = (AmbientColor + DiffuseColor * DiffuseTerm).xyz;

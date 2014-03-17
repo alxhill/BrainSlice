@@ -15,6 +15,9 @@ void main()
     vec3 normalized_normal = normalize(n);
     vec3 normalized_vertex_to_light_vector = normalize(vertex_to_light_vector);
 
+    normalized_vertex_to_light_vector.y = 0.0;
+    normalized_vertex_to_light_vector.z = 0.0;
+
     // Calculating The Diffuse Term And Clamping It To [0;1]
     float DiffuseTerm = clamp(dot(n, vertex_to_light_vector), 0.0, 1.0);
 
@@ -22,7 +25,7 @@ void main()
     vec3 col = (AmbientColor + DiffuseColor * DiffuseTerm).xyz;
 
     // Calculating The Final Color
-    gl_FragColor = vec4(col, length(col));
+    gl_FragColor = vec4(col, length(col)/2.0);
 }
 
 

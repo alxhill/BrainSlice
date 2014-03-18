@@ -66,12 +66,14 @@ public class BrainModel {
     private static GLSLShader[] shads;
     private static SimpleVector camPos;
     private static GLSLShader brainShad;
+    private static GLSLShader shineyShader;
 
     private static MediaPlayer speak = new MediaPlayer();
     private static Context context;
     private static AudioManager audioManager;
 
     public static void load(Resources res, AudioManager audio, Context con)
+
     {
         context = con;
 
@@ -82,6 +84,11 @@ public class BrainModel {
 
         brainShad = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_brain)),
                                 Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_brain)));
+
+        shineyShader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_brain_shiny)),
+                                Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_brain_shiny)));
+
+        shineyShader.setUniform("cameraPos", SimpleVector.create(0,0,0));
 
         // brain is parented to small plane
         plane = Primitives.getPlane(1, 1);
@@ -140,6 +147,7 @@ public class BrainModel {
             obj.compile();
             obj.strip();
             obj.addParent(plane);
+            obj.setShader(shineyShader);
             //obj.rotateY((float) Math.PI);
         }
 
@@ -151,7 +159,7 @@ public class BrainModel {
         // Set the model's initial position
         plane.rotateY((float) Math.PI);
         plane.rotateX((float) -Math.PI / 2.0f);
-        plane.rotateZ((float)Math.PI);
+        plane.rotateZ((float) Math.PI);
         scale(0.5f);
 
         plane.build();
@@ -180,6 +188,11 @@ public class BrainModel {
             vec.y = buf.getHeight() - vec.y;
             shads[i].setUniform("spherePos", vec);
         }
+    }
+
+    public static void updateCameraPos()
+    {
+        shineyShader.setUniform("cameraPos", cam.getPosition());
     }
 
     public static void setFrameBuffer(FrameBuffer b)

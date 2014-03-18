@@ -20,7 +20,7 @@ public class BrainInfo
         BrainSegment cerebellum = new BrainSegment(
             "Cerebellum",
             "This part of your brain helps you stay balanced and helps you move.",
-            SimpleVector.create(0, 100.0f, 50.0f));
+            SimpleVector.create(0, 100.0f, -50.0f));
 
         BrainSegment cerebrum = new BrainSegment(
             "Cerebrum",
@@ -65,7 +65,7 @@ public class BrainInfo
         BrainSegment parietalLobe = new BrainSegment(
             "Parietal lobe",
             "The parietal lobe is the top part of your brain, which helps you understand your senses, like touch.",
-            SimpleVector.create(0, 80.0f, -50.0f));
+            SimpleVector.create(0, 80.0f, 50.0f));
 
         BrainSegment occipitalLobe = new BrainSegment(
             "Occipital lobe",

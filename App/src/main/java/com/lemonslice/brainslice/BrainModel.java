@@ -111,6 +111,7 @@ public class BrainModel {
             sphere.strip();
             sphere.setName(segment.getTitle());
             sphere.translate(segment.getPosition());
+            sphere.scale(2.0f);
             
             spheres.add(sphere);
         }
@@ -152,6 +153,11 @@ public class BrainModel {
         }
 
         objs[4].setShader(brainShad);
+
+        //Object3D t1 = objs[4];
+        //objs[4] = objs[1];
+        //objs[1] = t1;
+
         objs[0].setShader(brainShad);
 
         brainShad.setUniform("transparent", 1);

@@ -315,7 +315,12 @@ public class MainActivity extends Activity implements EventListener {
                 Light light = new Light(world);
                 light.enable();
                 light.setIntensity(122, 80, 80);
-                light.setPosition(SimpleVector.create(-10, 50, -100));
+                light.setPosition(SimpleVector.create(100, 100, 0));
+
+                Light light2 = new Light(world);
+                light2.enable();
+                light2.setIntensity(122, 80, 80);
+                light2.setPosition(SimpleVector.create(100, -100, 0));
 
                 world.setAmbientLight(61, 40, 40);
 

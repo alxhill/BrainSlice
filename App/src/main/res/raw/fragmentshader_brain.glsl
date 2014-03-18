@@ -8,8 +8,7 @@ uniform int transparent;
 void main()
 {
     // Defining The Material Colors
-    const vec4 ambient_col = vec4(0.1, 0.1, 0.1, 1.0);
-    const vec4 diffuse_col = vec4(0.5, 0.5, 0.5, 1.0);
+
 
     // Scaling The Input Vector To Length 1
     vec3 normalized_normal = normalize(n);
@@ -19,13 +18,14 @@ void main()
     normalized_vertex_to_light_vector.z = 0.0;
 
     // Calculating The Diffuse Term And Clamping It To [0;1]
-    float diffuse = clamp(dot(normalized_normal, normalized_vertex_to_light_vector), 0.0, 1.0);
 
 
-    vec3 col = (ambient_col + diffuse_col * diffuse).xyz;
+
+    vec3 col = (AmbientColor + DiffuseColor * DiffuseTerm).xyz;
+    float blend = length(col);
 
     // Calculating The Final Color
-    gl_FragColor = vec4(col, length(col)/2.0);
+    gl_FragColor = vec4(col, blend);
 }
 
 

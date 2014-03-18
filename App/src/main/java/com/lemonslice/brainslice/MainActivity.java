@@ -64,6 +64,9 @@ public class MainActivity extends Activity {
     private World world = null;
     private RGBColor back = new RGBColor(0, 17, 34);
 
+
+    String mode = "Learn";
+
     // Frame overlaying 3d rendering for labels, instructions etc...
     private FrameLayout overlayingFrame;
 
@@ -108,30 +111,65 @@ public class MainActivity extends Activity {
         visualiseController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
         OverlayScreen.setVisualiseController(visualiseController);
 
-        LinearLayout learnButton = (LinearLayout) findViewById(R.id.learn_button);
-        learnButton.setOnClickListener(new FrameLayout.OnClickListener() {
+        Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
 
+        TextView modeIcon = (TextView) findViewById(R.id.mode_button_icon);
+        assert modeIcon != null;
+        modeIcon.setTypeface(fontAwesome);
+        modeIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+
+        LinearLayout modeButton = (LinearLayout) findViewById(R.id.mode_button);
+        modeButton.setOnClickListener(new FrameLayout.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                visualiseController.unloadView();
-                learnController.loadView();
-                baseController = learnController;
+                if(mode == "Visualise") {
+                    visualiseController.unloadView();
+                    learnController.loadView();
+                    baseController = learnController;
+                    mode = "Learn";
+                    ((TextView)findViewById(R.id.mode_button_icon)).setText(R.string.visualise_icon);
+                    ((TextView)findViewById(R.id.mode_button_text)).setText(R.string.visualise_button_text);
+                } else {
+                    learnController.unloadView();
+                    visualiseController.loadView();
+                    baseController = visualiseController;
+                    mode = "Visualise";
+                    ((TextView)findViewById(R.id.mode_button_icon)).setText(R.string.learn_icon);
+                    ((TextView)findViewById(R.id.mode_button_text)).setText(R.string.learn_button_text);
+                }
+
             }
         });
 
 
-        LinearLayout visualiseButton = (LinearLayout) findViewById(R.id.visualise_button);
-        visualiseButton.setOnClickListener(new FrameLayout.OnClickListener() {
+
+        TextView soundIcon = (TextView) findViewById(R.id.volume_button_icon);
+        assert soundIcon != null;
+        soundIcon.setTypeface(fontAwesome);
+        soundIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+
+        LinearLayout soundButton = (LinearLayout) findViewById(R.id.volume_button);
+        soundButton.setOnClickListener(new FrameLayout.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-//                ((FrameLayout)(findViewById(R.id.overlay_layout))).removeAllViews();
-                OverlayScreen.showScreen(R.layout.calibrate_screen);
-                learnController.unloadView();
-                baseController = visualiseController;
+            public void onClick(View v) {
+                BrainModel.soundChange();
+                String text = ((TextView)findViewById(R.id.volume_button_text)).getText().toString();
+                Log.d("sound", text);
+                if(text.equals("Sound ON")) {
+                    ((TextView)findViewById(R.id.volume_button_text)).setText(R.string.sound_button_text_muted);
+                    ((TextView)findViewById(R.id.volume_button_icon)).setText(R.string.muted_icon);
+                } else {
+                    ((TextView)findViewById(R.id.volume_button_text)).setText(R.string.sound_button_text_unmuted);
+                    ((TextView)findViewById(R.id.volume_button_icon)).setText(R.string.unmuted_icon);
+                }
             }
         });
+
+        TextView cenIcon = (TextView) findViewById(R.id.centre_button_icon);
+        assert cenIcon != null;
+        cenIcon.setTypeface(fontAwesome);
+        cenIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
         LinearLayout centreButton = (LinearLayout) findViewById(R.id.centre_button);
         centreButton.setOnClickListener(new FrameLayout.OnClickListener() {
@@ -143,25 +181,10 @@ public class MainActivity extends Activity {
             }
         });
 
-        Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
 
-        TextView learnIcon = (TextView) learnButton.getChildAt(0);
-        assert learnIcon != null;
-        learnIcon.setTypeface(fontAwesome);
-        learnIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-
-        TextView visIcon = (TextView) visualiseButton.getChildAt(0);
-        assert visIcon != null;
-        visIcon.setTypeface(fontAwesome);
-        visIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-
-        TextView cenIcon = (TextView) centreButton.getChildAt(0);
-        assert cenIcon != null;
-        cenIcon.setTypeface(fontAwesome);
-        cenIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-
+        //Halp pls, use to make sure volume is up. Issue with static
+        //AudioManager audio = Context.getSystemService(Context.AUDIO_SERVICE);
         this.setVolumeControlStream(AudioManager.STREAM_RING);
-
     }
 
 

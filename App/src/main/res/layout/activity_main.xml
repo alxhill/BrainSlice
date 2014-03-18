@@ -27,20 +27,22 @@
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:id="@+id/learn_button"
+            android:id="@+id/mode_button"
             android:background="@android:color/transparent"
             android:textColor="@android:color/white"
             android:clickable="true"
             android:layout_marginRight="30dp">
             <TextView
+                android:id="@+id/mode_button_icon"
                 android:gravity="center"
-                android:text="@string/learn_icon"
+                android:text="@string/visualise_icon"
                 android:layout_height="50dp"
                 android:layout_width="wrap_content"
                 android:layout_marginRight="3dp"/>
             <TextView
+                android:id="@+id/mode_button_text"
                 android:gravity="center"
-                android:text="Learn"
+                android:text="@string/visualise_button_text"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="24sp"/>
@@ -51,20 +53,22 @@
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:id="@+id/visualise_button"
+            android:id="@+id/volume_button"
             android:background="@android:color/transparent"
             android:textColor="@android:color/white"
             android:clickable="true"
             android:layout_marginRight="30dp">
             <TextView
+                android:id="@+id/volume_button_icon"
                 android:gravity="center"
-                android:text="@string/visualise_icon"
+                android:text="@string/unmuted_icon"
                 android:layout_height="50dp"
                 android:layout_width="wrap_content"
                 android:layout_marginRight="3dp"/>
             <TextView
+                android:id="@+id/volume_button_text"
                 android:gravity="center"
-                android:text="Visualise"
+                android:text="@string/sound_button_text_unmuted"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="24sp" />
@@ -81,12 +85,14 @@
             android:clickable="true"
             android:layout_marginRight="30dp">
             <TextView
+                android:id="@+id/centre_button_icon"
                 android:gravity="center"
                 android:text="@string/centre_icon"
                 android:layout_height="50dp"
                 android:layout_width="wrap_content"
                 android:layout_marginRight="3dp"/>
             <TextView
+                android:id="@+id/centre_button_text"
                 android:gravity="center"
                 android:text="Centre"
                 android:layout_width="wrap_content"

@@ -6,8 +6,6 @@
     <string name="action_settings">Settings</string>
     <string name="learn_icon">&#xf0a6;</string>
     <string name="visualise_icon">&#xf030;</string>
-    <string name="muted_icon">&#xf026;</string>
-    <string name="unmuted_icon">&#xf028;</string>
     <string name="centre_icon">&#xf05b;</string>
     <string name="loadingMessage">Loading ...</string>
     <string name="learn_button_text">Learn</string>

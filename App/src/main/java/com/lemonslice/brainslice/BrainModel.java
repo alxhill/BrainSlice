@@ -24,7 +24,6 @@ import java.util.TimerTask;
 
 import android.media.MediaPlayer;
 import android.media.AudioManager;
-import android.widget.TextView;
 
 import java.util.concurrent.Semaphore;
 
@@ -66,7 +65,6 @@ public class BrainModel {
 
     private static MediaPlayer speak = new MediaPlayer();
     private static Context context;
-    private static Boolean sound = true;
 
     public static void load(Resources res, Context con)
     {
@@ -279,12 +277,10 @@ public class BrainModel {
                 else
                     audioID = R.raw.brain_stem;
 
-                if(sound) {
-                    speak.stop();
-                    speak.release();
-                    speak = MediaPlayer.create(context, audioID);
-                    speak.start();
-                }
+                speak.stop();
+                speak.release();
+                speak = MediaPlayer.create(context, audioID);
+                speak.start();
 
                 SimpleVector spherePos = sphere.getTransformedCenter();
                 // ignore the translation of the plane when calculating rotation
@@ -627,10 +623,6 @@ public class BrainModel {
     public static float getScale()
     {
         return plane.getScale();
-    }
-
-    public static void soundChange() {
-        sound = !sound;
     }
 
     static class Ease {

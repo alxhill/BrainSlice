@@ -13,15 +13,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.threed.jpct.Camera;
@@ -35,12 +31,8 @@ import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -63,9 +55,6 @@ public class MainActivity extends Activity {
     private FrameBuffer fb = null;
     private World world = null;
     private RGBColor back = new RGBColor(0, 17, 34);
-
-
-    String mode = "Learn";
 
     // Frame overlaying 3d rendering for labels, instructions etc...
     private FrameLayout overlayingFrame;
@@ -113,56 +102,33 @@ public class MainActivity extends Activity {
 
         Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
 
-        TextView modeIcon = (TextView) findViewById(R.id.mode_button_icon);
-        assert modeIcon != null;
-        modeIcon.setTypeface(fontAwesome);
-        modeIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        TextView learnIcon = (TextView) findViewById(R.id.learn_button_icon);
+        assert learnIcon != null;
+        learnIcon.setTypeface(fontAwesome);
+        learnIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
-        LinearLayout modeButton = (LinearLayout) findViewById(R.id.mode_button);
-        modeButton.setOnClickListener(new FrameLayout.OnClickListener() {
+        LinearLayout learnButton = (LinearLayout) findViewById(R.id.learn_button);
+        learnButton.setOnClickListener(new FrameLayout.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                if(mode == "Visualise") {
-                    visualiseController.unloadView();
-                    learnController.loadView();
-                    baseController = learnController;
-                    mode = "Learn";
-                    ((TextView)findViewById(R.id.mode_button_icon)).setText(R.string.visualise_icon);
-                    ((TextView)findViewById(R.id.mode_button_text)).setText(R.string.visualise_button_text);
-                } else {
-                    learnController.unloadView();
-                    visualiseController.loadView();
-                    baseController = visualiseController;
-                    mode = "Visualise";
-                    ((TextView)findViewById(R.id.mode_button_icon)).setText(R.string.learn_icon);
-                    ((TextView)findViewById(R.id.mode_button_text)).setText(R.string.learn_button_text);
-                }
-
+            public void onClick(View v) {
+                visualiseController.unloadView();
+                learnController.loadView();
+                baseController = learnController;
             }
         });
 
-
-
-        TextView soundIcon = (TextView) findViewById(R.id.volume_button_icon);
+        TextView soundIcon = (TextView) findViewById(R.id.visualise_button_icon);
         assert soundIcon != null;
         soundIcon.setTypeface(fontAwesome);
         soundIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
-        LinearLayout soundButton = (LinearLayout) findViewById(R.id.volume_button);
-        soundButton.setOnClickListener(new FrameLayout.OnClickListener() {
+        LinearLayout visualiseButton = (LinearLayout) findViewById(R.id.visualise_button);
+        visualiseButton.setOnClickListener(new FrameLayout.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BrainModel.soundChange();
-                String text = ((TextView)findViewById(R.id.volume_button_text)).getText().toString();
-                Log.d("sound", text);
-                if(text.equals("Sound ON")) {
-                    ((TextView)findViewById(R.id.volume_button_text)).setText(R.string.sound_button_text_muted);
-                    ((TextView)findViewById(R.id.volume_button_icon)).setText(R.string.muted_icon);
-                } else {
-                    ((TextView)findViewById(R.id.volume_button_text)).setText(R.string.sound_button_text_unmuted);
-                    ((TextView)findViewById(R.id.volume_button_icon)).setText(R.string.unmuted_icon);
-                }
+                learnController.unloadView();
+                visualiseController.loadView();
+                baseController = visualiseController;
             }
         });
 
@@ -174,13 +140,11 @@ public class MainActivity extends Activity {
         LinearLayout centreButton = (LinearLayout) findViewById(R.id.centre_button);
         centreButton.setOnClickListener(new FrameLayout.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 baseController.stop();
                 BrainModel.smoothRotateToFront();
             }
         });
-
 
         //Halp pls, use to make sure volume is up. Issue with static
         //AudioManager audio = Context.getSystemService(Context.AUDIO_SERVICE);

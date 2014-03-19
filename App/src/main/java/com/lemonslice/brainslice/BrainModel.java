@@ -24,8 +24,11 @@ import java.util.TimerTask;
 
 import android.media.MediaPlayer;
 import android.media.AudioManager;
+import android.view.KeyEvent;
 
 import java.util.concurrent.Semaphore;
+
+import android.view.KeyEvent;
 
 /**
  * Renders the brain to the screen and handles moving the model
@@ -65,10 +68,13 @@ public class BrainModel {
 
     private static MediaPlayer speak = new MediaPlayer();
     private static Context context;
+    private static AudioManager audioManager;
 
-    public static void load(Resources res, Context con)
+    public static void load(Resources res, AudioManager audio, Context con)
     {
         context = con;
+
+        audioManager = audio;
 
         shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
                                 Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_spheres)));
@@ -580,30 +586,27 @@ public class BrainModel {
             final int stepTime = 15;
             // current number of milliseconds elapsed
             int i = stepTime;
+
             @Override
-            public void run()
-            {
+            public void run() {
                 // calculate the next rotation step to move by
-                double stepRotation = ease.step(i) - ease.step(i-stepTime);
+                double stepRotation = ease.step(i) - ease.step(i - stepTime);
 
 
-                if(Double.isNaN(stepRotation))
+                if (Double.isNaN(stepRotation))
                     return;
 
-                if(Double.isInfinite(stepRotation))
+                if (Double.isInfinite(stepRotation))
                     return;
 
-                try
-                {
+                try {
                     brainSemaphore.acquire();
-                }
-                catch(InterruptedException e)
-                {
+                } catch (InterruptedException e) {
                     return;
                 }
 
                 // This is 100% necessary to prevent a bug where the brain model disappears
-                if(stepRotation != 0.0)
+                if (stepRotation != 0.0)
                     plane.rotateAxis(axis, (float) stepRotation);
 
                 brainSemaphore.release();
@@ -623,6 +626,17 @@ public class BrainModel {
     public static float getScale()
     {
         return plane.getScale();
+    }
+
+    public static void onVolumeKey(int keyCode, KeyEvent event) {
+        switch(keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+                break;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+                break;
+        }
     }
 
     static class Ease {

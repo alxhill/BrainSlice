@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -145,13 +146,20 @@ public class MainActivity extends Activity {
                 BrainModel.smoothRotateToFront();
             }
         });
-
-        //Halp pls, use to make sure volume is up. Issue with static
-        //AudioManager audio = Context.getSystemService(Context.AUDIO_SERVICE);
-        this.setVolumeControlStream(AudioManager.STREAM_RING);
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (event.getKeyCode()) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                BrainModel.onVolumeKey(keyCode, event);
+                return true;
 
+            default:
+                return super.onKeyDown(keyCode, event);
+        }
+    }
 
     @Override
     protected void onPause()
@@ -264,7 +272,7 @@ public class MainActivity extends Activity {
             {
                 world = new World();
 
-                BrainModel.load(res, getApplicationContext());
+                BrainModel.load(res, (AudioManager)getSystemService(Context.AUDIO_SERVICE), getApplicationContext());
 
                 BrainModel.addToScene(world);
 

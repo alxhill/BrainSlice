@@ -20,9 +20,11 @@ void main()
     // Calculating The Diffuse Term And Clamping It To [0;1]
 
 
+    vec3 col = (ambient_col*0.0 + diffuse_col * diffuse).xyz;
 
-    vec3 col = (AmbientColor + DiffuseColor * DiffuseTerm).xyz;
     float blend = length(col);
+
+    //discard;
 
     // Calculating The Final Color
     gl_FragColor = vec4(col, blend);

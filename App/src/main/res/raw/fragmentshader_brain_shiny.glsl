@@ -49,7 +49,9 @@ void main()
     final_col = final_col / 2.0;
 
     // Calculating The Final Color
-    gl_FragColor = vec4(final_col, 1.0) + aS*AmbientColor;
+    gl_FragColor = vec4(final_col + aS*AmbientColor.xyz, 1.0);// + aS*AmbientColor;
+
+    //gl_FragColor = vec4(0.5, 0.5, 0.5, 0.5);
 }
 
 

@@ -152,6 +152,8 @@ public class BrainModel {
             //obj.rotateY((float) Math.PI);
         }
 
+        //objs[4].setTransparency(128);
+
         objs[4].setShader(brainShad);
 
         //Object3D t1 = objs[4];
@@ -365,11 +367,28 @@ public class BrainModel {
     public static void addToScene(World world)
     {
         world.addObject(plane);
-        world.addObjects(objs);
+        //world.addObjects(objs);
+        for(int i=0; i<objs.length; i++)
+        {
+            if(i == 0 || i == 4)
+                continue;
+            world.addObject(objs[i]);
+        }
         for (Object3D sphere : spheres)
             world.addObject(sphere);
 
 //        world.addObjects(sphereArray);
+    }
+
+    public static void addToTransp(World world)
+    {
+        world.addObject(objs[0]);
+        world.addObject(objs[4]);
+    }
+
+    public static void removeAll(World world)
+    {
+        world.removeAll();
     }
 
     public static SimpleVector getTransformedCenter()

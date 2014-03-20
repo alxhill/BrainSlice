@@ -57,6 +57,7 @@ public class MainActivity extends Activity implements EventListener {
     private MyRenderer renderer = null;
     private FrameBuffer fb = null;
     private World world = null;
+    //private World transparentWorld = null;
     private RGBColor back = new RGBColor(0, 17, 34);
 
     // Frame overlaying 3d rendering for labels, instructions etc...
@@ -306,10 +307,13 @@ public class MainActivity extends Activity implements EventListener {
             if (master == null)
             {
                 world = new World();
+                //transparentWorld = new World();
 
                 BrainModel.load(res, (AudioManager)getSystemService(Context.AUDIO_SERVICE), getApplicationContext());
 
                 BrainModel.addToScene(world);
+
+                //BrainModel.addToTransp(transparentWorld);
 
                 // create a light
                 Light light = new Light(world);
@@ -323,6 +327,13 @@ public class MainActivity extends Activity implements EventListener {
                 light2.setPosition(SimpleVector.create(100, -100, 0));
 
                 world.setAmbientLight(61, 40, 40);
+                //transparentWorld.setAmbientLight(61, 40, 40);
+
+                //Light lighttest = new Light(transparentWorld);
+                //lighttest.enable();
+                //lighttest.setIntensity(122, 80, 80);
+                //lighttest.setPosition(SimpleVector.create(100, 100, 0));
+
 
                 //world.compileAllObjects();
 
@@ -330,6 +341,10 @@ public class MainActivity extends Activity implements EventListener {
                 Camera cam = world.getCamera();
                 cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
                 cam.lookAt(BrainModel.getTransformedCenter());
+
+                //Camera cam2 = transparentWorld.getCamera();
+                //cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
+                //cam.lookAt(BrainModel.getTransformedCenter());
 
                 //shader seems to be broken at the moment
                 //light.setPosition(cam.getPosition());
@@ -358,11 +373,26 @@ public class MainActivity extends Activity implements EventListener {
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
             GLES20.glEnable(GLES20.GL_BLEND);
             GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+            //GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE);
+            GLES20.glEnable(GLES20.GL_DEPTH_TEST);
             BrainModel.updateCameraPos();
             // clear buffers and draw framerate
             fb.clear(back);
+
+            BrainModel.removeAll(world);
+            BrainModel.addToScene(world);
+
             world.renderScene(fb);
             world.draw(fb);
+
+            //GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+
+            BrainModel.removeAll(world);
+            BrainModel.addToTransp(world);
+
+            world.renderScene(fb);
+            world.draw(fb);
+
             fb.display();
         }
     }

@@ -15,8 +15,15 @@ uniform vec3 lightPositions[8];
 
 uniform vec3 cameraPos;
 
+uniform vec4 additionalColor;
+uniform vec4 ambientColor;
+
+varying vec4 vertexColor;
+
 void main()
 {
+    vertexColor = ambientColor + additionalColor;
+
     // Transforming The Vertex
     gl_Position = modelViewProjectionMatrix * position;
  

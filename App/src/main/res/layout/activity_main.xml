@@ -33,14 +33,16 @@
             android:clickable="true"
             android:layout_marginRight="30dp">
             <TextView
+                android:id="@+id/learn_button_icon"
                 android:gravity="center"
                 android:text="@string/learn_icon"
                 android:layout_height="50dp"
                 android:layout_width="wrap_content"
                 android:layout_marginRight="3dp"/>
             <TextView
+                android:id="@+id/learn_button_text"
                 android:gravity="center"
-                android:text="Learn"
+                android:text="@string/learn_button_text"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="24sp"/>
@@ -57,14 +59,16 @@
             android:clickable="true"
             android:layout_marginRight="30dp">
             <TextView
+                android:id="@+id/visualise_button_icon"
                 android:gravity="center"
                 android:text="@string/visualise_icon"
                 android:layout_height="50dp"
                 android:layout_width="wrap_content"
                 android:layout_marginRight="3dp"/>
             <TextView
+                android:id="@+id/visualise_button_text"
                 android:gravity="center"
-                android:text="Visualise"
+                android:text="@string/visualise_button_text"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textSize="24sp" />
@@ -81,12 +85,14 @@
             android:clickable="true"
             android:layout_marginRight="30dp">
             <TextView
+                android:id="@+id/centre_button_icon"
                 android:gravity="center"
                 android:text="@string/centre_icon"
                 android:layout_height="50dp"
                 android:layout_width="wrap_content"
                 android:layout_marginRight="3dp"/>
             <TextView
+                android:id="@+id/centre_button_text"
                 android:gravity="center"
                 android:text="Centre"
                 android:layout_width="wrap_content"

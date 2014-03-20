@@ -1,5 +1,6 @@
 package com.lemonslice.brainslice;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.hardware.SensorManager;
 import android.util.Log;
@@ -21,7 +22,13 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.media.MediaPlayer;
+import android.media.AudioManager;
+import android.view.KeyEvent;
+
 import java.util.concurrent.Semaphore;
+
+import android.view.KeyEvent;
 
 /**
  * Renders the brain to the screen and handles moving the model
@@ -59,8 +66,16 @@ public class BrainModel {
     private static GLSLShader[] shads;
     private static SimpleVector camPos;
 
-    public static void load(Resources res)
+    private static MediaPlayer speak = new MediaPlayer();
+    private static Context context;
+    private static AudioManager audioManager;
+
+    public static void load(Resources res, AudioManager audio, Context con)
     {
+        context = con;
+
+        audioManager = audio;
+
         shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
                                 Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_spheres)));
 
@@ -239,16 +254,39 @@ public class BrainModel {
 
             if(dist < sphereRad*30.0f && isVisibilityHodgePodge(sphere))
             {
+                int audioID;
+                String name = sphere.getName();
+
                 if(selection == i)
                 {
                     Labels.removeLabels();
                     selection = -1;
                     shads[i].setUniform("isSelected", 0);
-                    break;
+                    ;
                 }
 
                 selection = i;
-                Labels.displayLabel(sphere.getName());
+                Labels.displayLabel(name);
+
+                if(name == "Brainstem")
+                    audioID = R.raw.brain_stem;
+                else if(name == "Temporal lobe")
+                    audioID = R.raw.temporal_lobe;
+                else if(name == "Parietal lobe")
+                    audioID = R.raw.parietal_lobe;
+                else if(name == "Occipital lobe")
+                    audioID = R.raw.occipital_lobe;
+                else if(name == "Frontal lobe")
+                    audioID = R.raw.frontal_lobe;
+                else if(name == "Cerebellum")
+                    audioID = R.raw.cerebellum;
+                else
+                    audioID = R.raw.brain_stem;
+
+                speak.stop();
+                speak.release();
+                speak = MediaPlayer.create(context, audioID);
+                speak.start();
 
                 SimpleVector spherePos = sphere.getTransformedCenter();
                 // ignore the translation of the plane when calculating rotation
@@ -549,30 +587,27 @@ public class BrainModel {
             final int stepTime = 15;
             // current number of milliseconds elapsed
             int i = stepTime;
+
             @Override
-            public void run()
-            {
+            public void run() {
                 // calculate the next rotation step to move by
-                double stepRotation = ease.step(i) - ease.step(i-stepTime);
+                double stepRotation = ease.step(i) - ease.step(i - stepTime);
 
 
-                if(Double.isNaN(stepRotation))
+                if (Double.isNaN(stepRotation))
                     return;
 
-                if(Double.isInfinite(stepRotation))
+                if (Double.isInfinite(stepRotation))
                     return;
 
-                try
-                {
+                try {
                     brainSemaphore.acquire();
-                }
-                catch(InterruptedException e)
-                {
+                } catch (InterruptedException e) {
                     return;
                 }
 
                 // This is 100% necessary to prevent a bug where the brain model disappears
-                if(stepRotation != 0.0)
+                if (stepRotation != 0.0)
                     plane.rotateAxis(axis, (float) stepRotation);
 
                 brainSemaphore.release();
@@ -592,6 +627,17 @@ public class BrainModel {
     public static float getScale()
     {
         return plane.getScale();
+    }
+
+    public static void onVolumeKey(int keyCode, KeyEvent event) {
+        switch(keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+                break;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+                break;
+        }
     }
 
     static class Ease {

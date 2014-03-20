@@ -6,21 +6,19 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.lemonslice.brainslice.event.Event;
@@ -36,12 +34,8 @@ import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -49,7 +43,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * @author Based off JPCT HelloShader freely licenced example by EgonOlsen, heavily modified by LemonSlice
  */
-public class MainActivity extends Activity  implements EventListener {
+public class MainActivity extends Activity implements EventListener {
 
     // Used to handle pause and resume...
     private static MainActivity master = null;
@@ -114,15 +108,26 @@ public class MainActivity extends Activity  implements EventListener {
         visualiseController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
         OverlayScreen.setVisualiseController(visualiseController);
 
+        Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
+
+        TextView learnIcon = (TextView) findViewById(R.id.learn_button_icon);
+        assert learnIcon != null;
+        learnIcon.setTypeface(fontAwesome);
+        learnIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+
         LinearLayout learnButton = (LinearLayout) findViewById(R.id.learn_button);
         learnButton.setOnClickListener(new FrameLayout.OnClickListener() {
-
             @Override
             public void onClick(View v)
             {
                 Event.trigger("tap:learn");
             }
         });
+
+        TextView soundIcon = (TextView) findViewById(R.id.visualise_button_icon);
+        assert soundIcon != null;
+        soundIcon.setTypeface(fontAwesome);
+        soundIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
         LinearLayout visualiseButton = (LinearLayout) findViewById(R.id.visualise_button);
         visualiseButton.setOnClickListener(new FrameLayout.OnClickListener() {
@@ -134,6 +139,11 @@ public class MainActivity extends Activity  implements EventListener {
             }
         });
 
+        TextView cenIcon = (TextView) findViewById(R.id.centre_button_icon);
+        assert cenIcon != null;
+        cenIcon.setTypeface(fontAwesome);
+        cenIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+
         LinearLayout centreButton = (LinearLayout) findViewById(R.id.centre_button);
         centreButton.setOnClickListener(new FrameLayout.OnClickListener() {
             @Override
@@ -142,27 +152,20 @@ public class MainActivity extends Activity  implements EventListener {
                 BrainModel.smoothRotateToFront();
             }
         });
-
-        Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
-
-        TextView learnIcon = (TextView) learnButton.getChildAt(0);
-        assert learnIcon != null;
-        learnIcon.setTypeface(fontAwesome);
-        learnIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-
-        TextView visIcon = (TextView) visualiseButton.getChildAt(0);
-        assert visIcon != null;
-        visIcon.setTypeface(fontAwesome);
-        visIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-
-        TextView cenIcon = (TextView) centreButton.getChildAt(0);
-        assert cenIcon != null;
-        cenIcon.setTypeface(fontAwesome);
-        cenIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (event.getKeyCode()) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                BrainModel.onVolumeKey(keyCode, event);
+                return true;
 
+            default:
+                return super.onKeyDown(keyCode, event);
+        }
+    }
 
     @Override
     protected void onPause()
@@ -219,7 +222,7 @@ public class MainActivity extends Activity  implements EventListener {
                 hideSystemBars();
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void hideSystemBars()
     {
         //API 14 = android 4.0 (ICS), API 19 = 4.4 (Kitkat)
@@ -304,7 +307,7 @@ public class MainActivity extends Activity  implements EventListener {
             {
                 world = new World();
 
-                BrainModel.load(res);
+                BrainModel.load(res, (AudioManager)getSystemService(Context.AUDIO_SERVICE), getApplicationContext());
 
                 BrainModel.addToScene(world);
 

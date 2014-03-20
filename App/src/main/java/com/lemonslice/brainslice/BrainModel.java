@@ -268,17 +268,17 @@ public class BrainModel {
                 selection = i;
                 Labels.displayLabel(name);
 
-                if(name == "Brainstem")
+                if(name.equals("Brainstem"))
                     audioID = R.raw.brain_stem;
-                else if(name == "Temporal lobe")
+                else if(name.equals("Temporal lobe"))
                     audioID = R.raw.temporal_lobe;
-                else if(name == "Parietal lobe")
+                else if(name.equals("Parietal lobe"))
                     audioID = R.raw.parietal_lobe;
-                else if(name == "Occipital lobe")
+                else if(name.equals("Occipital lobe"))
                     audioID = R.raw.occipital_lobe;
-                else if(name == "Frontal lobe")
+                else if(name.equals("Frontal lobe"))
                     audioID = R.raw.frontal_lobe;
-                else if(name == "Cerebellum")
+                else if(name.equals("Cerebellum"))
                     audioID = R.raw.cerebellum;
                 else
                     audioID = R.raw.brain_stem;

@@ -93,7 +93,9 @@ public class BrainModel {
 
         for (BrainSegment segment : segments.values())
         {
-            if (segment.getPosition() == null) continue;
+            if (segment.getPosition() == null)
+                continue;
+
             Object3D sphere = Primitives.getSphere(sphereRad);
             sphere.addParent(plane);
             sphere.setLighting(Object3D.LIGHTING_NO_LIGHTS);
@@ -148,7 +150,7 @@ public class BrainModel {
 
         // Set the model's initial position
         plane.rotateY((float) Math.PI);
-        plane.rotateX((float)-Math.PI / 2.0f);
+        plane.rotateX((float) -Math.PI / 2.0f);
         plane.rotateZ((float)Math.PI);
         scale(0.5f);
 

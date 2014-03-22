@@ -5,6 +5,10 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.view.MotionEvent;
+import android.content.Context;
+import android.view.WindowManager;
+import android.view.Display;
+import android.graphics.Point;
 
 /**
  * Handles gyro input and passes it to the brain model
@@ -16,10 +20,10 @@ public class VisualiseController extends AbstractController implements SensorEve
 
     private SensorManager sensorManager;
     private Sensor gyroSensor;
-
+    private static Context context;
     long oldTime;
     private boolean isLoaded;
-
+    private WindowManager mWindowManager;
     public VisualiseController(SensorManager manager)
     {
         axisX = 0;
@@ -76,7 +80,22 @@ public class VisualiseController extends AbstractController implements SensorEve
 
         oldTime = newTime;
 
-        BrainModel.rotate(x, y, z);
+        Context cx = context.getApplicationContext();
+        Display d = ((WindowManager) cx.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        Point size = new Point();
+        d.getSize(size);
+        int widthtab = size.x;
+        int heighttab = size.y;
+
+        //If tablet
+        //BrainModel.rotate(y, -x, z);
+        //Else
+        //BrainModel.rotate(x, y, z);
+        if (widthtab > heighttab) {
+            BrainModel.rotate(y, -x, z);
+        } else {
+            BrainModel.rotate(x,y,z);
+        }
 
 //        BrainModel.adjustCamera();
     }
@@ -101,5 +120,10 @@ public class VisualiseController extends AbstractController implements SensorEve
     public void onAccuracyChanged(Sensor sensor, int accuracy)
     {
 
+    }
+
+    public static void setContext(Context c)
+    {
+        context = c;
     }
 }

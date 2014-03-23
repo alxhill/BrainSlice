@@ -38,8 +38,6 @@ void main()
         // Calculating The Diffuse Term And Clamping It To [0;1]
         float DiffuseTerm = clamp(dot(normalized_normal, normalized_vertex_to_light_vector), 0.0, 1.0);
 
-        //vec3
-
         float specularTerm = clamp(kS*pow(p, npow), 0.0, 1.0);
 
         vec3 col = (dS*DiffuseColor * DiffuseTerm).xyz + specularColor.xyz*specularTerm;
@@ -50,35 +48,4 @@ void main()
 
     // Calculating The Final Color
     gl_FragColor = vec4(final_col + aS*AmbientColor.xyz, 1.0);// + aS*AmbientColor;
-
-    //gl_FragColor = vec4(0.5, 0.5, 0.5, 0.5);
 }
-
-
-
-
-
-/*precision mediump float;
-
- uniform int transparent;
-
- varying vec4 lightVec[2];
- varying vec4 eyeVec;
-
- void main ()
- {
- 	float att = 1.0;
-
- 	//float distSqr = dot(lightVec[0], lightVec[0]);
- 	//float att = clamp(sqrt(distSqr), 0.0, 1.0);
- 	//vec3 lVec = lightVec[0] * inversesqrt(distSqr);
-
- 	//vec4 vDiffuse = vec4(1.0. 1.0, 1.0, 1.0);
-
- 	//float specular = pow(clamp(dot(-lVec, vVec), 0.0, 1.0), 0.85);
- 	//vec4 vSpecular = vec4(specularColors[0],0) * specular;
-
- 	//gl_FragColor = (vAmbient*base + vDiffuse*base + vSpecular) * att*2.0;
-
- 	gl_FragColor = gl_Normal;
- }*/

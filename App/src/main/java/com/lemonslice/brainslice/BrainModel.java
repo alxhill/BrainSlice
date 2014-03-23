@@ -73,16 +73,6 @@ public class BrainModel {
     private static Context context;
     private static AudioManager audioManager;
 
-    static String[] subCorticalMap =
-            {
-                    "Brainstem",
-                    "Cerebellum",
-                    "Cerebellum",
-                    "Cerebellum",
-                    "Cerebellum",
-                    "Amygdala"
-            };
-
     public static void load(Resources res, AudioManager audio, Context con)
 
     {
@@ -380,11 +370,6 @@ public class BrainModel {
         {
             smoothMoveToGeneric(startPosition, 0);
         }
-
-        if(!selected)
-        {
-
-        }
     }
 
 
@@ -412,7 +397,6 @@ public class BrainModel {
 
     public static void addToTransp(World world)
     {
-        //world.addObject(subCortical[1]);
         world.addObject(subCortical[4]);
         world.addObject(objs[2]);
     }

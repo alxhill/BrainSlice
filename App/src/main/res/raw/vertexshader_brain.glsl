@@ -34,12 +34,7 @@ void main()
     vec4 vertex_in_modelview_space = modelViewMatrix * position;
 
     // Calculating The Vector From The Vertex Position To The Light Position
-    //vertex_to_light_vector[0] = normalize(vec3(-lightPositions[0] - vertex_in_modelview_space.xyz));
-    //vertex_to_light_vector[1] = normalize(vec3(-lightPositions[1] - vertex_in_modelview_space.xyz));
     vertex_to_camera_vector = normalize(vec3(cameraPos - vertex_in_modelview_space.xyz));
-    // Calculating The Vector From The Vertex Position To The Light Position
-    //vertex_to_light_vector = normalize(vec3(lightPositions[0] - vertex_in_modelview_space.xyz));
-    //
 
     vertex_to_light_vector = normalize(vec3(vec3(100, 0, 0) - vertex_in_modelview_space.xyz));
 }

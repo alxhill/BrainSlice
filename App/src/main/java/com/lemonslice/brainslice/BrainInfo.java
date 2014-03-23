@@ -45,7 +45,7 @@ public class BrainInfo
         BrainSegment amygdala = new BrainSegment(
             "Amygdala",
             "The amygdalae are almond-shaped and help you process your memories and emotions.",
-            null);
+            SimpleVector.create(30.0f, 15.0f, -40.0f));
 
         BrainSegment medullaOblongata = new BrainSegment(
             "Medulla oblongata",

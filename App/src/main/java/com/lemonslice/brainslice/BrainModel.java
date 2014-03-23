@@ -73,6 +73,16 @@ public class BrainModel {
     private static Context context;
     private static AudioManager audioManager;
 
+    static String[] subCorticalMap =
+            {
+                    "Brainstem",
+                    "Cerebellum",
+                    "Cerebellum",
+                    "Cerebellum",
+                    "Cerebellum",
+                    "Amygdala"
+            };
+
     public static void load(Resources res, AudioManager audio, Context con)
 
     {
@@ -112,7 +122,7 @@ public class BrainModel {
             sphere.strip();
             sphere.setName(segment.getTitle());
             sphere.translate(segment.getPosition());
-            sphere.scale(2.0f);
+            sphere.scale(1.6f);
             
             spheres.add(sphere);
         }
@@ -283,7 +293,6 @@ public class BrainModel {
         {
             // get a vector pointing directly to the camera
             camPos = cam.getDirection();
-            Log.d("CAMPOS", camPos.toString());
             camPos = camPos.reflect(camPos);
         }
 
@@ -298,7 +307,7 @@ public class BrainModel {
 
             float dist = (float) Math.sqrt(xd * xd + yd * yd);
 
-            if(dist < sphereRad*30.0f && isVisibilityHodgePodge(sphere))
+            if(dist < sphereRad*26.0f && isVisibilityHodgePodge(sphere))
             {
                 int audioID;
                 String name = sphere.getName();
@@ -358,7 +367,6 @@ public class BrainModel {
 
         for(; i<spheres.size(); i++)
         {
-            Log.d("LOOPDY LOOP", "lol");
             shads[i].setUniform("isSelected", 0);
         }
 
@@ -371,6 +379,11 @@ public class BrainModel {
         else
         {
             smoothMoveToGeneric(startPosition, 0);
+        }
+
+        if(!selected)
+        {
+
         }
     }
 
@@ -395,8 +408,6 @@ public class BrainModel {
 
         for (Object3D sphere : spheres)
             world.addObject(sphere);
-
-//        world.addObjects(sphereArray);
     }
 
     public static void addToTransp(World world)

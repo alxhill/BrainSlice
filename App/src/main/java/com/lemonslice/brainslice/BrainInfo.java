@@ -75,7 +75,7 @@ public class BrainInfo
         BrainSegment temporalLobe = new BrainSegment(
             "Temporal lobe",
             "The temporal lobe lets you keep visual memories, understand languages, and stores new memories and emotion.",
-            SimpleVector.create(75.0f, 0, 0));
+            SimpleVector.create(-75.0f, 0, 0));
 
 
         segments.put(cerebellum.getTitle(), cerebellum);

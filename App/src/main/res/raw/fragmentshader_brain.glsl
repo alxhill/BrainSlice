@@ -66,6 +66,9 @@ uniform int transparent;
 
 void main()
 {
+    const vec4 AmbientColor = vec4(0.15, 0.15, 0.15, 1.0);
+    const vec4 DiffuseColor = vec4(0.4, 0.4, 0.4, 1.0);
+    //const vec4 specularColor = vec4(0.1, 0.1, 0.1, 1.0);
     // Defining The Material Colors
 
 
@@ -77,9 +80,10 @@ void main()
     normalized_vertex_to_light_vector.z = 0.0;
 
     // Calculating The Diffuse Term And Clamping It To [0;1]
+    float DiffuseTerm = clamp(dot(normalized_normal, normalized_vertex_to_light_vector), 0.0, 1.0);
 
 
-    vec3 col = (ambient_col*0.0 + diffuse_col * diffuse).xyz;
+    vec3 col = (AmbientColor*0.0 + DiffuseColor * DiffuseTerm).xyz;
 
     float blend = length(col);
 

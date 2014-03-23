@@ -10,6 +10,10 @@ void main ()
 	att = clamp(att*1.1, 0.0, 1.0);
 	att = att*att;
 	float blend = clamp(att, 0.0, 1.0);
+
+	//if(blend < 0.02)
+	    //discard;
+
 	if(isSelected==1)
 		gl_FragColor = vec4(0.0, att, 0.0, blend);
 	else

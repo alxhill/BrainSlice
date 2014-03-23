@@ -41,6 +41,7 @@ public class BrainModel {
     // magic 3D stuff
     private static Object3D plane;
     private static Object3D[] objs;
+    private static Object3D[] subCortical;
     private static GLSLShader shader = null;
 
     private static Semaphore brainSemaphore = new Semaphore(1);
@@ -134,6 +135,8 @@ public class BrainModel {
         objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.new_ser));
         Log.d("BrainSlice", "Loaded .3ds file");
 
+        subCortical = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.underbrain));
+
         // compile and load shaders for plane
         plane.setShader(shader);
         plane.setSpecularLighting(true);
@@ -149,18 +152,27 @@ public class BrainModel {
             obj.strip();
             obj.addParent(plane);
             obj.setShader(shineyShader);
-            //obj.rotateY((float) Math.PI);
         }
 
-        //objs[4].setTransparency(128);
+        for(Object3D obj : subCortical)
+        {
+            obj.setCulling(true);
+            obj.setSpecularLighting(false); //was true
+            obj.build();
+            obj.compile();
+            obj.strip();
+            obj.addParent(plane);
+            obj.setShader(shineyShader);
+        }
 
-        objs[4].setShader(brainShad);
+        objs[2].setShader(brainShad);
+        subCortical[4].setShader(brainShad);
+        //subCortical[2].setShader(brainShad);
 
-        //Object3D t1 = objs[4];
-        //objs[4] = objs[1];
-        //objs[1] = t1;
+        //objs[0].setShader(brainShad);
 
-        objs[0].setShader(brainShad);
+        objs[0].setVisibility(false);
+        objs[1].setVisibility(false);
 
         brainShad.setUniform("transparent", 1);
 
@@ -296,7 +308,6 @@ public class BrainModel {
                     Labels.removeLabels();
                     selection = -1;
                     shads[i].setUniform("isSelected", 0);
-                    ;
                 }
 
                 selection = i;
@@ -367,13 +378,21 @@ public class BrainModel {
     public static void addToScene(World world)
     {
         world.addObject(plane);
-        //world.addObjects(objs);
+
         for(int i=0; i<objs.length; i++)
         {
-            if(i == 0 || i == 4)
+            if(i == 2)
                 continue;
             world.addObject(objs[i]);
         }
+
+        for(int i=0; i<subCortical.length; i++)
+        {
+            if(i == 4)
+                continue;
+            world.addObject(subCortical[i]);
+        }
+
         for (Object3D sphere : spheres)
             world.addObject(sphere);
 
@@ -382,8 +401,9 @@ public class BrainModel {
 
     public static void addToTransp(World world)
     {
-        world.addObject(objs[0]);
-        world.addObject(objs[4]);
+        //world.addObject(subCortical[1]);
+        world.addObject(subCortical[4]);
+        world.addObject(objs[2]);
     }
 
     public static void removeAll(World world)
@@ -417,11 +437,16 @@ public class BrainModel {
             if(cam!=null && buf!=null)
             {
                 SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres.get(i).getTransformedCenter());
+
+                if(vec == null)
+                    continue;
+
                 vec.y = buf.getHeight() - vec.y;
                 //GOT A NULL POINTER HERE ^, ON THIS LINE ABOVE WHEN TAPPING A PRETTY BUTTON
                 //ASSUMING IT WAS buf.getHeight(); ... Berrow?
-                if(vec!=null)
-                    shads[i].setUniform("spherePos", vec);
+                ///fixed another nullptr expection as well. Double whoops
+
+                shads[i].setUniform("spherePos", vec);
             }
         }
 

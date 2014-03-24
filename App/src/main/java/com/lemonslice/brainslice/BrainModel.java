@@ -128,11 +128,13 @@ public class BrainModel {
         // initialise brain sub-objs
         for (Object3D obj : objs)
         {
+            Log.d("JAMES", "Object loaded: "+String.valueOf(obj.getID()));
             obj.setCulling(true);
             obj.setSpecularLighting(false); //was true
             obj.build();
             obj.compile();
             obj.strip();
+            obj.setCollisionMode(Object3D.COLLISION_CHECK_SELF);
             obj.addParent(plane);
         }
 
@@ -226,6 +228,8 @@ public class BrainModel {
 
     public static void notifyTap(float x, float y)
     {
+
+
         boolean selected = false;
         int i = 0;
         int pos = -1;
@@ -240,6 +244,13 @@ public class BrainModel {
             Log.d("CAMPOS", camPos.toString());
             camPos = camPos.reflect(camPos);
         }
+
+        Log.d("Ray firing","Screen co-ordinates: "+String.valueOf(x)+","+String.valueOf(y));
+        SimpleVector screenProjection = Interact2D.reproject2D3D(cam, buf, (int)x, (int)y );
+        Log.d("Ray firing","Reprojected Screen co-ordinates: "+String.valueOf(screenProjection.x)+","+String.valueOf(screenProjection.y)+","+String.valueOf(screenProjection.z));
+
+        
+
 
         for(i = 0; i<spheres.size(); i++)
         {

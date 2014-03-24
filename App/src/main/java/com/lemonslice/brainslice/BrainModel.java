@@ -2,6 +2,7 @@ package com.lemonslice.brainslice;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Shader;
 import android.hardware.SensorManager;
 import android.util.Log;
 
@@ -69,6 +70,8 @@ public class BrainModel {
     private static MediaPlayer speak = new MediaPlayer();
     private static Context context;
     private static AudioManager audioManager;
+
+    private static Object3D blob = null;
 
     public static void load(Resources res, AudioManager audio, Context con)
     {
@@ -245,11 +248,19 @@ public class BrainModel {
             camPos = camPos.reflect(camPos);
         }
 
-        Log.d("Ray firing","Screen co-ordinates: "+String.valueOf(x)+","+String.valueOf(y));
         SimpleVector screenProjection = Interact2D.reproject2D3D(cam, buf, (int)x, (int)y );
+        Log.d("Ray firing","Screen co-ordinates: "+String.valueOf(x)+","+String.valueOf(y));
         Log.d("Ray firing","Reprojected Screen co-ordinates: "+String.valueOf(screenProjection.x)+","+String.valueOf(screenProjection.y)+","+String.valueOf(screenProjection.z));
+        Log.d("Ray firing","Camera Position: "+String.valueOf(camPos.x)+","+String.valueOf(camPos.y));
+        blob = Primitives.getBox(50f, 50f);
+        blob.setAdditionalColor(255,0,0);
+        blob.setLighting(Object3D.LIGHTING_ALL_ENABLED);
+        blob.build();
+        blob.compile();
+        blob.strip();
+        blob.translate(0f,0f,0f);
 
-        
+        Log.d("Ray firing","Blob Added");
 
 
         for(i = 0; i<spheres.size(); i++)
@@ -343,10 +354,13 @@ public class BrainModel {
 
     public static void addToScene(World world)
     {
-        world.addObject(plane);
-        world.addObjects(objs);
+//        world.addObject(plane);
+//        world.addObjects(objs);
         for (Object3D sphere : spheres)
             world.addObject(sphere);
+
+        if(blob != null)
+            world.addObject(blob);
 
 //        world.addObjects(sphereArray);
     }

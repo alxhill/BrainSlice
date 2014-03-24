@@ -87,6 +87,8 @@ public class MainActivity extends Activity implements EventListener {
         OverlayScreen.setContext(this);
         OverlayScreen.setFrameLayout(overlayingFrame);
 
+        VisualiseController.setContext(this);
+
         super.onCreate(savedInstanceState);
         mGLView = (GLSurfaceView)findViewById(R.id.openGlView);
 

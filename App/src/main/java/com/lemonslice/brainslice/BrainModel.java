@@ -141,7 +141,7 @@ public class BrainModel {
 
         // compile and load shaders for plane
         plane.setShader(shader);
-        plane.setSpecularLighting(true);
+        plane.setSpecularLighting(false);
         shader.setStaticUniform("invRadius", 0.0003f);
 
         // initialise brain sub-objs

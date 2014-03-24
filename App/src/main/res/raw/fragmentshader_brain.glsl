@@ -24,7 +24,7 @@ void main()
     float DiffuseTerm = clamp(dot(normalized_normal, normalized_vertex_to_light_vector), 0.0, 1.0);
 
 
-    vec3 col = (AmbientColor*0.0 + DiffuseColor * DiffuseTerm).xyz;
+    vec3 col = (AmbientColor*0.8 + DiffuseColor*0.8 * DiffuseTerm).xyz;
 
     float blend = length(col);
 

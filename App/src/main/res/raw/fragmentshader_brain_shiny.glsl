@@ -18,7 +18,7 @@ void main()
     const vec4 specularColor = vec4(0.2, 0.2, 0.2, 1.0);
 
     const float aS = 0.5;
-    const float dS = 0.7;
+    const float dS = 2.7;
     const float kS = 3.5;
 
     // Scaling The Input Vector To Length 1
@@ -26,7 +26,7 @@ void main()
 
     vec3 final_col = vec3(0.0,0.0,0.0);
 
-    for(int i=0; i<2; i++)
+    for(int i=0; i<3; i++)
     {
         vec3 normalized_vertex_to_light_vector = normalize(vertex_to_light_vector[i]);
 
@@ -44,7 +44,7 @@ void main()
         final_col = final_col + col;
     }
 
-    final_col = final_col / 2.0;
+    final_col = final_col / 3.0;
 
     // Calculating The Final Color
     gl_FragColor = vec4(final_col + aS*AmbientColor.xyz, 1.0);// + aS*AmbientColor;

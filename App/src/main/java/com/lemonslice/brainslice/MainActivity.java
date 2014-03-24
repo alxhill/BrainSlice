@@ -326,28 +326,17 @@ public class MainActivity extends Activity implements EventListener {
                 light2.setIntensity(122, 80, 80);
                 light2.setPosition(SimpleVector.create(100, -100, 0));
 
+                Light light3 = new Light(world);
+                light3.enable();
+                light3.setIntensity(122, 80, 80);
+                light3.setPosition(SimpleVector.create(-1000, 0, 0));
+
                 world.setAmbientLight(61, 40, 40);
-                //transparentWorld.setAmbientLight(61, 40, 40);
-
-                //Light lighttest = new Light(transparentWorld);
-                //lighttest.enable();
-                //lighttest.setIntensity(122, 80, 80);
-                //lighttest.setPosition(SimpleVector.create(100, 100, 0));
-
-
-                //world.compileAllObjects();
 
                 // construct camera and move it into position
                 Camera cam = world.getCamera();
                 cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
                 cam.lookAt(BrainModel.getTransformedCenter());
-
-                //Camera cam2 = transparentWorld.getCamera();
-                //cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
-                //cam.lookAt(BrainModel.getTransformedCenter());
-
-                //shader seems to be broken at the moment
-                //light.setPosition(cam.getPosition());
 
                 BrainModel.setCamera(cam);
 

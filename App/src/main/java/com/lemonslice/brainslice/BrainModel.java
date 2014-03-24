@@ -73,6 +73,8 @@ public class BrainModel {
     private static Context context;
     private static AudioManager audioManager;
 
+    private static boolean shouldDisplaySpheres = true;
+
     public static void load(Resources res, AudioManager audio, Context con)
 
     {
@@ -112,7 +114,7 @@ public class BrainModel {
             sphere.strip();
             sphere.setName(segment.getTitle());
             sphere.translate(segment.getPosition());
-            sphere.scale(1.6f);
+            sphere.scale(2.0f);
             
             spheres.add(sphere);
         }
@@ -167,9 +169,6 @@ public class BrainModel {
 
         objs[2].setShader(brainShad);
         subCortical[4].setShader(brainShad);
-        //subCortical[2].setShader(brainShad);
-
-        //objs[0].setShader(brainShad);
 
         objs[0].setVisibility(false);
         objs[1].setVisibility(false);
@@ -231,16 +230,7 @@ public class BrainModel {
 
     public static void setLabelsToDisplay(boolean x)
     {
-        if(spheres==null)
-            return;
-
-        for (Object3D sphere : spheres)
-        {
-            if(x && !sphere.hasParent(plane))
-                plane.addChild(sphere);
-            else if(!x && plane.hasChild(sphere))
-                plane.removeChild(sphere);
-        }
+        shouldDisplaySpheres = x;
     }
 
     private static boolean isVisibilityHodgePodge(Object3D sphere)
@@ -375,7 +365,13 @@ public class BrainModel {
 
     public static void addToScene(World world)
     {
+        if(plane == null)
+            return;
+
         world.addObject(plane);
+
+        if(objs == null)
+            return;
 
         for(int i=0; i<objs.length; i++)
         {
@@ -384,6 +380,9 @@ public class BrainModel {
             world.addObject(objs[i]);
         }
 
+        if(subCortical == null)
+            return;
+
         for(int i=0; i<subCortical.length; i++)
         {
             if(i == 4)
@@ -391,12 +390,21 @@ public class BrainModel {
             world.addObject(subCortical[i]);
         }
 
-        for (Object3D sphere : spheres)
-            world.addObject(sphere);
+        if(spheres == null)
+            return;
+
+        if(shouldDisplaySpheres)
+        {
+            for (Object3D sphere : spheres)
+                world.addObject(sphere);
+        }
     }
 
     public static void addToTransp(World world)
     {
+        if(subCortical == null || objs == null)
+            return;
+
         world.addObject(subCortical[4]);
         world.addObject(objs[2]);
     }

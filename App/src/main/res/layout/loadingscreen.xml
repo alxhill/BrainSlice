@@ -36,6 +36,6 @@
         android:layout_height="469dp"
         android:id="@+id/imageView2"
         android:layout_gravity="center"
-        android:src="@drawable/brain_vector_0" />
+        android:src="@drawable/brain_vector_2" />
 
 </FrameLayout>

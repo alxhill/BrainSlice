@@ -6,6 +6,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.view.MotionEvent;
 import android.content.Context;
+import android.view.Surface;
 import android.view.WindowManager;
 import android.view.Display;
 import android.graphics.Point;
@@ -82,22 +83,17 @@ public class VisualiseController extends AbstractController implements SensorEve
 
         Context cx = context.getApplicationContext();
         Display d = ((WindowManager) cx.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        Point size = new Point();
-        d.getSize(size);
-        int widthtab = size.x;
-        int heighttab = size.y;
+        //Point size = new Point();
+        int rotation = d.getRotation();
 
-        //If tablet
-        //BrainModel.rotate(y, -x, z);
-        //Else
-        //BrainModel.rotate(x, y, z);
-        if (widthtab > heighttab) {
+        if (rotation==Surface.ROTATION_0 || rotation==Surface.ROTATION_180) {
+            // this is a tablet
             BrainModel.rotate(y, -x, z);
         } else {
             BrainModel.rotate(x,y,z);
         }
 
-//        BrainModel.adjustCamera();
+        //BrainModel.adjustCamera();
     }
 
     @Override

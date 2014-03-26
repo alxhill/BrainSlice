@@ -52,24 +52,27 @@ public class BrainModel {
 //    private static RGBColor sphereTouchedColor = new RGBColor(255, 255, 0);
 
     private static Camera cam = null;
-    private static FrameBuffer buf = null;
 
+
+    private static FrameBuffer buf = null;
     private static float sphereRad = 2.0f;
 
     public static boolean isLoaded = false;
 
     private static int selection = -1;
 
+    private static GLSLShader[] shads = new GLSLShader[0];
+
     private static SimpleVector sidePosition = SimpleVector.create(-25,20,10);
     public static SimpleVector startPosition = SimpleVector.create(0,20,10);
     public static SimpleVector offScreenRightPosition = SimpleVector.create(50,20,10);
 
-    private static GLSLShader[] shads = new GLSLShader[0];
-    private static SimpleVector camPos;
     private static GLSLShader brainShad;
     private static GLSLShader shineyShader;
 
+    private static SimpleVector camPos;
     private static MediaPlayer speak = new MediaPlayer();
+
     private static Context context;
     private static AudioManager audioManager;
 
@@ -211,6 +214,11 @@ public class BrainModel {
         }
     }
 
+    public static ArrayList<Object3D> getSpheres()
+    {
+        return spheres;
+    }
+
     public static void setCamera(Camera c)
     {
         cam = c;
@@ -230,6 +238,11 @@ public class BrainModel {
     public static void updateCameraPos()
     {
         shineyShader.setUniform("cameraPos", cam.getPosition());
+    }
+
+    public static Camera getCamera()
+    {
+        return cam;
     }
 
     public static void setFrameBuffer(FrameBuffer b)
@@ -755,6 +768,11 @@ public class BrainModel {
         float[] orientation = new float[3];
         SensorManager.getOrientation(rotationMatrix.getDump(), orientation);
         return orientation;
+    }
+
+    public static Matrix getRotationMatrix()
+    {
+        return plane.getRotationMatrix();
     }
 
     static class Ease {

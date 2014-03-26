@@ -111,6 +111,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         // initialise and show the 3D renderer
         mGLView.setRenderer(renderer);
 
+
         // set up listening for click events
         Event.register("tap:learn", this);
         Event.register("tap:visualise", this);
@@ -123,6 +124,9 @@ public class MainActivity extends FragmentActivity implements EventListener {
         baseController = learnController;
 
         visualiseController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
+        visualiseController.setOverlayLabel((TextView) findViewById(R.id.label_overlay));
+        Event.register("tap:calibrate", visualiseController);
+
         OverlayScreen.setVisualiseController(visualiseController);
 
         Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
@@ -322,7 +326,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
             {
                 visualiseController.loadView();
             }
-
         }
         else if (name.equals("data:loaded"))
         {

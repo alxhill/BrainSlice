@@ -11,12 +11,22 @@ import android.view.Surface;
 import android.view.WindowManager;
 import android.view.Display;
 import android.graphics.Point;
+import android.widget.TextView;
+
+import com.lemonslice.brainslice.event.Event;
+import com.lemonslice.brainslice.event.EventListener;
+import com.threed.jpct.Matrix;
+import com.threed.jpct.Object3D;
+import com.threed.jpct.SimpleVector;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Handles gyro input and passes it to the brain model
  * Created by alexander on 28/01/2014.
  */
-public class VisualiseController extends AbstractController implements SensorEventListener {
+public class VisualiseController extends AbstractController implements SensorEventListener, EventListener {
     // current gyro rotation
     private float axisX, axisY, axisZ;
 
@@ -25,7 +35,12 @@ public class VisualiseController extends AbstractController implements SensorEve
     private static Context context;
     long oldTime;
     private boolean isLoaded;
+
+    private TextView overlayLabel;
+
     private WindowManager mWindowManager;
+    private float[] startRotation;
+
     public VisualiseController(SensorManager manager)
     {
         axisX = 0;
@@ -37,6 +52,8 @@ public class VisualiseController extends AbstractController implements SensorEve
         // initialise the sensor manager and listen for gyro events
         sensorManager = manager;
         gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+
+
     }
 
     @Override
@@ -101,10 +118,36 @@ public class VisualiseController extends AbstractController implements SensorEve
 
     public void showSection()
     {
-        float[] position = BrainModel.getPosition();
-        for (float pos : position)
-            Log.d("CurrentPosition", String.valueOf(pos));
-        Log.d("CurrentPosition", "===");
+        SimpleVector camPos = BrainModel.getCamera().getPosition();
+        Matrix rotMat = BrainModel.getRotationMatrix();
+        SimpleVector minPos = null;
+
+        ArrayList<Object3D> spheres = BrainModel.getSpheres();
+        String segmentName = null;
+
+        for (Object3D sphere : spheres)
+        {
+            SimpleVector spherePos = sphere.getTransformedCenter();
+            spherePos.rotate(rotMat);
+            Log.d("SPHERECENTRE", sphere.getName() + spherePos.toString());
+            if (minPos == null || minPos.distance(camPos) > spherePos.distance(camPos))
+            {
+                minPos = spherePos;
+                segmentName = sphere.getName();
+            }
+        }
+
+        if (segmentName == null) return;
+
+        final BrainSegment finalCurrentSegment = BrainInfo.getSegment(segmentName);
+
+        overlayLabel.post(new Runnable() {
+            @Override
+            public void run()
+            {
+                overlayLabel.setText(finalCurrentSegment.getTitle());
+            }
+        });
     }
 
     @Override
@@ -132,5 +175,21 @@ public class VisualiseController extends AbstractController implements SensorEve
     public static void setContext(Context c)
     {
         context = c;
+    }
+
+    public void setOverlayLabel(TextView overlayLabel)
+    {
+        this.overlayLabel = overlayLabel;
+    }
+
+    @Override
+    public void receiveEvent(String name, Object... data)
+    {
+        if (name.equals("tap:calibrate"))
+        {
+            startRotation = BrainModel.getPosition();
+
+        }
+
     }
 }

@@ -224,7 +224,7 @@ public class MainActivity extends Activity implements EventListener {
                 hideSystemBars();
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void hideSystemBars()
     {
         //API 14 = android 4.0 (ICS), API 19 = 4.4 (Kitkat)

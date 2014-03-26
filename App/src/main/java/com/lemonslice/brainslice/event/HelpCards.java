@@ -1,16 +1,14 @@
 package com.lemonslice.brainslice.event;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,12 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.lemonslice.brainslice.MainActivity;
 import com.lemonslice.brainslice.R;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -106,7 +101,6 @@ public class HelpCards {
         cardsScreen.addView(circleHolder);
         frameLayout.addView(cardsScreen);
     }
-
 }
 
 class CollectionPagerAdapter extends FragmentPagerAdapter {
@@ -117,9 +111,10 @@ class CollectionPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        Fragment fragment = new DemoObjectFragment();
+        Fragment fragment = new NewObjectFragment();
         Bundle args = new Bundle();
-        args.putInt(DemoObjectFragment.ARG_OBJECT, i + 1);
+        // Our object is just an integer :-P
+        args.putInt(NewObjectFragment.ARG_OBJECT, i + 1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -135,17 +130,23 @@ class CollectionPagerAdapter extends FragmentPagerAdapter {
     }
 }
 
-class DemoObjectFragment extends Fragment {
+class NewObjectFragment extends Fragment {
+    static int resID;
     public static final String ARG_OBJECT = "object";
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(
-                R.layout.card, container, false);
+        View rootView = null;
         Bundle args = getArguments();
-
-        Log.d("newui", Integer.toString(args.getInt(ARG_OBJECT)));
+        switch(args.getInt(ARG_OBJECT))
+        {
+            case 1: rootView = inflater.inflate(R.layout.card1, container, false); break;
+            case 2: rootView = inflater.inflate(R.layout.card2, container, false); break;
+            case 3: rootView = inflater.inflate(R.layout.card3, container, false); break;
+            case 4: rootView = inflater.inflate(R.layout.card4, container, false); break;
+            case 5: rootView = inflater.inflate(R.layout.card5, container, false); break;
+        }
 
         return rootView;
     }

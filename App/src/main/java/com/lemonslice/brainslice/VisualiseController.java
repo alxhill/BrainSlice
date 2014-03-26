@@ -4,6 +4,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.content.Context;
 import android.view.Surface;
@@ -93,7 +94,17 @@ public class VisualiseController extends AbstractController implements SensorEve
             BrainModel.rotate(x,y,z);
         }
 
+        showSection();
+
         //BrainModel.adjustCamera();
+    }
+
+    public void showSection()
+    {
+        float[] position = BrainModel.getPosition();
+        for (float pos : position)
+            Log.d("CurrentPosition", String.valueOf(pos));
+        Log.d("CurrentPosition", "===");
     }
 
     @Override

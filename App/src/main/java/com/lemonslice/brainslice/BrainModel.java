@@ -616,19 +616,21 @@ public class BrainModel {
             // current number of milliseconds elapsed
             int i = stepTime;
 
-            Ease ease = new Ease(scaleDiff,zoomTime, Ease.Easing.OUT_EXPO);
+            Ease ease = new Ease(scaleDiff, zoomTime, Ease.Easing.OUT_EXPO);
+
             @Override
-            public void run() {
+            public void run()
+            {
                 double stepZoom = (ease.step(i) - ease.step(i - stepTime) + getScale()) / getScale();
 
-                if(Double.isNaN(stepZoom))
+                if (Double.isNaN(stepZoom))
                     return;
 
                 scale((float) stepZoom);
                 i += stepTime;
                 if (i >= zoomTime) cancel();
             }
-        },100,15);
+        }, 100, 15);
     }
 
     public static void smoothRotateToGeneric(Matrix targetMatrix, final boolean elasticBounce)
@@ -732,8 +734,10 @@ public class BrainModel {
         return plane.getScale();
     }
 
-    public static void onVolumeKey(int keyCode, KeyEvent event) {
-        switch(keyCode) {
+    public static void onVolumeKey(int keyCode, KeyEvent event)
+    {
+        switch (keyCode)
+        {
             case KeyEvent.KEYCODE_VOLUME_UP:
                 audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
                 break;
@@ -741,6 +745,16 @@ public class BrainModel {
                 audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
                 break;
         }
+
+    }
+
+    public static float[] getPosition()
+    {
+        Matrix rotationMatrix = plane.getRotationMatrix().cloneMatrix();
+        rotationMatrix.orthonormalize();
+        float[] orientation = new float[3];
+        SensorManager.getOrientation(rotationMatrix.getDump(), orientation);
+        return orientation;
     }
 
     static class Ease {
@@ -759,7 +773,7 @@ public class BrainModel {
             this.type = type;
         }
 
-        public double step(double currentTime){
+        public double step(double currentTime) {
             switch (type){
                 case OUT_EXPO:
                     return easeOutExpo(delta, currentTime, totalTime);

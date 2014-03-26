@@ -105,6 +105,14 @@ public class BrainModel {
             spheres.add(sphere);
         }
 
+        blob = Primitives.getBox(5f, 1f);
+        blob.setAdditionalColor(255,0,0);
+        blob.setLighting(Object3D.LIGHTING_ALL_ENABLED);
+        blob.build();
+        blob.compile();
+        blob.strip();
+        blob.translate(0f,5f,0f);
+
         shads = new GLSLShader[spheres.size()];
 
         for(int i=0; i<spheres.size(); i++)
@@ -248,19 +256,14 @@ public class BrainModel {
             camPos = camPos.reflect(camPos);
         }
 
-        SimpleVector screenProjection = Interact2D.reproject2D3D(cam, buf, (int)x, (int)y );
+        SimpleVector sp = Interact2D.project3D2D(cam, buf, new SimpleVector(x,y,1f));
+        sp.set(sp.x/1000-10, sp.y/1000-4, sp.z);
         Log.d("Ray firing","Screen co-ordinates: "+String.valueOf(x)+","+String.valueOf(y));
-        Log.d("Ray firing","Reprojected Screen co-ordinates: "+String.valueOf(screenProjection.x)+","+String.valueOf(screenProjection.y)+","+String.valueOf(screenProjection.z));
+        Log.d("Ray firing","Reprojected Screen co-ordinates: "+String.valueOf(sp.x)+","+String.valueOf(sp.y)+","+String.valueOf(sp.z));
         Log.d("Ray firing","Camera Position: "+String.valueOf(camPos.x)+","+String.valueOf(camPos.y));
-        blob = Primitives.getBox(50f, 50f);
-        blob.setAdditionalColor(255,0,0);
-        blob.setLighting(Object3D.LIGHTING_ALL_ENABLED);
-        blob.build();
-        blob.compile();
-        blob.strip();
-        blob.translate(0f,0f,0f);
-
-        Log.d("Ray firing","Blob Added");
+        blob.clearTranslation();
+        blob.translate(sp);
+        Log.d("Ray firing","Blob Moved");
 
 
         for(i = 0; i<spheres.size(); i++)
@@ -360,7 +363,13 @@ public class BrainModel {
             world.addObject(sphere);
 
         if(blob != null)
+        {
             world.addObject(blob);
+            Log.d("Ray firing", "blob added to world");
+        }
+        else
+            Log.d("Ray firing", "blob null");
+
 
 //        world.addObjects(sphereArray);
     }

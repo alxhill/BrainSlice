@@ -11,6 +11,7 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 
 import com.lemonslice.brainslice.event.Event;
 import com.lemonslice.brainslice.event.EventListener;
+import com.lemonslice.brainslice.event.HelpCards;
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.Light;
@@ -43,7 +45,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * @author Based off JPCT HelloShader freely licenced example by EgonOlsen, heavily modified by LemonSlice
  */
-public class MainActivity extends Activity implements EventListener {
+public class MainActivity extends FragmentActivity implements EventListener {
 
     // Used to handle pause and resume...
     private static MainActivity master = null;
@@ -86,6 +88,8 @@ public class MainActivity extends Activity implements EventListener {
         Labels.setFrameLayout(overlayingFrame);
         OverlayScreen.setContext(this);
         OverlayScreen.setFrameLayout(overlayingFrame);
+        HelpCards.setContext(this);
+        HelpCards.setFrameLayout(overlayingFrame);
 
         VisualiseController.setContext(this);
 
@@ -151,7 +155,7 @@ public class MainActivity extends Activity implements EventListener {
             @Override
             public void onClick(View v)
             {
-                BrainModel.smoothRotateToFront();
+                HelpCards.show();
             }
         });
     }

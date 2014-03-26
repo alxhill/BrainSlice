@@ -335,25 +335,7 @@ public class BrainModel {
                 selection = i;
                 Labels.displayLabel(name);
 
-                if(name.equals("Brainstem"))
-                    audioID = R.raw.brain_stem;
-                else if(name.equals("Temporal lobe"))
-                    audioID = R.raw.temporal_lobe;
-                else if(name.equals("Parietal lobe"))
-                    audioID = R.raw.parietal_lobe;
-                else if(name.equals("Occipital lobe"))
-                    audioID = R.raw.occipital_lobe;
-                else if(name.equals("Frontal lobe"))
-                    audioID = R.raw.frontal_lobe;
-                else if(name.equals("Cerebellum"))
-                    audioID = R.raw.cerebellum;
-                else
-                    audioID = R.raw.brain_stem;
-
-                speak.stop();
-                speak.release();
-                speak = MediaPlayer.create(context, audioID);
-                speak.start();
+                BrainInfo.getSegment(name).playAudio(context);
 
                 SimpleVector spherePos = sphere.getTransformedCenter();
                 // ignore the translation of the plane when calculating rotation
@@ -759,15 +741,6 @@ public class BrainModel {
                 break;
         }
 
-    }
-
-    public static float[] getPosition()
-    {
-        Matrix rotationMatrix = plane.getRotationMatrix().cloneMatrix();
-        rotationMatrix.orthonormalize();
-        float[] orientation = new float[3];
-        SensorManager.getOrientation(rotationMatrix.getDump(), orientation);
-        return orientation;
     }
 
     public static Matrix getRotationMatrix()

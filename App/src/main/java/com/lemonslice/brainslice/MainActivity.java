@@ -118,6 +118,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         Event.register("tap:calibrate", this);
         Event.register("data:loaded", this);
         Event.register("model:loaded", this);
+        Event.register("visualiseover", this);
 
         learnController = new LearnController(getApplicationContext());
         learnController.loadView();
@@ -125,7 +126,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         visualiseController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
         visualiseController.setOverlayLabel((TextView) findViewById(R.id.label_overlay));
-        Event.register("tap:calibrate", visualiseController);
 
         OverlayScreen.setVisualiseController(visualiseController);
 

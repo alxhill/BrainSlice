@@ -1,11 +1,13 @@
 package com.lemonslice.brainslice;
 
+import android.content.Context;
+import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.threed.jpct.SimpleVector;
 
 import java.util.HashMap;
-import java.util.Objects;
+
 
 /**
  * Created by James on 29/01/14.
@@ -24,6 +26,7 @@ public class BrainSegment {
         this.description = description;
     }
 
+    private int audioId;
     private String title;
     private String description;
     private SimpleVector position;
@@ -34,12 +37,31 @@ public class BrainSegment {
         this.name = name;
     }
 
-    public BrainSegment(String title, String description, SimpleVector position)
+    public BrainSegment(int audioId, String title, String description, SimpleVector position, HashMap<String, Object> metadata)
+    {
+        this.audioId = audioId;
+        this.title = title;
+        this.description = description;
+        this.position = position;
+        this.metadata = metadata;
+    }
+
+    public BrainSegment(String description, String title, SimpleVector position, int audioId)
     {
         this.title = title;
         this.description = description;
         this.position = position;
+        this.audioId = audioId;
         Log.d("BrainSlice", "Created "+title);
+    }
+
+    public void playAudio(Context ctx)
+    {
+        if (audioId == -1) return;
+        if (BrainInfo.speaker.isPlaying()) return;
+
+        BrainInfo.speaker = MediaPlayer.create(ctx, audioId);
+        BrainInfo.speaker.start();
     }
 
     public String getTitle()

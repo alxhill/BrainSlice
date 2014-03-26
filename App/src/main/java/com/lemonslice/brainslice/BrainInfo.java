@@ -6,6 +6,8 @@ import android.util.JsonToken;
 import android.util.Log;
 
 import com.lemonslice.brainslice.event.Event;
+import android.media.MediaPlayer;
+
 import com.threed.jpct.SimpleVector;
 
 import java.io.IOException;
@@ -29,6 +31,8 @@ public class BrainInfo
         return dataIsLoaded;
     }
 
+    public static MediaPlayer speaker = new MediaPlayer();
+
     private static boolean dataIsLoaded = false;
 
     public static void setDataIsLoaded(boolean dataIsLoaded)
@@ -38,7 +42,8 @@ public class BrainInfo
             Event.trigger("data:loaded");
     }
 
-    public static HashMap<String, BrainSegment> getSegments() {
+    public static HashMap<String, BrainSegment> getSegments()
+    {
         if (!dataIsLoaded) return null;
         return segments;
     }

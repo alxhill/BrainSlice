@@ -26,7 +26,7 @@ import java.util.HashMap;
  * Handles gyro input and passes it to the brain model
  * Created by alexander on 28/01/2014.
  */
-public class VisualiseController extends AbstractController implements SensorEventListener, EventListener {
+public class VisualiseController extends AbstractController implements SensorEventListener {
     // current gyro rotation
     private float axisX, axisY, axisZ;
 
@@ -52,8 +52,6 @@ public class VisualiseController extends AbstractController implements SensorEve
         // initialise the sensor manager and listen for gyro events
         sensorManager = manager;
         gyroSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-
-
     }
 
     @Override
@@ -141,6 +139,9 @@ public class VisualiseController extends AbstractController implements SensorEve
 
         final BrainSegment finalCurrentSegment = BrainInfo.getSegment(segmentName);
 
+        if (!overlayLabel.getText().equals(finalCurrentSegment.getTitle()))
+            finalCurrentSegment.playAudio(context);
+
         overlayLabel.post(new Runnable() {
             @Override
             public void run()
@@ -182,14 +183,4 @@ public class VisualiseController extends AbstractController implements SensorEve
         this.overlayLabel = overlayLabel;
     }
 
-    @Override
-    public void receiveEvent(String name, Object... data)
-    {
-        if (name.equals("tap:calibrate"))
-        {
-            startRotation = BrainModel.getPosition();
-
-        }
-
-    }
 }

@@ -1,6 +1,11 @@
 package com.lemonslice.brainslice.event;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -18,6 +23,9 @@ import android.widget.TextView;
 import com.lemonslice.brainslice.MainActivity;
 import com.lemonslice.brainslice.R;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Created by James on 26/03/14.
  */
@@ -26,6 +34,8 @@ public class HelpCards {
     static Context context;
     static FrameLayout frameLayout;
     static LayoutInflater inflater;
+
+    static ArrayList<LinearLayout> circles;
 
     public static void setContext(Context c)
     {
@@ -36,24 +46,64 @@ public class HelpCards {
     static ViewPager mViewPager;
     static CollectionPagerAdapter mCollectionPagerAdapter;
 
-    public static void show() {
-        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LinearLayout cardsScreen = (LinearLayout)inflater.inflate(R.layout.cardholder, null);
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public static void show() {
+        int sdk = android.os.Build.VERSION.SDK_INT;
+
+        frameLayout.removeAllViews();
+        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        FrameLayout cardsScreen = (FrameLayout)inflater.inflate(R.layout.cardholder, null);
+
+        LinearLayout circleHolder = (LinearLayout)cardsScreen.findViewById(R.id.page_indicator_holder);
+        circles = new ArrayList<LinearLayout>(5);
+        for(int i=0; i<5; i++)
+        {
+            circles.add((LinearLayout)circleHolder.getChildAt(i));
+        }
+        circles.get(0).setBackground(context.getResources().getDrawable(R.drawable.circle_gold));
 
         FragmentActivity main = (FragmentActivity)context;
         mCollectionPagerAdapter =
                 new CollectionPagerAdapter(
                        main.getSupportFragmentManager());
-        assert cardsScreen != null;
+
         mViewPager = (ViewPager)cardsScreen.findViewById(R.id.pager);
         mViewPager.setPageMargin(-800);
         mViewPager.setHorizontalFadingEdgeEnabled(true);
         mViewPager.setFadingEdgeLength(30);
-        mViewPager.setOffscreenPageLimit(4);
+        mViewPager.setOffscreenPageLimit(2);
         mViewPager.setAdapter(mCollectionPagerAdapter);
 
-        frameLayout.removeAllViews();
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if(state == ViewPager.SCROLL_STATE_SETTLING)
+                {
+                    for (int i = 0; i < circles.size(); i++) {
+                        LinearLayout c = circles.get(i);
+                        if (mViewPager.getCurrentItem() == i)
+                            c.setBackground(context.getResources().getDrawable(R.drawable.circle_gold));
+                        else
+                            c.setBackground(context.getResources().getDrawable(R.drawable.circle_white));
+                    }
+
+                }
+            }
+        });
+
+        cardsScreen.removeView(circleHolder);
+        cardsScreen.addView(circleHolder);
         frameLayout.addView(cardsScreen);
     }
 
@@ -69,7 +119,6 @@ class CollectionPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int i) {
         Fragment fragment = new DemoObjectFragment();
         Bundle args = new Bundle();
-        // Our object is just an integer :-P
         args.putInt(DemoObjectFragment.ARG_OBJECT, i + 1);
         fragment.setArguments(args);
         return fragment;
@@ -77,7 +126,7 @@ class CollectionPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 100;
+        return 5;
     }
 
     @Override
@@ -86,16 +135,12 @@ class CollectionPagerAdapter extends FragmentPagerAdapter {
     }
 }
 
-// Instances of this class are fragments representing a single
-// object in our collection.
 class DemoObjectFragment extends Fragment {
     public static final String ARG_OBJECT = "object";
 
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        // The last two arguments ensure LayoutParams are inflated
-        // properly.
         View rootView = inflater.inflate(
                 R.layout.card, container, false);
         Bundle args = getArguments();

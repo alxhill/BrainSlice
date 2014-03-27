@@ -8,9 +8,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.content.Context;
 import android.view.Surface;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.Display;
 import android.graphics.Point;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.lemonslice.brainslice.event.Event;

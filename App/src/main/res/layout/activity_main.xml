@@ -121,12 +121,19 @@
         android:layout_marginLeft="15dp"
         android:id="@+id/label_overlay"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="@string/volume_icon"
+        android:id="@+id/volume_button"
+        android:visibility="invisible"/>
+
     <FrameLayout
         android:id="@+id/overlay_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:clickable="false">
-
     </FrameLayout>
 
 </FrameLayout>

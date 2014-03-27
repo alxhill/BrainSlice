@@ -71,7 +71,6 @@ public class BrainModel {
     private static GLSLShader shineyShader;
 
     private static SimpleVector camPos;
-    private static MediaPlayer speak = new MediaPlayer();
 
     private static Context context;
     private static AudioManager audioManager;

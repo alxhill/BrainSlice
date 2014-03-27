@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -50,10 +51,14 @@ import java.util.List;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+<<<<<<< HEAD
 /**
  * @author Based off JPCT HelloShader freely licenced example by EgonOlsen, heavily modified by LemonSlice
  */
 public class MainActivity extends FragmentActivity implements EventListener {
+=======
+public class MainActivity extends Activity implements EventListener {
+>>>>>>> merged changes
 
     // Used to handle pause and resume...
     private static MainActivity master = null;
@@ -61,6 +66,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
     AbstractController baseController;
     LearnController learnController;
     VisualiseController visualiseController;
+
+    private Button soundButton;
 
     // 3D stuff
     private GLSurfaceView mGLView;
@@ -129,6 +136,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         OverlayScreen.setVisualiseController(visualiseController);
 
+        // sets up the fonts and behaviour for the menu bar
         Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
 
         TextView learnIcon = (TextView) findViewById(R.id.learn_button_icon);
@@ -183,6 +191,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
             }
         });
 
+<<<<<<< HEAD
         // check for internet connectivity and load the data
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -206,6 +215,19 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
             BrainInfo.setDataIsLoaded(true);
         }
+=======
+        soundButton = (Button) findViewById(R.id.volume_button);
+        soundButton.setTypeface(fontAwesome);
+        soundButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        soundButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                Log.d("BrainSlice", "Pressed volume button");
+                Event.trigger("tap:volume");
+            }
+        });
+>>>>>>> merged changes
 
     }
 
@@ -310,6 +332,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         if (events[0].equals("tap"))
         {
             String tapType = events[1];
+            soundButton.setVisibility(View.GONE);
             if (tapType.equals("learn"))
             {
                 visualiseController.unloadView();
@@ -325,6 +348,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
             } else if (tapType.equals("calibrate"))
             {
                 visualiseController.loadView();
+                soundButton.setVisibility(View.VISIBLE);
             }
         }
         else if (name.equals("data:loaded"))
@@ -372,7 +396,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 world = new World();
                 //transparentWorld = new World();
 
-                BrainModel.load(res, (AudioManager)getSystemService(Context.AUDIO_SERVICE), getApplicationContext());
+                BrainModel.load(res, (AudioManager) getSystemService(Context.AUDIO_SERVICE), getApplicationContext());
 
                 BrainModel.addToScene(world);
 

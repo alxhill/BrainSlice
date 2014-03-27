@@ -22,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 import com.lemonslice.brainslice.event.Event;
 import com.lemonslice.brainslice.event.EventListener;
 import com.threed.jpct.Camera;
@@ -64,7 +66,7 @@ public class MainActivity extends Activity implements EventListener {
     // Frame overlaying 3d rendering for labels, instructions etc...
     private FrameLayout overlayingFrame;
 
-    protected void onCreate(Bundle savedInstanceState)
+    public void onCreate(Bundle savedInstanceState)
     {
 
         Logger.log("onCreate");
@@ -77,6 +79,18 @@ public class MainActivity extends Activity implements EventListener {
 
         overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
         hideSystemBars();
+
+
+        SlidingMenu menu = new SlidingMenu(this);
+        //menu = new SlidingMenu(MainActivity.this);
+        menu.setMode(SlidingMenu.LEFT);
+        menu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+        menu.attachToActivity(MainActivity.this, SlidingMenu.SLIDING_CONTENT);
+        menu.setBehindWidth(10);
+        menu.setBehindOffset(10);
+        menu.setBehindScrollScale(0.25f);
+        menu.setMenu(R.layout.labels);
+
 
         renderer = new MyRenderer();
 

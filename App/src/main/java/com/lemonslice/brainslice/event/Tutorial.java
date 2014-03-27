@@ -22,7 +22,7 @@ import java.util.ArrayList;
 /**
  * Created by James on 26/03/14.
  */
-public class HelpCards {
+public class Tutorial {
 
     public static final int NUMBER_OF_CARDS = 6;
 
@@ -48,7 +48,7 @@ public class HelpCards {
 
         frameLayout.removeAllViews();
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        FrameLayout cardsScreen = (FrameLayout)inflater.inflate(R.layout.cardholder, null);
+        FrameLayout cardsScreen = (FrameLayout)inflater.inflate(R.layout.card_holder, null);
 
         LinearLayout circleHolder = (LinearLayout)cardsScreen.findViewById(R.id.page_indicator_holder);
         circles = new ArrayList<LinearLayout>(NUMBER_OF_CARDS);
@@ -126,7 +126,7 @@ class CollectionPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return HelpCards.NUMBER_OF_CARDS;
+        return Tutorial.NUMBER_OF_CARDS;
     }
 
     @Override
@@ -151,13 +151,13 @@ class NewObjectFragment extends Fragment {
                 (rootView.findViewById(R.id.skip_tutorial)).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        HelpCards.hide();
+                        Tutorial.hide();
                     }
                 });
                 (rootView.findViewById(R.id.get_started)).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        HelpCards.mViewPager.setCurrentItem(1, true);
+                        Tutorial.mViewPager.setCurrentItem(1, true);
                     }
                 });
                 break;
@@ -165,7 +165,15 @@ class NewObjectFragment extends Fragment {
             case 3: rootView = inflater.inflate(R.layout.card3, container, false); break;
             case 4: rootView = inflater.inflate(R.layout.card4, container, false); break;
             case 5: rootView = inflater.inflate(R.layout.card5, container, false); break;
-            case 6: rootView = inflater.inflate(R.layout.card_final, container, false); break;
+            case 6: rootView = inflater.inflate(R.layout.card_final, container, false);
+                assert rootView != null;
+                (rootView.findViewById(R.id.get_started)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Tutorial.hide();
+                    }
+                });
+                break;
         }
 
         return rootView;

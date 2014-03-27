@@ -20,7 +20,7 @@
         android:orientation="horizontal"
         android:layout_gravity="bottom"
         android:gravity="center_horizontal"
-        android:background="@drawable/menu_bg">
+        android:background="@drawable/menu_background">
         <LinearLayout
             android:layout_gravity="center"
             android:gravity="center"

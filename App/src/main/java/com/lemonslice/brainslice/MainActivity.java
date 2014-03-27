@@ -1,7 +1,6 @@
 package com.lemonslice.brainslice;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
@@ -24,7 +23,7 @@ import android.widget.TextView;
 
 import com.lemonslice.brainslice.event.Event;
 import com.lemonslice.brainslice.event.EventListener;
-import com.lemonslice.brainslice.event.HelpCards;
+import com.lemonslice.brainslice.event.Tutorial;
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.Light;
@@ -80,17 +79,17 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         renderer = new MyRenderer();
 
-        LoadingScreen.setContext(this);
-        LoadingScreen.setFrameLayout(overlayingFrame);
-        LoadingScreen.setRenderer(renderer);
-        LoadingScreen.showLoadingScreen();
+        SplashScreen.setContext(this);
+        SplashScreen.setFrameLayout(overlayingFrame);
+        SplashScreen.setRenderer(renderer);
+        SplashScreen.show();
 
         Labels.setContext(this);
         Labels.setFrameLayout(overlayingFrame);
         OverlayScreen.setContext(this);
         OverlayScreen.setFrameLayout(overlayingFrame);
-        HelpCards.setContext(this);
-        HelpCards.setFrameLayout(overlayingFrame);
+        Tutorial.setContext(this);
+        Tutorial.setFrameLayout(overlayingFrame);
 
         VisualiseController.setContext(this);
 
@@ -156,7 +155,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
             @Override
             public void onClick(View v)
             {
-                HelpCards.show();
+                Tutorial.show();
             }
         });
     }

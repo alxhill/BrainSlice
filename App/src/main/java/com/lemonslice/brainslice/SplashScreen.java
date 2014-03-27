@@ -1,12 +1,11 @@
 package com.lemonslice.brainslice;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
-import android.opengl.GLSurfaceView;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+
+import com.lemonslice.brainslice.event.Tutorial;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,7 +13,7 @@ import java.util.TimerTask;
 /**
  * Created by James on 06/03/14.
  */
-public class LoadingScreen
+public class SplashScreen
 {
     static Context context;
     static FrameLayout frameLayout;
@@ -33,21 +32,23 @@ public class LoadingScreen
     public static void inflateView()
     {
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        FrameLayout loadingFrame = (FrameLayout)inflater.inflate(R.layout.loadingscreen, null);
+        FrameLayout loadingFrame = (FrameLayout)inflater.inflate(R.layout.loading_screen, null);
         frameLayout.removeAllViews();
         if (loadingFrame != null) frameLayout.addView(loadingFrame);
     }
 
-    public static void removeView()
+    public static void finished()
     {
         frameLayout.removeAllViews();
+        Tutorial.show();
     }
 
-    public static void showLoadingScreen()
+    public static void show()
     {
+        //inflate and show the xml loading screen
         inflateView();
-        final ProgressBar progressBar = (ProgressBar)frameLayout.findViewById(R.id.progressBarMain);
-        progressBar.setProgress(0);
+
+        //timeout thing (will be removed)
         new Timer().schedule(new TimerTask()
         {
             @Override
@@ -56,17 +57,17 @@ public class LoadingScreen
                 frameLayout.post(new Runnable() {
                     @Override
                     public void run() {
-                        progressBar.setProgress(progressBar.getProgress()+1);
-                        if ((progressBar.getProgress() > 99) && (renderer.isLoaded()))
+
+                        if ((renderer.isLoaded()))
                         {
-                            LoadingScreen.removeView();
+                            SplashScreen.finished();
                             cancel();
                         }
 
                     }
                 });
             }
-        }, 0, 40);
+        }, 0, 3000);
     }
 
 }

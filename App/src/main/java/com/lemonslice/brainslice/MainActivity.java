@@ -116,7 +116,7 @@ public class MainActivity extends Activity implements EventListener {
         TextView learnIcon = (TextView) findViewById(R.id.learn_button_icon);
         assert learnIcon != null;
         learnIcon.setTypeface(fontAwesome);
-        learnIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        //learnIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
         LinearLayout learnButton = (LinearLayout) findViewById(R.id.learn_button);
         learnButton.setOnClickListener(new FrameLayout.OnClickListener() {
@@ -130,7 +130,7 @@ public class MainActivity extends Activity implements EventListener {
         TextView soundIcon = (TextView) findViewById(R.id.visualise_button_icon);
         assert soundIcon != null;
         soundIcon.setTypeface(fontAwesome);
-        soundIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        //soundIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
         LinearLayout visualiseButton = (LinearLayout) findViewById(R.id.visualise_button);
         visualiseButton.setOnClickListener(new FrameLayout.OnClickListener() {
@@ -145,7 +145,7 @@ public class MainActivity extends Activity implements EventListener {
         TextView helpIcon = (TextView) findViewById(R.id.help_button_icon);
         assert helpIcon != null;
         helpIcon.setTypeface(fontAwesome);
-        helpIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        //helpIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
         LinearLayout helpButton = (LinearLayout) findViewById(R.id.help_button);
         helpButton.setOnClickListener(new FrameLayout.OnClickListener() {

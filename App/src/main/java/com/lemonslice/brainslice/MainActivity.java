@@ -142,17 +142,17 @@ public class MainActivity extends Activity implements EventListener {
             }
         });
 
-        TextView cenIcon = (TextView) findViewById(R.id.centre_button_icon);
-        assert cenIcon != null;
-        cenIcon.setTypeface(fontAwesome);
-        cenIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        TextView helpIcon = (TextView) findViewById(R.id.help_button_icon);
+        assert helpIcon != null;
+        helpIcon.setTypeface(fontAwesome);
+        helpIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
-        LinearLayout centreButton = (LinearLayout) findViewById(R.id.centre_button);
-        centreButton.setOnClickListener(new FrameLayout.OnClickListener() {
+        LinearLayout helpButton = (LinearLayout) findViewById(R.id.help_button);
+        helpButton.setOnClickListener(new FrameLayout.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                BrainModel.smoothRotateToFront();
+                // code for launching help here
             }
         });
     }

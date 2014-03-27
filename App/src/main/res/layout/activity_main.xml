@@ -79,25 +79,25 @@
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:id="@+id/centre_button"
+            android:id="@+id/help_button"
             android:background="@android:color/transparent"
             android:textColor="@android:color/white"
             android:clickable="true"
             android:layout_marginRight="30dp">
             <TextView
-                android:id="@+id/centre_button_icon"
+                android:id="@+id/help_button_icon"
                 android:gravity="center"
-                android:text="@string/centre_icon"
+                android:text="@string/help_icon"
                 android:layout_height="50dp"
                 android:layout_width="wrap_content"
                 android:layout_marginRight="3dp"/>
             <TextView
-                android:id="@+id/centre_button_text"
+                android:id="@+id/help_button_text"
                 android:gravity="center"
-                android:text="Centre"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:textSize="24sp" />
+                android:textSize="24sp"
+                android:text="@string/help_button_text" />
         </LinearLayout>
     </LinearLayout>
 

@@ -157,6 +157,7 @@ public class MainActivity extends Activity implements EventListener {
         });
     }
 
+    // This is to prevent accidental presses of the volume keys
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (event.getKeyCode()) {

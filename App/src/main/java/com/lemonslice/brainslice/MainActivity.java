@@ -21,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.lemonslice.brainslice.event.Event;
 import com.lemonslice.brainslice.event.EventListener;
 import com.threed.jpct.Camera;
@@ -65,6 +66,7 @@ public class MainActivity extends Activity implements EventListener {
 
     protected void onCreate(Bundle savedInstanceState)
     {
+
         Logger.log("onCreate");
         Logger.setLogLevel(Logger.LL_DEBUG);
 

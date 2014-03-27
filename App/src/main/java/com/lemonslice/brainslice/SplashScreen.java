@@ -1,20 +1,14 @@
 package com.lemonslice.brainslice;
 
 import android.content.Context;
-import android.graphics.Interpolator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.lemonslice.brainslice.event.Tutorial;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,7 +43,7 @@ public class SplashScreen
         return loadingFrame;
     }
 
-    public static void finished()
+    public static void finished_splash()
     {
         frameLayout.removeAllViews();
         Tutorial.show();
@@ -140,7 +134,7 @@ public class SplashScreen
                                                 frameLayout.post(new Runnable() {
                                                     @Override
                                                     public void run() {
-                                                        SplashScreen.finished();
+                                                        SplashScreen.finished_splash();
                                                     }
                                                 });
                                                 cancel();

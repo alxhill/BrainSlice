@@ -1,4 +1,4 @@
-package com.lemonslice.brainslice.event;
+package com.lemonslice.brainslice;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -12,10 +12,10 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-
-import com.lemonslice.brainslice.R;
 
 import java.util.ArrayList;
 
@@ -48,9 +48,11 @@ public class Tutorial {
 
         frameLayout.removeAllViews();
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        FrameLayout cardsScreen = (FrameLayout)inflater.inflate(R.layout.card_holder, null);
 
-        LinearLayout circleHolder = (LinearLayout)cardsScreen.findViewById(R.id.page_indicator_holder);
+        FrameLayout cardsScreen = (FrameLayout)inflater.inflate(R.layout.card_holder, null);
+        FrameLayout holder = (FrameLayout)cardsScreen.findViewById(R.id.holder);
+        LinearLayout circleHolder = (LinearLayout)holder.findViewById(R.id.page_indicator_holder);
+
         circles = new ArrayList<LinearLayout>(NUMBER_OF_CARDS);
         for(int i=0; i< NUMBER_OF_CARDS; i++)
         {
@@ -97,9 +99,16 @@ public class Tutorial {
             }
         });
 
-        cardsScreen.removeView(circleHolder);
-        cardsScreen.addView(circleHolder);
+        cardsScreen.removeView(holder);
+        cardsScreen.addView(holder);
+
+        //fade in
+        holder.setVisibility(View.INVISIBLE);
+
         frameLayout.addView(cardsScreen);
+        Animation fadeIn = AnimationUtils.loadAnimation(context, R.anim.fade_in);
+        fadeIn.setFillAfter(true);
+        holder.startAnimation(fadeIn);
     }
 
     public static void hide()

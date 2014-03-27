@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 import com.lemonslice.brainslice.event.Event;
 import com.lemonslice.brainslice.event.EventListener;
-import com.lemonslice.brainslice.event.Tutorial;
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.Light;

@@ -20,7 +20,7 @@ public class BrainInfo
         BrainSegment cerebellum = new BrainSegment(
             "Cerebellum",
             "This part of your brain helps you stay balanced and helps you move.",
-            SimpleVector.create(0, 100.0f, 50.0f));
+            SimpleVector.create(0, 100.0f, -50.0f));
 
         BrainSegment cerebrum = new BrainSegment(
             "Cerebrum",
@@ -35,7 +35,7 @@ public class BrainInfo
         BrainSegment brainStem = new BrainSegment(
             "Brainstem",
             "The brainstem is the back part of the brain, connected to the spinal cord. It keeps you breathing, sleeping, and eating.",
-            SimpleVector.create(0, 15.0f, 40.0f));
+            SimpleVector.create(0, 15.0f, -40.0f));
 
         BrainSegment hippocampus = new BrainSegment(
             "Hippocampus",
@@ -45,7 +45,7 @@ public class BrainInfo
         BrainSegment amygdala = new BrainSegment(
             "Amygdala",
             "The amygdalae are almond-shaped and help you process your memories and emotions.",
-            null);
+            SimpleVector.create(30.0f, 15.0f, -40.0f));
 
         BrainSegment medullaOblongata = new BrainSegment(
             "Medulla oblongata",
@@ -65,7 +65,7 @@ public class BrainInfo
         BrainSegment parietalLobe = new BrainSegment(
             "Parietal lobe",
             "The parietal lobe is the top part of your brain, which helps you understand your senses, like touch.",
-            SimpleVector.create(0, 80.0f, -50.0f));
+            SimpleVector.create(0, 80.0f, 50.0f));
 
         BrainSegment occipitalLobe = new BrainSegment(
             "Occipital lobe",
@@ -75,7 +75,7 @@ public class BrainInfo
         BrainSegment temporalLobe = new BrainSegment(
             "Temporal lobe",
             "The temporal lobe lets you keep visual memories, understand languages, and stores new memories and emotion.",
-            SimpleVector.create(75.0f, 0, 0));
+            SimpleVector.create(-75.0f, 0, 0));
 
 
         segments.put(cerebellum.getTitle(), cerebellum);

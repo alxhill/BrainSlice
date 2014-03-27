@@ -41,6 +41,7 @@ public class BrainModel {
     // magic 3D stuff
     private static Object3D plane;
     private static Object3D[] objs;
+    private static Object3D[] subCortical;
     private static GLSLShader shader = null;
 
     private static Semaphore brainSemaphore = new Semaphore(1);
@@ -65,12 +66,17 @@ public class BrainModel {
 
     private static GLSLShader[] shads;
     private static SimpleVector camPos;
+    private static GLSLShader brainShad;
+    private static GLSLShader shineyShader;
 
     private static MediaPlayer speak = new MediaPlayer();
     private static Context context;
     private static AudioManager audioManager;
 
+    private static boolean shouldDisplaySpheres = true;
+
     public static void load(Resources res, AudioManager audio, Context con)
+
     {
         context = con;
 
@@ -78,6 +84,14 @@ public class BrainModel {
 
         shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
                                 Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_spheres)));
+
+        brainShad = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_brain)),
+                                Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_brain)));
+
+        shineyShader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_brain_shiny)),
+                                Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_brain_shiny)));
+
+        shineyShader.setUniform("cameraPos", SimpleVector.create(0,0,0));
 
         // brain is parented to small plane
         plane = Primitives.getPlane(1, 1);
@@ -89,7 +103,9 @@ public class BrainModel {
 
         for (BrainSegment segment : segments.values())
         {
-            if (segment.getPosition() == null) continue;
+            if (segment.getPosition() == null)
+                continue;
+
             Object3D sphere = Primitives.getSphere(sphereRad);
             sphere.addParent(plane);
             sphere.setLighting(Object3D.LIGHTING_NO_LIGHTS);
@@ -98,6 +114,7 @@ public class BrainModel {
             sphere.strip();
             sphere.setName(segment.getTitle());
             sphere.translate(segment.getPosition());
+            sphere.scale(2.0f);
             
             spheres.add(sphere);
         }
@@ -117,8 +134,10 @@ public class BrainModel {
         // Load the 3d model
         Log.d("BrainSlice", "Loading .3ds file");
 
-        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.brain_model));
+        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.new_ser));
         Log.d("BrainSlice", "Loaded .3ds file");
+
+        subCortical = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.underbrain));
 
         // compile and load shaders for plane
         plane.setShader(shader);
@@ -134,11 +153,32 @@ public class BrainModel {
             obj.compile();
             obj.strip();
             obj.addParent(plane);
+            obj.setShader(shineyShader);
         }
+
+        for(Object3D obj : subCortical)
+        {
+            obj.setCulling(true);
+            obj.setSpecularLighting(false); //was true
+            obj.build();
+            obj.compile();
+            obj.strip();
+            obj.addParent(plane);
+            obj.setShader(shineyShader);
+        }
+
+        objs[2].setShader(brainShad);
+        subCortical[4].setShader(brainShad);
+
+        objs[0].setVisibility(false);
+        objs[1].setVisibility(false);
+
+        brainShad.setUniform("transparent", 1);
 
         // Set the model's initial position
         plane.rotateY((float) Math.PI);
-        plane.rotateX((float)-Math.PI / 2.0f);
+        plane.rotateX((float) -Math.PI / 2.0f);
+        plane.rotateZ((float) Math.PI);
         scale(0.5f);
 
         plane.build();
@@ -169,6 +209,11 @@ public class BrainModel {
         }
     }
 
+    public static void updateCameraPos()
+    {
+        shineyShader.setUniform("cameraPos", cam.getPosition());
+    }
+
     public static void setFrameBuffer(FrameBuffer b)
     {
         buf = b;
@@ -185,16 +230,7 @@ public class BrainModel {
 
     public static void setLabelsToDisplay(boolean x)
     {
-        if(spheres==null)
-            return;
-
-        for (Object3D sphere : spheres)
-        {
-            if(x && !sphere.hasParent(plane))
-                plane.addChild(sphere);
-            else if(!x && plane.hasChild(sphere))
-                plane.removeChild(sphere);
-        }
+        shouldDisplaySpheres = x;
     }
 
     private static boolean isVisibilityHodgePodge(Object3D sphere)
@@ -237,7 +273,6 @@ public class BrainModel {
         {
             // get a vector pointing directly to the camera
             camPos = cam.getDirection();
-            Log.d("CAMPOS", camPos.toString());
             camPos = camPos.reflect(camPos);
         }
 
@@ -252,7 +287,7 @@ public class BrainModel {
 
             float dist = (float) Math.sqrt(xd * xd + yd * yd);
 
-            if(dist < sphereRad*30.0f && isVisibilityHodgePodge(sphere))
+            if(dist < sphereRad*26.0f && isVisibilityHodgePodge(sphere))
             {
                 int audioID;
                 String name = sphere.getName();
@@ -262,7 +297,6 @@ public class BrainModel {
                     Labels.removeLabels();
                     selection = -1;
                     shads[i].setUniform("isSelected", 0);
-                    ;
                 }
 
                 selection = i;
@@ -313,7 +347,6 @@ public class BrainModel {
 
         for(; i<spheres.size(); i++)
         {
-            Log.d("LOOPDY LOOP", "lol");
             shads[i].setUniform("isSelected", 0);
         }
 
@@ -332,12 +365,53 @@ public class BrainModel {
 
     public static void addToScene(World world)
     {
-        world.addObject(plane);
-        world.addObjects(objs);
-        for (Object3D sphere : spheres)
-            world.addObject(sphere);
+        if(plane == null)
+            return;
 
-//        world.addObjects(sphereArray);
+        world.addObject(plane);
+
+        if(objs == null)
+            return;
+
+        for(int i=0; i<objs.length; i++)
+        {
+            if(i == 2)
+                continue;
+            world.addObject(objs[i]);
+        }
+
+        if(subCortical == null)
+            return;
+
+        for(int i=0; i<subCortical.length; i++)
+        {
+            if(i == 4)
+                continue;
+            world.addObject(subCortical[i]);
+        }
+
+        if(spheres == null)
+            return;
+
+        if(shouldDisplaySpheres)
+        {
+            for (Object3D sphere : spheres)
+                world.addObject(sphere);
+        }
+    }
+
+    public static void addToTransp(World world)
+    {
+        if(subCortical == null || objs == null)
+            return;
+
+        world.addObject(subCortical[4]);
+        world.addObject(objs[2]);
+    }
+
+    public static void removeAll(World world)
+    {
+        world.removeAll();
     }
 
     public static SimpleVector getTransformedCenter()
@@ -366,11 +440,16 @@ public class BrainModel {
             if(cam!=null && buf!=null)
             {
                 SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres.get(i).getTransformedCenter());
+
+                if(vec == null)
+                    continue;
+
                 vec.y = buf.getHeight() - vec.y;
                 //GOT A NULL POINTER HERE ^, ON THIS LINE ABOVE WHEN TAPPING A PRETTY BUTTON
                 //ASSUMING IT WAS buf.getHeight(); ... Berrow?
-                if(vec!=null)
-                    shads[i].setUniform("spherePos", vec);
+                ///fixed another nullptr expection as well. Double whoops
+
+                shads[i].setUniform("spherePos", vec);
             }
         }
 

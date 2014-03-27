@@ -7,10 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +23,8 @@ import java.util.ArrayList;
  * Created by James on 26/03/14.
  */
 public class HelpCards {
+
+    public static final int NUMBER_OF_CARDS = 6;
 
     static Context context;
     static FrameLayout frameLayout;
@@ -51,8 +51,8 @@ public class HelpCards {
         FrameLayout cardsScreen = (FrameLayout)inflater.inflate(R.layout.cardholder, null);
 
         LinearLayout circleHolder = (LinearLayout)cardsScreen.findViewById(R.id.page_indicator_holder);
-        circles = new ArrayList<LinearLayout>(5);
-        for(int i=0; i<5; i++)
+        circles = new ArrayList<LinearLayout>(NUMBER_OF_CARDS);
+        for(int i=0; i< NUMBER_OF_CARDS; i++)
         {
             circles.add((LinearLayout)circleHolder.getChildAt(i));
         }
@@ -101,9 +101,15 @@ public class HelpCards {
         cardsScreen.addView(circleHolder);
         frameLayout.addView(cardsScreen);
     }
+
+    public static void hide()
+    {
+
+        frameLayout.removeAllViews();
+    }
 }
 
-class CollectionPagerAdapter extends FragmentPagerAdapter {
+class CollectionPagerAdapter extends FragmentStatePagerAdapter {
 
     public CollectionPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -113,7 +119,6 @@ class CollectionPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int i) {
         Fragment fragment = new NewObjectFragment();
         Bundle args = new Bundle();
-        // Our object is just an integer :-P
         args.putInt(NewObjectFragment.ARG_OBJECT, i + 1);
         fragment.setArguments(args);
         return fragment;
@@ -121,7 +126,7 @@ class CollectionPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 5;
+        return HelpCards.NUMBER_OF_CARDS;
     }
 
     @Override
@@ -141,11 +146,26 @@ class NewObjectFragment extends Fragment {
         Bundle args = getArguments();
         switch(args.getInt(ARG_OBJECT))
         {
-            case 1: rootView = inflater.inflate(R.layout.card1, container, false); break;
+            case 1: rootView = inflater.inflate(R.layout.card_first, container, false);
+                assert rootView != null;
+                (rootView.findViewById(R.id.skip_tutorial)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        HelpCards.hide();
+                    }
+                });
+                (rootView.findViewById(R.id.get_started)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        HelpCards.mViewPager.setCurrentItem(1, true);
+                    }
+                });
+                break;
             case 2: rootView = inflater.inflate(R.layout.card2, container, false); break;
             case 3: rootView = inflater.inflate(R.layout.card3, container, false); break;
             case 4: rootView = inflater.inflate(R.layout.card4, container, false); break;
             case 5: rootView = inflater.inflate(R.layout.card5, container, false); break;
+            case 6: rootView = inflater.inflate(R.layout.card_final, container, false); break;
         }
 
         return rootView;

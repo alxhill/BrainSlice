@@ -1,7 +1,10 @@
 package com.lemonslice.brainslice;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
@@ -13,7 +16,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -118,7 +123,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         TextView learnIcon = (TextView) findViewById(R.id.learn_button_icon);
         assert learnIcon != null;
         learnIcon.setTypeface(fontAwesome);
-        learnIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        //learnIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
         LinearLayout learnButton = (LinearLayout) findViewById(R.id.learn_button);
         learnButton.setOnClickListener(new FrameLayout.OnClickListener() {
@@ -132,7 +137,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         TextView soundIcon = (TextView) findViewById(R.id.visualise_button_icon);
         assert soundIcon != null;
         soundIcon.setTypeface(fontAwesome);
-        soundIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        //soundIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
         LinearLayout visualiseButton = (LinearLayout) findViewById(R.id.visualise_button);
         visualiseButton.setOnClickListener(new FrameLayout.OnClickListener() {
@@ -144,21 +149,44 @@ public class MainActivity extends FragmentActivity implements EventListener {
             }
         });
 
-        TextView cenIcon = (TextView) findViewById(R.id.centre_button_icon);
-        assert cenIcon != null;
-        cenIcon.setTypeface(fontAwesome);
-        cenIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        TextView helpIcon = (TextView) findViewById(R.id.help_button_icon);
+        assert helpIcon != null;
+        helpIcon.setTypeface(fontAwesome);
+        //helpIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
-        LinearLayout centreButton = (LinearLayout) findViewById(R.id.centre_button);
-        centreButton.setOnClickListener(new FrameLayout.OnClickListener() {
+        LinearLayout helpButton = (LinearLayout) findViewById(R.id.help_button);
+        final Context context = this;
+
+        helpButton.setOnClickListener(new FrameLayout.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                Tutorial.show();
+                Log.d("BrainSlice","Dialog");
+
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+                // 1. Instantiate an AlertDialog.Builder with its constructor
+                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context,R.style.AppTheme));
+
+                // 2. Chain together various setter methods to set the dialog characteristics
+                builder.setTitle("Settings")
+                       .setPositiveButton("Close",new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialogInterface, int i) {
+                               Log.d("BrainSlice","Dialog: save");
+                           }
+                       })
+                       .setView(inflater.inflate(R.layout.dialog_settings,null));
+
+                // 3. Get the AlertDialog from create()
+                AlertDialog dialog = builder.create();
+
+                dialog.show();
             }
         });
     }
 
+    // This is to prevent accidental presses of the volume keys
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (event.getKeyCode()) {

@@ -7,6 +7,7 @@
     <string name="learn_icon">&#xf0a6;</string>
     <string name="visualise_icon">&#xf030;</string>
     <string name="help_icon">&#xf059;</string>
+    <string name="settings_icon">&#xf013;</string>
     <string name="loadingMessage">Loading ...</string>
     <string name="learn_button_text">Learn</string>
     <string name="visualise_button_text">Visualise</string>

@@ -4,10 +4,8 @@
   <component name="NewModuleRootManager" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/build/classes/main" />
     <output-test url="file://$MODULE_DIR$/build/classes/test" />
-=======
   <component name="NewModuleRootManager" inherit-compiler-output="true">
->>>>>>> 8fbb951ebb1482da23e3f0196819d149b745e742
-    <exclude-output />
+  <exclude-output />
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/build" />

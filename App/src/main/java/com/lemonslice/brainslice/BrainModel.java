@@ -40,6 +40,7 @@ public class BrainModel {
 
     // magic 3D stuff
     private static Object3D plane;
+    private static Object3D glowPlane;
     private static Object3D[] objs;
     private static Object3D[] subCortical;
     private static GLSLShader shader = null;
@@ -68,6 +69,9 @@ public class BrainModel {
     private static SimpleVector camPos;
     private static GLSLShader brainShad;
     private static GLSLShader shineyShader;
+    private static GLSLShader glowShader;
+
+    private static GLSLShader glowShad;
 
     private static MediaPlayer speak = new MediaPlayer();
     private static Context context;
@@ -91,10 +95,14 @@ public class BrainModel {
         shineyShader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_brain_shiny)),
                                 Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_brain_shiny)));
 
+        glowShader =  new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.glowshader_vert)),
+                                Loader.loadTextFile(res.openRawResource(R.raw.glowshader_frag)));
+
         shineyShader.setUniform("cameraPos", SimpleVector.create(0,0,0));
 
         // brain is parented to small plane
         plane = Primitives.getPlane(1, 1);
+        glowPlane = Primitives.getPlane(1, 200.0f);
 
         plane.setCulling(true);
 
@@ -177,7 +185,7 @@ public class BrainModel {
 
         // Set the model's initial position
         plane.rotateY((float) Math.PI);
-        plane.rotateX((float) -Math.PI / 2.0f);
+        plane.rotateX((float)-Math.PI / 2.0f);
         plane.rotateZ((float) Math.PI);
         scale(0.5f);
 
@@ -191,6 +199,10 @@ public class BrainModel {
         frontMatrix = new Matrix(plane.getRotationMatrix());
         // removes scale from the rotation matrix
         frontMatrix.orthonormalize();
+
+        glowPlane.setOrigin(SimpleVector.create(0, 0, 50));
+
+        glowPlane.setShader(glowShader);
 
         isLoaded=true;
     }
@@ -235,7 +247,7 @@ public class BrainModel {
 
     private static boolean isVisibilityHodgePodge(Object3D sphere)
     {
-        float hodgeFactor = 1.0f;
+        float hodgeFactor = 1.1f;
 
         SimpleVector bvec = plane.getTransformedCenter();
         SimpleVector cvec = cam.getPosition();
@@ -390,6 +402,23 @@ public class BrainModel {
             world.addObject(subCortical[i]);
         }
 
+
+
+        world.addObject(glowPlane);
+
+        if(plane == null || cam == null || buf == null)
+            return;
+
+        SimpleVector v = Interact2D.project3D2D(cam, buf, plane.getTransformedCenter());
+
+        if(v == null)
+            return;
+
+        glowShader.setUniform("centre", v);
+    }
+
+    public static void addToTransp(World world)
+    {
         if(spheres == null)
             return;
 
@@ -398,10 +427,7 @@ public class BrainModel {
             for (Object3D sphere : spheres)
                 world.addObject(sphere);
         }
-    }
 
-    public static void addToTransp(World world)
-    {
         if(subCortical == null || objs == null)
             return;
 

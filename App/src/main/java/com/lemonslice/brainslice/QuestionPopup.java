@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,11 @@ public class QuestionPopup extends DialogFragment {
                 dismiss();
             }
         });
+
+        final DisplayMetrics displaymetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        view.setMinimumHeight((int) (Math.max(displaymetrics.widthPixels, displaymetrics.heightPixels) * 0.8f));
+        view.setMinimumWidth((int) (Math.min(displaymetrics.widthPixels, displaymetrics.heightPixels) * 0.8f));
         return view;
     }
 

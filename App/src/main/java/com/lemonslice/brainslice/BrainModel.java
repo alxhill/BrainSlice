@@ -79,6 +79,8 @@ public class BrainModel {
 
     private static boolean shouldDisplaySpheres = true;
 
+    private static int screenWidth, screenHeight;
+
     public static void load(Resources res, AudioManager audio, Context con)
 
     {
@@ -204,6 +206,9 @@ public class BrainModel {
 
         glowPlane.setShader(glowShader);
 
+        glowShader.setUniform("sw", screenWidth);
+        glowShader.setUniform("sh", screenHeight);
+
         isLoaded=true;
     }
 
@@ -229,6 +234,12 @@ public class BrainModel {
     public static void setFrameBuffer(FrameBuffer b)
     {
         buf = b;
+
+        screenWidth = buf.getWidth();
+        screenHeight = buf.getHeight();
+
+        Log.d("BrainSliceD", String.valueOf(buf.getWidth()));
+
         if(cam == null)
             return;
 

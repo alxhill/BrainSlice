@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context="com.lemonslice.brainslice.MainActivity"
     tools:ignore="MergeRootFrame"
-    >
+    android:background="#001122">
 
 
     <android.opengl.GLSurfaceView android:id="@+id/openGlView"
@@ -20,7 +20,7 @@
         android:orientation="horizontal"
         android:layout_gravity="bottom"
         android:gravity="center_horizontal"
-        android:background="@drawable/menu_bg">
+        android:background="@drawable/menu_background">
         <LinearLayout
             android:layout_gravity="center"
             android:gravity="center"
@@ -31,14 +31,15 @@
             android:background="@android:color/transparent"
             android:textColor="@android:color/white"
             android:clickable="true"
-            android:layout_marginRight="30dp">
+            android:layout_marginLeft="100dp">
             <TextView
                 android:id="@+id/learn_button_icon"
                 android:gravity="center"
                 android:text="@string/learn_icon"
                 android:layout_height="50dp"
                 android:layout_width="wrap_content"
-                android:layout_marginRight="3dp"/>
+                android:layout_marginRight="3dp"
+                android:textSize="20sp" />
             <TextView
                 android:id="@+id/learn_button_text"
                 android:gravity="center"
@@ -57,14 +58,15 @@
             android:background="@android:color/transparent"
             android:textColor="@android:color/white"
             android:clickable="true"
-            android:layout_marginRight="30dp">
+            android:layout_marginRight="100dp">
             <TextView
                 android:id="@+id/visualise_button_icon"
                 android:gravity="center"
                 android:text="@string/visualise_icon"
                 android:layout_height="50dp"
                 android:layout_width="wrap_content"
-                android:layout_marginRight="3dp"/>
+                android:layout_marginRight="3dp"
+                android:textSize="20sp" />
             <TextView
                 android:id="@+id/visualise_button_text"
                 android:gravity="center"
@@ -74,30 +76,22 @@
                 android:textSize="24sp" />
             </LinearLayout>
         <LinearLayout
-            android:layout_gravity="center"
             android:gravity="center"
-            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:id="@+id/centre_button"
+            android:id="@+id/help_button"
             android:background="@android:color/transparent"
             android:textColor="@android:color/white"
             android:clickable="true"
-            android:layout_marginRight="30dp">
+            android:layout_marginRight="15dp"
+            android:layout_gravity="center">
             <TextView
-                android:id="@+id/centre_button_icon"
+                android:id="@+id/help_button_icon"
                 android:gravity="center"
-                android:text="@string/centre_icon"
-                android:layout_height="50dp"
+                android:text="@string/settings_icon"
+                android:layout_height="fill_parent"
                 android:layout_width="wrap_content"
-                android:layout_marginRight="3dp"/>
-            <TextView
-                android:id="@+id/centre_button_text"
-                android:gravity="center"
-                android:text="Centre"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:textSize="24sp" />
+                android:textSize="26sp" />
         </LinearLayout>
     </LinearLayout>
 

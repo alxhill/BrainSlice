@@ -151,7 +151,6 @@ public class LearnController extends AbstractController implements OnScaleGestur
         }
         dragX = distanceX * moveMult * resMultX / screenWidth;
         dragY = distanceY * moveMult * resMultY / screenHeight;
-        Log.d("Touch Input", "onScroll: " + dragY + " " + dragX + " " + distanceX + " " + distanceY);
         return true;
     }
 
@@ -161,7 +160,6 @@ public class LearnController extends AbstractController implements OnScaleGestur
     {
         if(scaleEnd > 0)
         {
-            Log.d("Andy","Andy");
             scaleEnd = 0;
             return true;
         }

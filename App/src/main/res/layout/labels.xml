@@ -30,7 +30,7 @@
                 android:typeface="sans"
                 android:textSize="40sp"
                 android:singleLine="true"
-                android:background="@drawable/segtitle"
+                android:background="@drawable/segment_title"
                 android:shadowColor="#7c9dae"
                 android:shadowDx="1"
                 android:shadowDy="1"

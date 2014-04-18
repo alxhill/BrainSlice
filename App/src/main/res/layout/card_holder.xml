@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/card_holder"
+    android:background="#3fa9f5"
+    >
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/holder"
+        >
+
+        <!--Card holder (page viewer)-->
+        <android.support.v4.view.ViewPager
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <!--Page indicator holder-->
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:paddingBottom="20dp"
+            android:id="@+id/page_indicator_holder"
+            android:orientation="horizontal"
+
+            >
+            <LinearLayout
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/circle_white"
+                android:layout_gravity="bottom|center"
+                android:id="@+id/page_indicator1"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:orientation="horizontal">
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/circle_white"
+                android:layout_gravity="bottom|center"
+                android:id="@+id/page_indicator2"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:orientation="horizontal">
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/circle_white"
+                android:layout_gravity="bottom|center"
+                android:id="@+id/page_indicator3"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:orientation="horizontal">
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/circle_white"
+                android:layout_gravity="bottom|center"
+                android:id="@+id/page_indicator4"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:orientation="horizontal">
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/circle_white"
+                android:layout_gravity="bottom|center"
+                android:id="@+id/page_indicator5"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:orientation="horizontal">
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/circle_white"
+                android:layout_gravity="bottom|center"
+                android:id="@+id/page_indicator6"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+</FrameLayout>

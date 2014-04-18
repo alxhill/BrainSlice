@@ -76,6 +76,7 @@
                     android:layout_gravity="center"
                     android:layout_alignParentBottom="true"
                     >
+
                     <Button
                         android:id="@+id/questionbutton"
                         android:layout_width="wrap_content"

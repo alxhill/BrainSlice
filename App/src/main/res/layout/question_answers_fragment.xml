@@ -1,0 +1,24 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+    <!--
+    <TextView
+        android:id="@+id/segment_question"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Insert question here"
+        android:textColor="#ffffff"
+        android:fontFamily="Helvetica_Neue"
+        android:typeface="sans"
+        android:textSize="25sp"
+        android:paddingTop="30dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="0dp"
+        />
+
+    <ListView>
+        android:layout_height = "wrap_content"
+        android:layout_width = "fill_parent"
+    </ListView> -->
+    </LinearLayout>

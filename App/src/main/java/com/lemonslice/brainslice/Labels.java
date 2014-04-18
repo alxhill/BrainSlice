@@ -2,6 +2,8 @@ package com.lemonslice.brainslice;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.provider.ContactsContract;
+import android.support.v4.app.FragmentManager;
 import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
@@ -23,7 +25,7 @@ public class Labels
     private static FrameLayout frameLayout;
     private static Context context;
 
-    private static View createLabel(LayoutInflater inflater, BrainSegment brainSegment)
+    private static View createLabel(LayoutInflater inflater, final BrainSegment brainSegment)
     {
         //get title and description of segment
         String title = brainSegment.getTitle();
@@ -51,7 +53,7 @@ public class Labels
         questionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               removeLabels();
+                MainActivity.showQuestion(brainSegment);
             }
         });
 

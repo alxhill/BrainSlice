@@ -14,6 +14,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
@@ -67,6 +68,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
     // Frame overlaying 3d rendering for labels, instructions etc...
     private FrameLayout overlayingFrame;
+
+    private static FragmentManager fm;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -184,6 +187,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 dialog.show();
             }
         });
+
+        fm = getSupportFragmentManager();
     }
 
     // This is to prevent accidental presses of the volume keys
@@ -199,6 +204,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 return super.onKeyDown(keyCode, event);
         }
     }
+
+
 
     @Override
     protected void onPause()
@@ -276,7 +283,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
             uiOptions = View.SYSTEM_UI_FLAG_LOW_PROFILE;
             getWindow().getDecorView().setSystemUiVisibility(uiOptions);
         }
-
     }
 
     @Override
@@ -308,6 +314,11 @@ public class MainActivity extends FragmentActivity implements EventListener {
         }
     }
 
+
+    public static void showQuestion(BrainSegment brainSegment){
+        QuestionPopup qp = QuestionPopup.newInstance(brainSegment);
+        qp.show(fm, "idgaf");
+    }
 
     class MyRenderer implements GLSurfaceView.Renderer {
         private boolean isLoaded = false;

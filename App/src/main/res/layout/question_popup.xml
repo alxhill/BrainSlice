@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/question_popup"
+    android:layout_width="1000dp"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="1000dp"
+    android:layout_gravity="center"
+    android:gravity="center">
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:id="@+id/question_text"
+        android:text="Sample question here"
+        />
+
+    <RadioGroup
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <RadioButton
+            android:id="@+id/answer1"
+            android:text = "answer1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            />
+        <RadioButton
+            android:id="@+id/answer2"
+            android:text = "answer1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            />
+        <RadioButton
+            android:id="@+id/answer3"
+            android:text = "answer1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            />
+        <RadioButton
+            android:id="@+id/answer4"
+            android:text = "answer1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            />
+    </RadioGroup>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:id="@+id/answer_button"
+        android:text="Check Answer"/>
+
+
+</LinearLayout>

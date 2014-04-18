@@ -48,7 +48,8 @@ public class BrainModel {
 
     private static Matrix frontMatrix;
 
-    private static ArrayList<Object3D> spheres = null;
+    private static ArrayList<Object3D> spheres = new ArrayList<Object3D>();
+    private static boolean showSpheres = false;
 //    private static RGBColor sphereNormalColor = new RGBColor(255, 255, 255);
 //    private static RGBColor sphereTouchedColor = new RGBColor(255, 255, 0);
 
@@ -64,7 +65,7 @@ public class BrainModel {
     private static SimpleVector sidePosition = SimpleVector.create(-25,20,10);
     public static SimpleVector startPosition = SimpleVector.create(0,20,10);
 
-    private static GLSLShader[] shads;
+    private static GLSLShader[] shads = new GLSLShader[0];
     private static SimpleVector camPos;
     private static GLSLShader brainShad;
     private static GLSLShader shineyShader;
@@ -76,7 +77,6 @@ public class BrainModel {
     private static boolean shouldDisplaySpheres = true;
 
     public static void load(Resources res, AudioManager audio, Context con)
-
     {
         context = con;
 
@@ -97,39 +97,6 @@ public class BrainModel {
         plane = Primitives.getPlane(1, 1);
 
         plane.setCulling(true);
-
-        HashMap<String,BrainSegment> segments = BrainInfo.getSegments();
-        spheres = new ArrayList<Object3D>(segments.size());
-
-        for (BrainSegment segment : segments.values())
-        {
-            if (segment.getPosition() == null)
-                continue;
-
-            Object3D sphere = Primitives.getSphere(sphereRad);
-            sphere.addParent(plane);
-            sphere.setLighting(Object3D.LIGHTING_NO_LIGHTS);
-            sphere.build();
-            sphere.compile();
-            sphere.strip();
-            sphere.setName(segment.getTitle());
-            sphere.translate(segment.getPosition());
-            sphere.scale(2.0f);
-            
-            spheres.add(sphere);
-        }
-
-        shads = new GLSLShader[spheres.size()];
-
-        for(int i=0; i<spheres.size(); i++)
-        {
-            shads[i] = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
-                    Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_spheres)));
-
-            shads[i].setUniform("isSelected", 0);
-
-            spheres.get(i).setShader(shads[i]);
-        }
 
         // Load the 3d model
         Log.d("BrainSlice", "Loading .3ds file");
@@ -192,7 +159,46 @@ public class BrainModel {
         // removes scale from the rotation matrix
         frontMatrix.orthonormalize();
 
-        isLoaded=true;
+        isLoaded = true;
+    }
+
+    public static void loadSegments(Resources res)
+    {
+        Log.d("BrainSlice", "laoding segments");
+        HashMap<String, BrainSegment> segments = BrainInfo.getSegments();
+        spheres = new ArrayList<Object3D>(segments.size());
+
+        for (BrainSegment segment : segments.values())
+        {
+            if (segment.getPosition() == null)
+                continue;
+
+            Object3D sphere = Primitives.getSphere(sphereRad);
+            sphere.addParent(plane);
+            sphere.setLighting(Object3D.LIGHTING_NO_LIGHTS);
+            sphere.build();
+            sphere.compile();
+            sphere.strip();
+            sphere.setName(segment.getName());
+            sphere.translate(segment.getPosition());
+            sphere.scale(2.0f);
+
+            spheres.add(sphere);
+        }
+
+        shads = new GLSLShader[spheres.size()];
+
+        for (int i = 0; i < spheres.size(); i++)
+        {
+            shads[i] = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
+                    Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_spheres)));
+
+            shads[i].setUniform("isSelected", 0);
+
+            spheres.get(i).setShader(shads[i]);
+        }
+
+        showSpheres = true;
     }
 
     public static void setCamera(Camera c)
@@ -200,6 +206,8 @@ public class BrainModel {
         cam = c;
         if(buf == null)
             return;
+
+        if (!showSpheres) return;
 
         for(int i=0; i<spheres.size(); i++)
         {
@@ -219,6 +227,8 @@ public class BrainModel {
         buf = b;
         if(cam == null)
             return;
+
+        if (!showSpheres) return;
 
         for(int i=0; i<spheres.size(); i++)
         {
@@ -558,14 +568,17 @@ public class BrainModel {
             Ease zEase = new Ease(zDiff, time, Ease.Easing.OUT_EXPO);
 
             @Override
-            public void run() {
+            public void run()
+            {
                 float stepMovementX = (float) (xEase.step(i) - xEase.step(i - stepTime));
                 float stepMovementY = (float) (yEase.step(i) - yEase.step(i - stepTime));
                 float stepMovementZ = (float) (zEase.step(i) - zEase.step(i - stepTime));
 
-                try {
+                try
+                {
                     brainSemaphore.acquire();
-                } catch (InterruptedException e) {
+                } catch (InterruptedException e)
+                {
                     return;
                 }
 

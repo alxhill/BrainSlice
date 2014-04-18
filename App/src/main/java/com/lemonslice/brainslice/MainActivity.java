@@ -9,6 +9,8 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
@@ -110,6 +112,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         Event.register("tap:learn", this);
         Event.register("tap:visualise", this);
         Event.register("tap:calibrate", this);
+        Event.register("data:loaded", this);
 
         learnController = new LearnController(getApplicationContext());
         learnController.loadView();
@@ -184,6 +187,15 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 dialog.show();
             }
         });
+
+        // check for internet connectivity and load the data
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected())
+            BrainInfo.loadData();
+        else
+            Log.d("BRAINSLICE", "not connected to the internet");
+
     }
 
     // This is to prevent accidental presses of the volume keys
@@ -291,20 +303,28 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 visualiseController.unloadView();
                 learnController.loadView();
                 baseController = learnController;
-            }
-            else if (tapType.equals("visualise"))
+            } else if (tapType.equals("visualise"))
             {
                 // overlays the calibrate screen, only loads the visualise controller
                 // after the calibrate button has been pressed.
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
                 learnController.unloadView();
                 baseController = visualiseController;
-            }
-            else if (tapType.equals("calibrate"))
+            } else if (tapType.equals("calibrate"))
             {
                 visualiseController.loadView();
             }
 
+        }
+        else if (name.equals("data:loaded"))
+        {
+            Log.d("DATALOAD", "now loading segments");
+            for (BrainSegment brain : BrainInfo.getSegments().values())
+            {
+                Log.d("DATADONE", brain.getTitle());
+            }
+
+            BrainModel.loadSegments(getResources());
         }
     }
 

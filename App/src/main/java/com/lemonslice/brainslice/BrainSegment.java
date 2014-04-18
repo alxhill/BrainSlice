@@ -12,17 +12,26 @@ import java.util.Objects;
  */
 
 public class BrainSegment {
+    private String name;
+
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
+    public void setDescription(String description)
+    {
+        this.description = description;
+    }
+
     private String title;
     private String description;
     private SimpleVector position;
     private HashMap<String, Object> metadata = new HashMap<String, Object>();
 
-    public BrainSegment(String title, String description, SimpleVector position, HashMap<String, Object> metadata)
+    public BrainSegment(String name)
     {
-        this.title = title;
-        this.description = description;
-        this.position = position;
-        this.metadata = metadata;
+        this.name = name;
     }
 
     public BrainSegment(String title, String description, SimpleVector position)
@@ -60,5 +69,15 @@ public class BrainSegment {
     public void setPosition(SimpleVector position)
     {
         this.position = position;
+    }
+
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
     }
 }

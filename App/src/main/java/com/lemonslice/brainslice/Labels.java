@@ -35,10 +35,7 @@ public class Labels
         TextView titleView = (TextView) label.findViewById(R.id.segment_title);
         titleView.setText(title);
 
-        if(title == BrainInfo.getSegment("Temporal lobe").getTitle())
-            titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 35);
-        else
-            titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40);
+        titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40);
 
 //        titleView = Utils.getSmallCaps(titleView);
 

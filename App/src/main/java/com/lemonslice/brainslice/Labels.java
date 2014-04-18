@@ -7,6 +7,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -45,6 +46,14 @@ public class Labels
         //Set the text of the description text view
         TextView descView = (TextView)label.findViewById(R.id.segment_description);
         descView.setText(description);
+
+        Button questionButton = (Button)label.findViewById(R.id.questionbutton);
+        questionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               removeLabels();
+            }
+        });
 
         //return view (linear layout)
         return label;

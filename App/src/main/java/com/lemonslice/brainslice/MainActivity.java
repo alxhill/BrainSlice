@@ -135,15 +135,25 @@ public class MainActivity extends FragmentActivity implements EventListener {
         TextView soundIcon = (TextView) findViewById(R.id.visualise_button_icon);
         assert soundIcon != null;
         soundIcon.setTypeface(fontAwesome);
-        //soundIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
         LinearLayout visualiseButton = (LinearLayout) findViewById(R.id.visualise_button);
         visualiseButton.setOnClickListener(new FrameLayout.OnClickListener() {
-
             @Override
             public void onClick(View v)
             {
                 Event.trigger("tap:visualise");
+            }
+        });
+
+        TextView helpIcon = (TextView) findViewById(R.id.help_button_icon);
+        helpIcon.setTypeface(fontAwesome);
+
+        LinearLayout helpButton = (LinearLayout) findViewById(R.id.help_button);
+        helpButton.setOnClickListener(new FrameLayout.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                Tutorial.show();
             }
         });
 

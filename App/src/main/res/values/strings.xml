@@ -14,5 +14,7 @@
     <string name="help_button_text">Help</string>
     <string name="sound_button_text_unmuted">Sound ON</string>
     <string name="sound_button_text_muted">Sound OFF</string>
+    <string name="ColourCodingSetting">Colour coding</string>
+    <string name="XRayModeSetting">X-ray mode</string>
 
 </resources>

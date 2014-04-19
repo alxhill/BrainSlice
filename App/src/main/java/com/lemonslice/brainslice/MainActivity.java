@@ -154,32 +154,12 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         LinearLayout helpButton = (LinearLayout) findViewById(R.id.help_button);
         final Context context = this;
-
+        final SettingsMenu mSettingsMenu = new SettingsMenu(context);
         helpButton.setOnClickListener(new FrameLayout.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                Log.d("BrainSlice","Dialog");
-
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-                // 1. Instantiate an AlertDialog.Builder with its constructor
-                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context,R.style.AppTheme));
-
-                // 2. Chain together various setter methods to set the dialog characteristics
-                builder.setTitle("Settings")
-                       .setPositiveButton("Close",new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialogInterface, int i) {
-                               Log.d("BrainSlice","Dialog: save");
-                           }
-                       })
-                       .setView(inflater.inflate(R.layout.dialog_settings,null));
-
-                // 3. Get the AlertDialog from create()
-                AlertDialog dialog = builder.create();
-
-                dialog.show();
+                mSettingsMenu.show();
             }
         });
     }

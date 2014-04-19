@@ -147,18 +147,15 @@ public class MainActivity extends FragmentActivity implements EventListener {
             }
         });
 
-        TextView helpIcon = (TextView) findViewById(R.id.help_button_icon);
-        assert helpIcon != null;
-        helpIcon.setTypeface(fontAwesome);
-        //helpIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        TextView settingsIcon = (TextView) findViewById(R.id.settings_button_icon);
+        settingsIcon.setTypeface(fontAwesome);
 
-        LinearLayout helpButton = (LinearLayout) findViewById(R.id.help_button);
+        LinearLayout settingsButton = (LinearLayout) findViewById(R.id.settings_button);
         final Context context = this;
         final SettingsMenu mSettingsMenu = new SettingsMenu(context);
-        helpButton.setOnClickListener(new FrameLayout.OnClickListener() {
+        settingsButton.setOnClickListener(new FrameLayout.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 mSettingsMenu.show();
             }
         });

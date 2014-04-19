@@ -11,8 +11,6 @@ varying vec3 n;
 varying vec3 vertex_to_light_vector;
 varying vec3 vertex_to_camera_vector;
 
-uniform vec3 lightPositions[8];
-
 uniform vec3 cameraPos;
 
 uniform vec4 additionalColor;

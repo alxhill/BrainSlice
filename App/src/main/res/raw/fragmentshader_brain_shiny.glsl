@@ -1,14 +1,12 @@
 precision mediump float;
 
 varying vec3 n;
-varying vec3 vertex_to_light_vector[8];
+varying vec3 vertex_to_light_vector[3];
 varying vec3 vertex_to_camera_vector;
 
 uniform int transparent;
 
 uniform vec3 cameraPos;
-
-uniform vec3 lightPositions[8];
 
 void main()
 {

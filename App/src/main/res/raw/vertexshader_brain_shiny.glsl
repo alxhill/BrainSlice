@@ -6,12 +6,9 @@ uniform mat4 modelViewProjectionMatrix;
 attribute vec4 position;
 attribute vec3 normal;
 
-
 varying vec3 n;
-varying vec3 vertex_to_light_vector[8];
+varying vec3 vertex_to_light_vector[3];
 varying vec3 vertex_to_camera_vector;
-
-uniform vec3 lightPositions[8];
 
 uniform vec3 cameraPos;
 

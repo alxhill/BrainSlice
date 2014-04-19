@@ -1,7 +1,6 @@
 package com.lemonslice.brainslice;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -206,6 +204,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         Logger.log("onPause");
         super.onPause();
         mGLView.onPause();
+        finish();
     }
 
     @Override
@@ -418,6 +417,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         }
     }
 
+    // This is not being used. Delete??
     private class StableArrayAdapter extends ArrayAdapter<String> {
 
         HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();

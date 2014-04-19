@@ -9,15 +9,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 public class QuestionPopup extends DialogFragment {
-    public QuestionPopup(){
 
+    private ArrayList<String> question = new ArrayList();
+    private int correctAnswer;
+
+    public QuestionPopup(BrainSegment brainSegment){
+        String[] q =  brainSegment.getRandomQuestion();
+
+        for(int i = 0; i < 5; i++)
+            question(i).add()
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.question_popup, container);
         getDialog().setTitle("Quiz Time!");
+
+        TextView tv = (TextView) view.findViewById(R.id.question_text);
+        tv.setText(question[0]);
+
+        RadioButton rb = (RadioButton) view.findViewById(R.id.answer1);
+        rb.setText(question[]);
 
         Button answer = (Button) view.findViewById(R.id.answer_button);
         answer.setOnClickListener(new View.OnClickListener() {
@@ -35,7 +52,7 @@ public class QuestionPopup extends DialogFragment {
     }
 
     public static QuestionPopup newInstance(BrainSegment brainSection) {
-        QuestionPopup qp = new QuestionPopup();
+        QuestionPopup qp = new QuestionPopup(BrainSegment brainSection);
         Bundle args = new Bundle();
         qp.setArguments(args);
         return qp;

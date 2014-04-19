@@ -2,6 +2,9 @@ package com.lemonslice.brainslice;
 
 import com.threed.jpct.SimpleVector;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -11,16 +14,43 @@ public class BrainInfo
 {
     private static HashMap<String, BrainSegment> segments = new HashMap<String, BrainSegment>();
 
+
+
     public static HashMap<String, BrainSegment> getSegments() {
         return segments;
     }
 
+
+
+
     static
     {
+        String[][] cerebellumQuestions =  {{"What part of the brain is this?", "Cerebellum", "Parietal Lobe", "Brainstem", "Ear lobe"},
+                                           {"Where is this part of the brain?", "Top", "Bottom", "Inside", "Front"}};
+        Integer[] cerebellumAnswers = {1, 3};
+
+        String[][] brainstemQuestions =  {{"What part of the brain is this?", "Cerebellum", "Parietal Lobe", "Brainstem", "Ear lobe"},
+                                          {"Where is this part of the brain?", "Top", "Bottom", "Inside", "Front"}};
+        Integer[] brainstemAnswers = {1, 3};
+
+        String[][] hippocapusQuestions =  {{"What part of the brain is this?", "Cerebellum", "Parietal Lobe", "Brainstem", "Ear lobe"},
+                                           {"Where is this part of the brain?", "Top", "Bottom", "Inside", "Front"}};
+        Integer[] hippocapusAnswers = {1, 3};
+
+        String[][] amygdalaQuestions =  {{"What part of the brain is this?", "Cerebellum", "Parietal Lobe", "Brainstem", "Ear lobe"},
+                                 {"Where is this part of the brain?", "Top", "Bottom", "Inside", "Front"}};
+        Integer[] amygdalaAnswers = {1, 3};
+
+        String[][] occipitalQuestions =  {{"What part of the brain is this?", "Cerebellum", "Parietal Lobe", "Brainstem", "Ear lobe"},
+                {"Where is this part of the brain?", "Top", "Bottom", "Inside", "Front"}};
+        Integer[] occipitalAnswers = {1, 3};
+
         BrainSegment cerebellum = new BrainSegment(
             "Cerebellum",
             "This part of your brain helps you stay balanced and helps you move.",
-            SimpleVector.create(0, 100.0f, -50.0f));
+            SimpleVector.create(0, 100.0f, -50.0f),
+            new ArrayList<String[]>(Arrays.asList(cerebellumQuestions)),
+            new ArrayList<Integer>(Arrays.asList(cerebellumAnswers)));
 
         BrainSegment cerebrum = new BrainSegment(
             "Cerebrum",
@@ -35,7 +65,9 @@ public class BrainInfo
         BrainSegment brainStem = new BrainSegment(
             "Brainstem",
             "The brainstem is the back part of the brain, connected to the spinal cord. It keeps you breathing, sleeping, and eating.",
-            SimpleVector.create(0, 15.0f, -40.0f));
+            SimpleVector.create(0, 15.0f, -40.0f),
+            new ArrayList<String[]>(Arrays.asList(brainstemQuestions)),
+            new ArrayList<Integer>(Arrays.asList(brainstemAnswers)));
 
         BrainSegment hippocampus = new BrainSegment(
             "Hippocampus",

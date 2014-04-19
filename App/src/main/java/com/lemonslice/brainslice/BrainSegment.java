@@ -20,6 +20,7 @@ public class BrainSegment {
     private HashMap<String, Object> metadata = new HashMap<String, Object>();
     private ArrayList<String[]> questions = new ArrayList<String[]>();  //First string is question, second is correct answer, rest are answers.
     private ArrayList<Integer> answer = new ArrayList<Integer>();
+    private int lastQuestion;   //Index of last question to be retrieved
 
     public BrainSegment(String title, String description, SimpleVector position, HashMap<String, Object> metadata, ArrayList<String[]> questions, ArrayList<Integer> answer)
     {
@@ -72,11 +73,12 @@ public class BrainSegment {
 
     public String[] getRandomQuestion(){
         Random r = new Random();
-        return questions.get(r.nextInt(questions.size()));
+        lastQuestion = r.nextInt(questions.size());
+        return questions.get(lastQuestion);
     }
 
     //Returns index of question array tat has the correct answer
     public int getCorrectAnswer(){
-
+        return answer.get(lastQuestion);
     }
 }

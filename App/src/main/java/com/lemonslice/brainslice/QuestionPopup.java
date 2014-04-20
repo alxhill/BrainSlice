@@ -1,5 +1,6 @@
 package com.lemonslice.brainslice;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.util.DisplayMetrics;
@@ -20,6 +21,9 @@ public class QuestionPopup extends DialogFragment {
     private ArrayList<String> question = new ArrayList();
     private int correctAnswer;
     private int guessedAnswer = -1;
+    private TextView questionText;
+    private Button answerButton;
+    private boolean beenAnswered = false;
 
     public QuestionPopup(BrainSegment brainSegment){
         question = new ArrayList(Arrays.asList(brainSegment.getRandomQuestion()));
@@ -30,8 +34,8 @@ public class QuestionPopup extends DialogFragment {
         View view = inflater.inflate(R.layout.question_popup, container);
         getDialog().setTitle("Quiz Time!");
 
-        TextView tv = (TextView) view.findViewById(R.id.question_text);
-        tv.setText(question.get(0));
+        questionText = (TextView) view.findViewById(R.id.question_text);
+        questionText.setText(question.get(0));
 
         RadioButton rb = (RadioButton) view.findViewById(R.id.answer1);
         rb.setText(question.get(1));
@@ -47,7 +51,6 @@ public class QuestionPopup extends DialogFragment {
 
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int radioButtonId) {
-
                 switch(radioButtonId) {
                     case R.id.answer1:
                         guessedAnswer = 1;
@@ -67,14 +70,18 @@ public class QuestionPopup extends DialogFragment {
             }
         });
 
-        Button answer = (Button) view.findViewById(R.id.answer_button);
-        answer.setOnClickListener(new View.OnClickListener() {
+        answerButton = (Button) view.findViewById(R.id.answer_button);
+        answerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(guessedAnswer == correctAnswer)
-                    correct();
-                else if(guessedAnswer != -1)
-                    incorrect();
+                if(!beenAnswered) {
+                    if (guessedAnswer == correctAnswer)
+                        correct();
+                    else if (guessedAnswer != -1)
+                        incorrect();
+                } else {
+                    dismiss();
+                }
             }
         });
 
@@ -94,9 +101,16 @@ public class QuestionPopup extends DialogFragment {
 
     private void correct(){
         Log.d("Quiz", "Correct!");
+        questionText.setText("Correct!");
+        questionText.setTextSize(20);
+        questionText.setTextColor(Color.GREEN);
+        answerButton.setText("Close");
+        beenAnswered = true;
     }
 
     private void incorrect(){
         Log.d("Quiz", "Incorrect :(");
+        if(!beenAnswered)
+            questionText.setText(questionText.getText() + "\n\nIncorrect :(");
     }
 }

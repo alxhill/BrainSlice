@@ -344,7 +344,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         }
         else if (name.equals("model:loaded"))
         {
-            if (!BrainModel.spheresLoaded)
+            if (!BrainModel.spheresLoaded && BrainInfo.isDataIsLoaded())
                 BrainModel.loadSegments(getResources());
         }
     }

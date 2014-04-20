@@ -8,10 +8,6 @@ import android.util.Log;
 import com.lemonslice.brainslice.event.Event;
 import com.threed.jpct.SimpleVector;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,14 +24,19 @@ public class BrainInfo
 
     private static HashMap<String, BrainSegment> segments = new HashMap<String, BrainSegment>();
 
+    public static boolean isDataIsLoaded()
+    {
+        return dataIsLoaded;
+    }
+
+    private static boolean dataIsLoaded = false;
+
     public static void setDataIsLoaded(boolean dataIsLoaded)
     {
         BrainInfo.dataIsLoaded = dataIsLoaded;
         if (dataIsLoaded)
             Event.trigger("data:loaded");
     }
-
-    private static boolean dataIsLoaded = false;
 
     public static HashMap<String, BrainSegment> getSegments() {
         if (!dataIsLoaded) return null;

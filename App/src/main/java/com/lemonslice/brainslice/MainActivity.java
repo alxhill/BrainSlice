@@ -118,6 +118,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         Event.register("tap:visualise", this);
         Event.register("tap:calibrate", this);
         Event.register("data:loaded", this);
+        Event.register("model:loaded", this);
 
         learnController = new LearnController(getApplicationContext());
         learnController.loadView();
@@ -196,8 +197,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
         // check for internet connectivity and load the data
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        networkInfo = null;
-        Log.d("MAINACTIVITY", "about to load data and stuff....");
         if (networkInfo != null && networkInfo.isConnected())
             BrainInfo.loadData();
         else
@@ -340,13 +339,13 @@ public class MainActivity extends FragmentActivity implements EventListener {
         }
         else if (name.equals("data:loaded"))
         {
-            Log.d("DATALOAD", "now loading segments");
-            for (BrainSegment brain : BrainInfo.getSegments().values())
-            {
-                Log.d("DATADONE", brain.getTitle());
-            }
-
-            BrainModel.loadSegments(getResources());
+            if (BrainModel.isLoaded)
+                BrainModel.loadSegments(getResources());
+        }
+        else if (name.equals("model:loaded"))
+        {
+            if (!BrainModel.spheresLoaded)
+                BrainModel.loadSegments(getResources());
         }
     }
 

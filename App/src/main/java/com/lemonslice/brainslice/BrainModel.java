@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.hardware.SensorManager;
 import android.util.Log;
 
+import com.lemonslice.brainslice.event.Event;
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.GLSLShader;
@@ -12,7 +13,6 @@ import com.threed.jpct.Loader;
 import com.threed.jpct.Matrix;
 import com.threed.jpct.Object3D;
 import com.threed.jpct.Primitives;
-import com.threed.jpct.RGBColor;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.World;
 import com.threed.jpct.Interact2D;
@@ -27,8 +27,6 @@ import android.media.AudioManager;
 import android.view.KeyEvent;
 
 import java.util.concurrent.Semaphore;
-
-import android.view.KeyEvent;
 
 /**
  * Renders the brain to the screen and handles moving the model
@@ -49,7 +47,7 @@ public class BrainModel {
     private static Matrix frontMatrix;
 
     private static ArrayList<Object3D> spheres = new ArrayList<Object3D>();
-    private static boolean showSpheres = false;
+    public static boolean spheresLoaded = false;
 //    private static RGBColor sphereNormalColor = new RGBColor(255, 255, 255);
 //    private static RGBColor sphereTouchedColor = new RGBColor(255, 255, 0);
 
@@ -58,7 +56,7 @@ public class BrainModel {
 
     private static float sphereRad = 2.0f;
 
-    private static boolean isLoaded = false;
+    public static boolean isLoaded = false;
 
     private static int selection = -1;
 
@@ -160,6 +158,7 @@ public class BrainModel {
         frontMatrix.orthonormalize();
 
         isLoaded = true;
+        Event.trigger("model:loaded");
     }
 
     public static void loadSegments(Resources res)
@@ -198,7 +197,7 @@ public class BrainModel {
             spheres.get(i).setShader(shads[i]);
         }
 
-        showSpheres = true;
+        spheresLoaded = true;
     }
 
     public static void setCamera(Camera c)
@@ -207,7 +206,7 @@ public class BrainModel {
         if(buf == null)
             return;
 
-        if (!showSpheres) return;
+        if (!spheresLoaded) return;
 
         for(int i=0; i<spheres.size(); i++)
         {
@@ -228,7 +227,7 @@ public class BrainModel {
         if(cam == null)
             return;
 
-        if (!showSpheres) return;
+        if (!spheresLoaded) return;
 
         for(int i=0; i<spheres.size(); i++)
         {

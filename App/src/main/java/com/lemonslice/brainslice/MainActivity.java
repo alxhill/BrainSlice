@@ -207,13 +207,14 @@ public class MainActivity extends FragmentActivity implements EventListener {
             {
                 JsonReader reader = new JsonReader(new InputStreamReader(data, "UTF-8"));
                 BrainInfo.parseJSON(reader);
-            } catch (UnsupportedEncodingException e)
+                reader.close();
+                data.close();
+            } catch (Exception e)
             {
                 e.printStackTrace();
-            } catch (IOException e)
-            {
-                e.printStackTrace();
+                Log.d("BRAINSLICE", "parsing error");
             }
+
             BrainInfo.setDataIsLoaded(true);
         }
 

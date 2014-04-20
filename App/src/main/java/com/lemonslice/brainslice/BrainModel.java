@@ -443,6 +443,8 @@ public class BrainModel {
         plane.rotateY(y);
         plane.rotateZ(z);
 
+        if (!spheresLoaded) return;
+
         // updates the sphere shaders so the gradient is drawn in the right location
         for(int i=0; i<spheres.size(); i++)
         {

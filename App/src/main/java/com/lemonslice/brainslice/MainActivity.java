@@ -1,7 +1,6 @@
 package com.lemonslice.brainslice;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,7 +17,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.JsonReader;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -146,11 +144,9 @@ public class MainActivity extends FragmentActivity implements EventListener {
         TextView soundIcon = (TextView) findViewById(R.id.visualise_button_icon);
         assert soundIcon != null;
         soundIcon.setTypeface(fontAwesome);
-        //soundIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
         LinearLayout visualiseButton = (LinearLayout) findViewById(R.id.visualise_button);
         visualiseButton.setOnClickListener(new FrameLayout.OnClickListener() {
-
             @Override
             public void onClick(View v)
             {
@@ -159,38 +155,27 @@ public class MainActivity extends FragmentActivity implements EventListener {
         });
 
         TextView helpIcon = (TextView) findViewById(R.id.help_button_icon);
-        assert helpIcon != null;
         helpIcon.setTypeface(fontAwesome);
-        //helpIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 
         LinearLayout helpButton = (LinearLayout) findViewById(R.id.help_button);
-        final Context context = this;
-
         helpButton.setOnClickListener(new FrameLayout.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                Log.d("BrainSlice","Dialog");
+                Tutorial.show();
+            }
+        });
 
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        TextView settingsIcon = (TextView) findViewById(R.id.settings_button_icon);
+        settingsIcon.setTypeface(fontAwesome);
 
-                // 1. Instantiate an AlertDialog.Builder with its constructor
-                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context,R.style.AppTheme));
-
-                // 2. Chain together various setter methods to set the dialog characteristics
-                builder.setTitle("Settings")
-                       .setPositiveButton("Close",new DialogInterface.OnClickListener() {
-                           @Override
-                           public void onClick(DialogInterface dialogInterface, int i) {
-                               Log.d("BrainSlice","Dialog: save");
-                           }
-                       })
-                       .setView(inflater.inflate(R.layout.dialog_settings,null));
-
-                // 3. Get the AlertDialog from create()
-                AlertDialog dialog = builder.create();
-
-                dialog.show();
+        LinearLayout settingsButton = (LinearLayout) findViewById(R.id.settings_button);
+        final Context context = this;
+        final SettingsMenu mSettingsMenu = new SettingsMenu(context);
+        settingsButton.setOnClickListener(new FrameLayout.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSettingsMenu.show();
             }
         });
 
@@ -240,6 +225,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         Logger.log("onPause");
         super.onPause();
         mGLView.onPause();
+        finish();
     }
 
     @Override
@@ -460,6 +446,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         }
     }
 
+    // This is not being used. Delete??
     private class StableArrayAdapter extends ArrayAdapter<String> {
 
         HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();

@@ -9,16 +9,16 @@
     <Switch
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Colour coding"
-        android:id="@+id/switch1"
+        android:text="@string/ColourCodingSetting"
+        android:id="@+id/colourSwitch"
         android:textSize="18sp"
         android:layout_marginBottom="20dp" />
 
     <Switch
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="X-ray mode"
-        android:id="@+id/switch2"
+        android:text="@string/XRayModeSetting"
+        android:id="@+id/xRaySwitch"
         android:checked="true"
         android:textSize="18sp" />
 </LinearLayout>

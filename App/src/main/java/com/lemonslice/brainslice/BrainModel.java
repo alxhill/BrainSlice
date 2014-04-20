@@ -132,8 +132,7 @@ public class BrainModel {
             obj.setShader(shineyShader);
         }
 
-        objs[2].setShader(brainShad);
-        subCortical[4].setShader(brainShad);
+        setXRayMode(true);
 
         objs[0].setVisibility(false);
         objs[1].setVisibility(false);
@@ -198,6 +197,17 @@ public class BrainModel {
         }
 
         spheresLoaded = true;
+    }
+
+    public static void setXRayMode(boolean xRayMode)
+    {
+        if (xRayMode) {
+            objs[2].setShader(brainShad);
+            subCortical[4].setShader(brainShad);
+        } else {
+            objs[2].setShader(shineyShader);
+            subCortical[4].setShader(shineyShader);
+        }
     }
 
     public static void setCamera(Camera c)

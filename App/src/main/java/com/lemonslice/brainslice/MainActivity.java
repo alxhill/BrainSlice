@@ -16,6 +16,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.JsonReader;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
@@ -40,6 +41,10 @@ import com.threed.jpct.Texture;
 import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
@@ -191,10 +196,27 @@ public class MainActivity extends FragmentActivity implements EventListener {
         // check for internet connectivity and load the data
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        networkInfo = null;
+        Log.d("MAINACTIVITY", "about to load data and stuff....");
         if (networkInfo != null && networkInfo.isConnected())
             BrainInfo.loadData();
         else
-            Log.d("BRAINSLICE", "not connected to the internet");
+        {
+            Log.d("BRAININFO", "Loading data from file");
+            InputStream data = getResources().openRawResource(R.raw.data);
+            try
+            {
+                JsonReader reader = new JsonReader(new InputStreamReader(data, "UTF-8"));
+                BrainInfo.parseJSON(reader);
+            } catch (UnsupportedEncodingException e)
+            {
+                e.printStackTrace();
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+            BrainInfo.setDataIsLoaded(true);
+        }
 
     }
 

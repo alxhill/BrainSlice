@@ -164,7 +164,7 @@ public class BrainModel {
 
     public static void loadSegments(Resources res)
     {
-        Log.d("BrainSlice", "laoding segments");
+        Log.d("BrainSlice", "loading segments");
         HashMap<String, BrainSegment> segments = BrainInfo.getSegments();
         spheres = new ArrayList<Object3D>(segments.size());
 

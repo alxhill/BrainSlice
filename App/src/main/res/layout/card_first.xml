@@ -4,21 +4,23 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="fill_parent"
     android:layout_margin="20dp"
     android:layout_gravity="center"
-    >
+    android:paddingLeft="20dp"
+    android:paddingTop="10dp"
+    android:paddingRight="20dp"
+    android:paddingBottom="30dp">
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_height="fill_parent"
         android:layout_gravity="center"
-            >
+        android:background="@drawable/card_background_blue">
         <LinearLayout
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:layout_gravity="center"
             android:orientation="vertical"
             >
@@ -42,9 +44,7 @@
                 android:paddingBottom="20dp"
                 android:text="Get Started"
                 android:layout_gravity="center"
-
                 />
-
             <Button
                 android:id="@+id/skip_tutorial"
                 android:layout_width="250dp"
@@ -55,7 +55,7 @@
                 android:paddingBottom="20dp"
                 android:text="Skip Tutorial"
                 android:layout_gravity="center"/>
-            </LinearLayout>
         </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

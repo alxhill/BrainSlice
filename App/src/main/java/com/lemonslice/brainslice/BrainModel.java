@@ -62,6 +62,7 @@ public class BrainModel {
 
     private static SimpleVector sidePosition = SimpleVector.create(-25,20,10);
     public static SimpleVector startPosition = SimpleVector.create(0,20,10);
+    public static SimpleVector offScreenRightPosition = SimpleVector.create(50,20,10);
 
     private static GLSLShader[] shads = new GLSLShader[0];
     private static SimpleVector camPos;
@@ -372,12 +373,12 @@ public class BrainModel {
         if(selected)
         {
             shads[pos].setUniform("isSelected", 1);
-            smoothMoveToGeneric(sidePosition, 0);
+            smoothMoveToGeneric(sidePosition, 0, 400);
             smoothZoom(0.25f,400);
         }
         else
         {
-            smoothMoveToGeneric(startPosition, 0);
+            smoothMoveToGeneric(startPosition, 0, 400);
         }
     }
 
@@ -553,7 +554,7 @@ public class BrainModel {
         brainSemaphore.release();
     }
 
-    public static void smoothMoveToGeneric(SimpleVector simpleVector, int delay)
+    public static void smoothMoveToGeneric(SimpleVector simpleVector, int delay, final int duration)
     {
         Log.d("BrainSlice", "smoothMoveToGeneric");
 
@@ -566,7 +567,6 @@ public class BrainModel {
         final float yDiff = simpleVector.y - currentPosition.y;
         final float zDiff = simpleVector.z - currentPosition.z;
 
-        final int time = 400;
         Timer moveTimer = new Timer();
         moveTimer.schedule(new TimerTask() {
             // time in ms for each step
@@ -574,9 +574,9 @@ public class BrainModel {
             // current number of milliseconds elapsed
             int i = stepTime;
 
-            Ease xEase = new Ease(xDiff, time, Ease.Easing.OUT_EXPO);
-            Ease yEase = new Ease(yDiff, time, Ease.Easing.OUT_EXPO);
-            Ease zEase = new Ease(zDiff, time, Ease.Easing.OUT_EXPO);
+            Ease xEase = new Ease(xDiff, duration, Ease.Easing.OUT_EXPO);
+            Ease yEase = new Ease(yDiff, duration, Ease.Easing.OUT_EXPO);
+            Ease zEase = new Ease(zDiff, duration, Ease.Easing.OUT_EXPO);
 
             @Override
             public void run()
@@ -598,7 +598,7 @@ public class BrainModel {
                 brainSemaphore.release();
 
                 i += stepTime;
-                if (i >= time) cancel();
+                if (i >= duration) cancel();
             }
 
         }, delay, 15);

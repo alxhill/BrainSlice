@@ -100,7 +100,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
     {
         velocityX = 0;
         velocityY = 0;
-        BrainModel.smoothMoveToGeneric(BrainModel.startPosition,0);
+        BrainModel.smoothMoveToGeneric(BrainModel.startPosition,0, 400);
         isLoaded = false;
     }
 

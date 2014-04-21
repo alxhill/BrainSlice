@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +19,15 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by James on 26/03/14.
  */
 public class Tutorial {
 
-    public static final int NUMBER_OF_CARDS = 6;
+    public static final int NUMBER_OF_CARDS = 7;
 
     static Context context;
     static FrameLayout frameLayout;
@@ -74,10 +77,13 @@ public class Tutorial {
         mViewPager.setAdapter(mCollectionPagerAdapter);
         mViewPager.setPageTransformer(false,new ZoomOutPageTransformer());
 
+        mViewPager.setCurrentItem(1, true);
+
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                if ((position+1==NUMBER_OF_CARDS) || (position+1==1))
+                    hide();
             }
 
             @Override
@@ -115,8 +121,24 @@ public class Tutorial {
 
     public static void hide()
     {
+        Animation fadeOut = AnimationUtils.loadAnimation(context,R.anim.abc_fade_out);
+        fadeOut.setDuration(1000);
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
 
-        frameLayout.removeAllViews();
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                frameLayout.removeAllViews();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        frameLayout.startAnimation(fadeOut);
     }
 }
 
@@ -157,26 +179,13 @@ class NewObjectFragment extends Fragment {
         Bundle args = getArguments();
         switch(args.getInt(ARG_OBJECT))
         {
-            case 1: rootView = inflater.inflate(R.layout.card_first, container, false);
-                assert rootView != null;
-                (rootView.findViewById(R.id.skip_tutorial)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Tutorial.hide();
-                    }
-                });
-                (rootView.findViewById(R.id.get_started)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Tutorial.mViewPager.setCurrentItem(1, true);
-                    }
-                });
-                break;
-            case 2: rootView = inflater.inflate(R.layout.card2, container, false); break;
-            case 3: rootView = inflater.inflate(R.layout.card3, container, false); break;
-            case 4: rootView = inflater.inflate(R.layout.card4, container, false); break;
-            case 5: rootView = inflater.inflate(R.layout.card5, container, false); break;
-            case 6: rootView = inflater.inflate(R.layout.card_final, container, false);
+            case 1: rootView = inflater.inflate(R.layout.card_left, container, false); break;
+            case 2: rootView = inflater.inflate(R.layout.card_first, container, false); break;
+            case 3: rootView = inflater.inflate(R.layout.card2, container, false); break;
+            case 4: rootView = inflater.inflate(R.layout.card3, container, false); break;
+            case 5: rootView = inflater.inflate(R.layout.card4, container, false); break;
+            case 6: rootView = inflater.inflate(R.layout.card5, container, false); break;
+            case 7: rootView = inflater.inflate(R.layout.card_final, container, false);
                 assert rootView != null;
                 (rootView.findViewById(R.id.get_started)).setOnClickListener(new View.OnClickListener() {
                     @Override

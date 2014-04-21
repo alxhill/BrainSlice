@@ -17,45 +17,38 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="center"
-        android:background="@drawable/card_background_blue">
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+        android:background="@drawable/card_background_blue"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome_message"
+            android:textSize="30sp"
+            android:padding="20dp"
+            android:textColor="#fff"
             android:layout_gravity="center"
-            android:orientation="vertical"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="welcome to brain slice"
-                android:textSize="30sp"
-                android:padding="20dp"
-                android:textColor="#fff"
-                android:layout_gravity="center"
-                android:layout_marginBottom="30dp"
-                />
-            <Button
-                android:id="@+id/get_started"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:paddingLeft="70dp"
-                android:paddingRight="70dp"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
-                android:text="Get Started"
-                android:layout_gravity="center"
-                />
-            <Button
-                android:id="@+id/skip_tutorial"
-                android:layout_width="250dp"
-                android:layout_height="wrap_content"
-                android:paddingLeft="70dp"
-                android:paddingRight="70dp"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"
-                android:text="Skip Tutorial"
-                android:layout_gravity="center"/>
-        </LinearLayout>
+            android:layout_alignWithParentIfMissing="false"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/textView" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Swipe right to start the tutorial"
+            android:id="@+id/textView2"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Swipe left to skip the tutorial"
+            android:id="@+id/textView3"
+            android:layout_gravity="center_horizontal" />
+
     </LinearLayout>
 
 </LinearLayout>

@@ -16,5 +16,6 @@
     <string name="sound_button_text_muted">Sound OFF</string>
     <string name="ColourCodingSetting">Colour coding</string>
     <string name="XRayModeSetting">X-ray mode</string>
+    <string name="welcome_message">Welcome to BrainSlice</string>
 
 </resources>

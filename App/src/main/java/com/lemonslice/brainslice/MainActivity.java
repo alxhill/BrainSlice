@@ -61,6 +61,9 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
     private Button soundButton;
 
+    private AudioManager mAudioManager;
+    private SettingsMenu mSettingsMenu;
+
     // 3D stuff
     private GLSurfaceView mGLView;
     private MyRenderer renderer = null;
@@ -71,6 +74,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
     // Frame overlaying 3d rendering for labels, instructions etc...
     private FrameLayout overlayingFrame;
+    private Typeface fontAwesome;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -110,11 +114,11 @@ public class MainActivity extends FragmentActivity implements EventListener {
         // initialise and show the 3D renderer
         mGLView.setRenderer(renderer);
 
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
-        // set up listening for events
-        Event.register("tap:learn", this);
-        Event.register("tap:visualise", this);
-        Event.register("tap:calibrate", this);
+        mSettingsMenu = new SettingsMenu(this);
+
+        // set up listening for events (tap events are handled separately
         Event.register("data:loaded", this);
         Event.register("model:loaded", this);
         Event.register("visualiseover", this);
@@ -128,73 +132,18 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         OverlayScreen.setVisualiseController(visualiseController);
 
-        // sets up the fonts and behaviour for the menu bar
-        Typeface fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
+        // set up the button events
+        iconifyView(R.id.learn_button_icon, 20);
+        iconifyView(R.id.visualise_button_icon, 20);
+        iconifyView(R.id.help_button_icon, 20);
+        iconifyView(R.id.settings_button_icon, 20);
+        soundButton = (Button) iconifyView(R.id.volume_button, 20);
 
-        TextView learnIcon = (TextView) findViewById(R.id.learn_button_icon);
-        assert learnIcon != null;
-        learnIcon.setTypeface(fontAwesome);
-        //learnIcon.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-
-        LinearLayout learnButton = (LinearLayout) findViewById(R.id.learn_button);
-        learnButton.setOnClickListener(new FrameLayout.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                Event.trigger("tap:learn");
-            }
-        });
-
-        TextView soundIcon = (TextView) findViewById(R.id.visualise_button_icon);
-        assert soundIcon != null;
-        soundIcon.setTypeface(fontAwesome);
-
-        LinearLayout visualiseButton = (LinearLayout) findViewById(R.id.visualise_button);
-        visualiseButton.setOnClickListener(new FrameLayout.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                Event.trigger("tap:visualise");
-            }
-        });
-
-        TextView helpIcon = (TextView) findViewById(R.id.help_button_icon);
-        helpIcon.setTypeface(fontAwesome);
-
-        LinearLayout helpButton = (LinearLayout) findViewById(R.id.help_button);
-        helpButton.setOnClickListener(new FrameLayout.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                Tutorial.show();
-            }
-        });
-
-        TextView settingsIcon = (TextView) findViewById(R.id.settings_button_icon);
-        settingsIcon.setTypeface(fontAwesome);
-
-        LinearLayout settingsButton = (LinearLayout) findViewById(R.id.settings_button);
-        final Context context = this;
-        final SettingsMenu mSettingsMenu = new SettingsMenu(context);
-        settingsButton.setOnClickListener(new FrameLayout.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSettingsMenu.show();
-            }
-        });
-
-        // set up the volume button
-        soundButton = (Button) findViewById(R.id.volume_button);
-        soundButton.setTypeface(fontAwesome);
-        soundButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-        soundButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                Log.d("BrainSlice", "Pressed volume button");
-                Event.trigger("tap:volume");
-            }
-        });
+        addButtonListener(R.id.learn_button, "learn");
+        addButtonListener(R.id.visualise_button, "visualise");
+        addButtonListener(R.id.help_button, "help");
+        addButtonListener(R.id.settings_button, "settings");
+        addButtonListener(soundButton, "volume");
 
         // check for internet connectivity and load the data
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -214,6 +163,36 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 throw new RuntimeException("Unable to load segment data, aborting.");
             }
         }
+    }
+
+    private TextView iconifyView(int resId, int size)
+    {
+        if (fontAwesome == null)
+            fontAwesome = Typeface.createFromAsset(getAssets(), "fonts/fontawesome-webfont.ttf");
+        TextView view = (TextView) findViewById(resId);
+        view.setTypeface(fontAwesome);
+        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
+        return view;
+    }
+
+    private void addButtonListener(int resId, String name)
+    {
+        View v = findViewById(resId);
+        addButtonListener(v, name);
+    }
+
+    private void addButtonListener(View v, final String name)
+    {
+        final String eventName = "tap:" + name;
+        Event.register(eventName, this);
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+
+                Event.trigger(eventName);
+            }
+        });
     }
 
     // This is to prevent accidental presses of the volume keys
@@ -332,6 +311,21 @@ public class MainActivity extends FragmentActivity implements EventListener {
             } else if (tapType.equals("calibrate"))
             {
                 visualiseController.loadView();
+            }
+            else if (tapType.equals("volume"))
+            {
+
+                soundButton.setText(R.string.volume_icon_mute);
+
+                soundButton.setText(R.string.volume_icon);
+            }
+            else if (tapType.equals("help"))
+            {
+                Tutorial.show();
+            }
+            else if (tapType.equals("settings"))
+            {
+                mSettingsMenu.show();
             }
         }
         else if (name.equals("data:loaded"))
@@ -456,29 +450,5 @@ public class MainActivity extends FragmentActivity implements EventListener {
         }
     }
 
-    // This is not being used. Delete??
-    private class StableArrayAdapter extends ArrayAdapter<String> {
 
-        HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
-
-        public StableArrayAdapter(Context context, int textViewResourceId,
-                                  List<String> objects) {
-            super(context, textViewResourceId, objects);
-            for (int i = 0; i < objects.size(); ++i) {
-                mIdMap.put(objects.get(i), i);
-            }
-        }
-
-        @Override
-        public long getItemId(int position) {
-            String item = getItem(position);
-            return mIdMap.get(item);
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
-
-    }
 }

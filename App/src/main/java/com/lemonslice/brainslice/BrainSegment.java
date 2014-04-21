@@ -62,7 +62,6 @@ public class BrainSegment {
             e.printStackTrace();
             Log.d("BRAINSEGMENT", "audio file not found");
         }
-
     }
 
     public String getTitle()

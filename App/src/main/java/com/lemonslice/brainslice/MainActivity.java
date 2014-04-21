@@ -317,7 +317,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
         if (events[0].equals("tap"))
         {
             String tapType = events[1];
-            soundButton.setVisibility(View.GONE);
             if (tapType.equals("learn"))
             {
                 visualiseController.unloadView();
@@ -333,7 +332,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
             } else if (tapType.equals("calibrate"))
             {
                 visualiseController.loadView();
-                soundButton.setVisibility(View.VISIBLE);
             }
         }
         else if (name.equals("data:loaded"))

@@ -126,8 +126,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:text="@string/volume_icon"
-        android:id="@+id/volume_button"
-        android:visibility="invisible"/>
+        android:id="@+id/volume_button" />
 
     <FrameLayout
         android:id="@+id/overlay_layout"

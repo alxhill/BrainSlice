@@ -45,7 +45,6 @@ public class BrainSegment {
         Log.d("BRAINSEGMENT", "audio filename: " + filename);
         try
         {
-            Log.d("BRAINSEGMENT", "playing audio");
             MediaPlayer player = new MediaPlayer();
             BrainInfo.speaker.release();
             BrainInfo.speaker = player;
@@ -53,8 +52,9 @@ public class BrainSegment {
             AssetFileDescriptor afd = ctx.getAssets().openFd(filename);
 
             player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
-            
+
             player.prepare();
+            Log.d("BRAINSEGMENT", "playing audio");
             player.start();
 
         } catch (IOException e)
@@ -62,7 +62,6 @@ public class BrainSegment {
             e.printStackTrace();
             Log.d("BRAINSEGMENT", "audio file not found");
         }
-
 
     }
 

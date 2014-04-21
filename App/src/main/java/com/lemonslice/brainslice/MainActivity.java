@@ -1,9 +1,7 @@
 package com.lemonslice.brainslice;
 
 import android.annotation.TargetApi;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
@@ -17,9 +15,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.JsonReader;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
+import android.util.TypedValue;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -43,7 +40,6 @@ import com.threed.jpct.util.MemoryHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
@@ -51,14 +47,10 @@ import java.util.List;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-<<<<<<< HEAD
 /**
  * @author Based off JPCT HelloShader freely licenced example by EgonOlsen, heavily modified by LemonSlice
  */
 public class MainActivity extends FragmentActivity implements EventListener {
-=======
-public class MainActivity extends Activity implements EventListener {
->>>>>>> merged changes
 
     // Used to handle pause and resume...
     private static MainActivity master = null;
@@ -119,7 +111,7 @@ public class MainActivity extends Activity implements EventListener {
         mGLView.setRenderer(renderer);
 
 
-        // set up listening for click events
+        // set up listening for events
         Event.register("tap:learn", this);
         Event.register("tap:visualise", this);
         Event.register("tap:calibrate", this);
@@ -191,31 +183,7 @@ public class MainActivity extends Activity implements EventListener {
             }
         });
 
-<<<<<<< HEAD
-        // check for internet connectivity and load the data
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected())
-            BrainInfo.loadData();
-        else
-        {
-            Log.d("BRAININFO", "Loading data from file");
-            InputStream data = getResources().openRawResource(R.raw.data);
-            try
-            {
-                JsonReader reader = new JsonReader(new InputStreamReader(data, "UTF-8"));
-                BrainInfo.parseJSON(reader);
-                reader.close();
-                data.close();
-            } catch (Exception e)
-            {
-                e.printStackTrace();
-                Log.d("BRAINSLICE", "parsing error");
-            }
-
-            BrainInfo.setDataIsLoaded(true);
-        }
-=======
+        // set up the volume button
         soundButton = (Button) findViewById(R.id.volume_button);
         soundButton.setTypeface(fontAwesome);
         soundButton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
@@ -227,8 +195,25 @@ public class MainActivity extends Activity implements EventListener {
                 Event.trigger("tap:volume");
             }
         });
->>>>>>> merged changes
 
+        // check for internet connectivity and load the data
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        boolean loaded = false;
+        if (networkInfo != null && networkInfo.isConnected())
+            loaded = BrainInfo.loadData();
+
+        if (!loaded)
+        {
+            try
+            {
+                BrainInfo.readData(getResources());
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+                throw new RuntimeException("Unable to load segment data, aborting.");
+            }
+        }
     }
 
     // This is to prevent accidental presses of the volume keys

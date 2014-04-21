@@ -1,5 +1,6 @@
 package com.lemonslice.brainslice;
 
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.JsonReader;
 import android.util.JsonToken;
@@ -13,9 +14,12 @@ import com.threed.jpct.SimpleVector;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by James on 29/01/14.
@@ -53,9 +57,35 @@ public class BrainInfo
         return segments.get(segment);
     }
 
-    public static void loadData()
+    // downloads data from the server in a separate thread.
+    public static boolean loadData()
     {
-        new BrainApiTask().execute();
+        AsyncTask<String, String, Boolean> task = new BrainApiTask().execute();
+        try
+        {
+            return task.get();
+        } catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        } catch (ExecutionException e)
+        {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // reads data from the 'backup copy' on the device
+    public static void readData(Resources resources) throws IOException
+    {
+        Log.d("BRAININFO", "Loading data from file");
+        InputStream data = resources.openRawResource(R.raw.data);
+
+        JsonReader reader = new JsonReader(new InputStreamReader(data, "UTF-8"));
+        BrainInfo.parseJSON(reader);
+        reader.close();
+        data.close();
+
+        BrainInfo.setDataIsLoaded(true);
     }
 
     public static boolean parseJSON(JsonReader reader) throws IOException
@@ -125,7 +155,7 @@ public class BrainInfo
         return false;
     }
 
-    private static class BrainApiTask extends AsyncTask<String, String, String> {
+    private static class BrainApiTask extends AsyncTask<String, String, Boolean> {
 
         private void getData(String apiUrl) throws IOException
         {
@@ -157,26 +187,26 @@ public class BrainInfo
         }
 
         @Override
-        protected String doInBackground(String... strings)
+        protected Boolean doInBackground(String... strings)
         {
             try
             {
                 getData(API_ENDPOINT);
-                return "success";
+                return true;
             }
             catch (IOException e)
             {
                 e.printStackTrace();
             }
 
-            return "error";
+            return false;
         }
 
         @Override
-        protected void onPostExecute(String s)
+        protected void onPostExecute(Boolean b)
         {
-            super.onPostExecute(s);
-            BrainInfo.setDataIsLoaded(true);
+            super.onPostExecute(b);
+            BrainInfo.setDataIsLoaded(b);
         }
 
     }

@@ -26,39 +26,24 @@ public class BrainSegment {
         this.description = description;
     }
 
-    private int audioId;
     private String title;
     private String description;
     private SimpleVector position;
-    private HashMap<String, Object> metadata = new HashMap<String, Object>();
 
     public BrainSegment(String name)
     {
         this.name = name;
     }
 
-    public BrainSegment(int audioId, String title, String description, SimpleVector position, HashMap<String, Object> metadata)
-    {
-        this.audioId = audioId;
-        this.title = title;
-        this.description = description;
-        this.position = position;
-        this.metadata = metadata;
-    }
-
-    public BrainSegment(String description, String title, SimpleVector position, int audioId)
-    {
-        this.title = title;
-        this.description = description;
-        this.position = position;
-        this.audioId = audioId;
-        Log.d("BrainSlice", "Created "+title);
-    }
-
     public void playAudio(Context ctx)
     {
-        if (audioId == -1) return;
         if (BrainInfo.speaker.isPlaying()) return;
+
+        String filename = "raw/audio/" + name.toLowerCase() + ".wav";
+        Log.d("FILENAME", "audio file name: " + filename);
+        int audioId = ctx.getResources().getIdentifier(filename, null, ctx.getPackageName());
+
+        if (audioId == 0) return;
 
         BrainInfo.speaker = MediaPlayer.create(ctx, audioId);
         BrainInfo.speaker.start();
@@ -73,15 +58,6 @@ public class BrainSegment {
     {
         return description;
     }
-
-    public HashMap<String, Object> getMetadata()
-    {
-        return metadata;
-    }
-
-    public Object getMetaData(String key){ return metadata.get(key); }
-
-    public void setMetadata(String key, Object obj) { this.metadata.put(key, obj);}
 
     public SimpleVector getPosition()
     {

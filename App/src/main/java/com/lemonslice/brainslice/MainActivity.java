@@ -202,7 +202,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         boolean loaded = false;
         if (networkInfo != null && networkInfo.isConnected())
             loaded = BrainInfo.loadData();
-
+        // if there's no internet or the loading failed, use the local data
         if (!loaded)
         {
             try

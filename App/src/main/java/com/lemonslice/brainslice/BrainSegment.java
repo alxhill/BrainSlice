@@ -1,12 +1,14 @@
 package com.lemonslice.brainslice;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.threed.jpct.SimpleVector;
 
-import java.util.HashMap;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 /**
@@ -39,14 +41,29 @@ public class BrainSegment {
     {
         if (BrainInfo.speaker.isPlaying()) return;
 
-        String filename = "raw/audio/" + name.toLowerCase() + ".wav";
-        Log.d("FILENAME", "audio file name: " + filename);
-        int audioId = ctx.getResources().getIdentifier(filename, null, ctx.getPackageName());
+        String filename = "audio/" + name.toLowerCase() + ".wav";
+        Log.d("BRAINSEGMENT", "audio filename: " + filename);
+        try
+        {
+            Log.d("BRAINSEGMENT", "playing audio");
+            MediaPlayer player = new MediaPlayer();
+            BrainInfo.speaker.release();
+            BrainInfo.speaker = player;
 
-        if (audioId == 0) return;
+            AssetFileDescriptor afd = ctx.getAssets().openFd(filename);
 
-        BrainInfo.speaker = MediaPlayer.create(ctx, audioId);
-        BrainInfo.speaker.start();
+            player.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            
+            player.prepare();
+            player.start();
+
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+            Log.d("BRAINSEGMENT", "audio file not found");
+        }
+
+
     }
 
     public String getTitle()

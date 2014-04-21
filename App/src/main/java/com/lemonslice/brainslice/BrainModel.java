@@ -321,7 +321,6 @@ public class BrainModel {
 
             if(dist < sphereRad*26.0f && isVisibilityHodgePodge(sphere))
             {
-                int audioID;
                 String name = sphere.getName();
 
                 if(selection == i)

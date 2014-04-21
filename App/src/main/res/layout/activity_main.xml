@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context="com.lemonslice.brainslice.MainActivity"
     tools:ignore="MergeRootFrame"
-    android:background="#001122">
+    android:background="#ff0000">
 
 
     <android.opengl.GLSurfaceView android:id="@+id/openGlView"

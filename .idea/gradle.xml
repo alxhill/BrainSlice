@@ -7,8 +7,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/App" />
+            <option value="C:\Users\James\Documents\university\year2\SPE\BrainSlice" />
+            <option value="C:\Users\James\Documents\university\year2\SPE\BrainSlice\App" />
           </set>
         </option>
       </GradleProjectSettings>

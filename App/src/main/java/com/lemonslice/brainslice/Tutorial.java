@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,13 +65,14 @@ public class Tutorial {
                 new CollectionPagerAdapter(
                        main.getSupportFragmentManager());
 
-        mViewPager = (ViewPager)cardsScreen.findViewById(R.id.pager);
-        int marginPixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -250, context.getResources().getDisplayMetrics());
-        mViewPager.setPageMargin(marginPixels);
+        mViewPager = (ViewPager) cardsScreen.findViewById(R.id.pager);
+        //int marginPixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, context.getResources().getDisplayMetrics());
+        //mViewPager.setPageMargin(marginPixels);
         mViewPager.setHorizontalFadingEdgeEnabled(true);
         mViewPager.setFadingEdgeLength(30);
         mViewPager.setOffscreenPageLimit(2);
         mViewPager.setAdapter(mCollectionPagerAdapter);
+        mViewPager.setPageTransformer(false,new ZoomOutPageTransformer());
 
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

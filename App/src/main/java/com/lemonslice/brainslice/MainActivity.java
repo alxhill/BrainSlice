@@ -314,10 +314,19 @@ public class MainActivity extends FragmentActivity implements EventListener {
             }
             else if (tapType.equals("volume"))
             {
+                int streamVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                if (streamVolume == 0)
+                {
+                    mAudioManager.setStreamMute(AudioManager.STREAM_MUSIC, false);
+                    soundButton.setText(R.string.volume_icon);
+                }
+                else
+                {
+                    mAudioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
+                    soundButton.setText(R.string.volume_icon_mute);
+                }
 
-                soundButton.setText(R.string.volume_icon_mute);
 
-                soundButton.setText(R.string.volume_icon);
             }
             else if (tapType.equals("help"))
             {

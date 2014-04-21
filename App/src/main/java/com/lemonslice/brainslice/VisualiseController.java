@@ -73,6 +73,7 @@ public class VisualiseController extends AbstractController implements SensorEve
     {
         isLoaded = false;
         sensorManager.unregisterListener(this);
+        overlayLabel.setText("");
     }
 
     @Override
@@ -119,7 +120,6 @@ public class VisualiseController extends AbstractController implements SensorEve
     public void showSection()
     {
         SimpleVector camPos = BrainModel.getCamera().getPosition();
-        Matrix rotMat = BrainModel.getRotationMatrix();
         SimpleVector minPos = null;
 
         ArrayList<Object3D> spheres = BrainModel.getSpheres();
@@ -128,8 +128,6 @@ public class VisualiseController extends AbstractController implements SensorEve
         for (Object3D sphere : spheres)
         {
             SimpleVector spherePos = sphere.getTransformedCenter();
-            spherePos.rotate(rotMat);
-            Log.d("SPHERECENTRE", sphere.getName() + spherePos.toString());
             if (minPos == null || minPos.distance(camPos) > spherePos.distance(camPos))
             {
                 minPos = spherePos;
@@ -139,18 +137,31 @@ public class VisualiseController extends AbstractController implements SensorEve
 
         if (segmentName == null) return;
 
-        final BrainSegment finalCurrentSegment = BrainInfo.getSegment(segmentName);
+        if (minPos.distance(camPos) > 55)
+        {
+            overlayLabel.post(new Runnable() {
+                @Override
+                public void run()
+                {
+                    overlayLabel.setText("");
+                }
+            });
+        }
+        else
+        {
+            final BrainSegment finalCurrentSegment = BrainInfo.getSegment(segmentName);
 
-        if (!overlayLabel.getText().equals(finalCurrentSegment.getTitle()))
-            finalCurrentSegment.playAudio(context);
+            if (!overlayLabel.getText().equals(finalCurrentSegment.getTitle()))
+                finalCurrentSegment.playAudio(context);
 
-        overlayLabel.post(new Runnable() {
-            @Override
-            public void run()
-            {
-                overlayLabel.setText(finalCurrentSegment.getTitle());
-            }
-        });
+            overlayLabel.post(new Runnable() {
+                @Override
+                public void run()
+                {
+                    overlayLabel.setText(finalCurrentSegment.getTitle());
+                }
+            });
+        }
     }
 
     @Override

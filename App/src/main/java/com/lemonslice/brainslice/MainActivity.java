@@ -59,7 +59,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
     LearnController learnController;
     VisualiseController visualiseController;
 
-    private Button soundButton;
+    private TextView soundButton;
 
     private AudioManager mAudioManager;
     private SettingsMenu mSettingsMenu;
@@ -118,7 +118,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         mSettingsMenu = new SettingsMenu(this);
 
-        // set up listening for events (tap events are handled separately
+        // set up listening for events
+        Event.register("tap:calibrate", this);
         Event.register("data:loaded", this);
         Event.register("model:loaded", this);
         Event.register("visualiseover", this);
@@ -137,7 +138,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         iconifyView(R.id.visualise_button_icon, 20);
         iconifyView(R.id.help_button_icon, 20);
         iconifyView(R.id.settings_button_icon, 20);
-        soundButton = (Button) iconifyView(R.id.volume_button, 20);
+        soundButton = iconifyView(R.id.volume_button, 25);
 
         addButtonListener(R.id.learn_button, "learn");
         addButtonListener(R.id.visualise_button, "visualise");
@@ -301,14 +302,16 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 visualiseController.unloadView();
                 learnController.loadView();
                 baseController = learnController;
-            } else if (tapType.equals("visualise"))
+            }
+            else if (tapType.equals("visualise"))
             {
                 // overlays the calibrate screen, only loads the visualise controller
                 // after the calibrate button has been pressed.
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
                 learnController.unloadView();
                 baseController = visualiseController;
-            } else if (tapType.equals("calibrate"))
+            }
+            else if (tapType.equals("calibrate"))
             {
                 visualiseController.loadView();
             }
@@ -325,8 +328,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
                     mAudioManager.setStreamMute(AudioManager.STREAM_MUSIC, true);
                     soundButton.setText(R.string.volume_icon_mute);
                 }
-
-
             }
             else if (tapType.equals("help"))
             {

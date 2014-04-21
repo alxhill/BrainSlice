@@ -122,12 +122,14 @@
         android:layout_marginLeft="15dp"
         android:id="@+id/label_overlay"/>
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
+        android:layout_gravity="right"
         android:text="@string/volume_icon"
-        android:id="@+id/volume_button" />
+        android:id="@+id/volume_button"
+        android:paddingTop="15dp"
+        android:paddingRight="15dp"/>
 
     <FrameLayout
         android:id="@+id/overlay_layout"

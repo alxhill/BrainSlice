@@ -326,6 +326,9 @@ public class BrainModel {
 
             SimpleVector v = Interact2D.project3D2D(cam, buf, sphere.getTransformedCenter());
 
+            if(v == null)
+                continue;
+
             float xd = v.x - x;
             float yd = v.y - y;
 

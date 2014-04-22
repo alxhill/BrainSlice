@@ -176,8 +176,6 @@ public class BrainModel {
             if(amount > 1.10)
                 amount = 1.10;
 
-            Log.d("BrainSliceD", String.valueOf(amount));
-
             obj.setScale((float) amount);
         }
 
@@ -262,8 +260,6 @@ public class BrainModel {
 
         screenWidth = buf.getWidth();
         screenHeight = buf.getHeight();
-
-        Log.d("BrainSliceD", String.valueOf(buf.getWidth()));
 
         if(cam == null)
             return;

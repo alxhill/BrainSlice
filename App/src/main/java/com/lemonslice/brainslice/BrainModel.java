@@ -27,6 +27,7 @@ import android.media.AudioManager;
 import android.view.KeyEvent;
 
 import java.util.concurrent.Semaphore;
+import java.util.Random;
 
 import android.view.KeyEvent;
 
@@ -154,6 +155,8 @@ public class BrainModel {
         plane.setSpecularLighting(false);
         shader.setStaticUniform("invRadius", 0.0003f);
 
+        Random randomNumberGenerator = new Random();
+
         // initialise brain sub-objs
         for (Object3D obj : objs)
         {
@@ -164,6 +167,18 @@ public class BrainModel {
             obj.strip();
             obj.addParent(plane);
             obj.setShader(shineyShader);
+
+            double amount = (randomNumberGenerator.nextGaussian()/20.0) + 1.0;
+
+            if(amount < 0.90)
+                amount = 0.90;
+
+            if(amount > 1.10)
+                amount = 1.10;
+
+            Log.d("BrainSliceD", String.valueOf(amount));
+
+            obj.setScale((float) amount);
         }
 
         for(Object3D obj : subCortical)
@@ -175,6 +190,16 @@ public class BrainModel {
             obj.strip();
             obj.addParent(plane);
             obj.setShader(shineyShader);
+
+            double amount = (randomNumberGenerator.nextGaussian()/20.0) + 1.0;
+
+            if(amount < 0.90)
+                amount = 0.90;
+
+            if(amount > 1.10)
+                amount = 1.10;
+
+            obj.setScale((float) amount);
         }
 
         objs[2].setShader(brainShad);

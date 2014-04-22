@@ -36,7 +36,14 @@ public class SettingsMenu {
                         Log.d("BrainSlice","Dialog: save");
                     }
                 })
-                .setView(linearLayout);
+                .setView(linearLayout)
+        .setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                BrainModel.setXRayMode(xRaySwitch.isChecked());
+                Log.d("BrainSlice","Dialog: dismiss/save");
+            }
+        });
 
         settingsDialog = builder.create();
     }

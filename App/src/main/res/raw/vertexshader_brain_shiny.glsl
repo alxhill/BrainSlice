@@ -17,12 +17,14 @@ uniform vec4 ambientColor;
 
 varying vec4 vertexColor;
 
+uniform int inRand;
+
 void main()
 {
     vertexColor = ambientColor + additionalColor;
 
     // Transforming The Vertex
-    gl_Position = modelViewProjectionMatrix * position;
+    gl_Position = modelViewProjectionMatrix * position * inRand;
  
     // Transforming The Normal To ModelView-Space
     n = normal;

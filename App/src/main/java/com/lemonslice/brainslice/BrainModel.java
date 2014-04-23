@@ -100,7 +100,7 @@ public class BrainModel {
         // Load the 3d model
         Log.d("BrainSlice", "Loading .3ds file");
 
-        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.new_ser));
+        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.ser));
         Log.d("BrainSlice", "Loaded .3ds file");
 
         subCortical = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.underbrain));
@@ -134,6 +134,7 @@ public class BrainModel {
         }
 
         setXRayMode(true);
+        setColourMode(false);
 
         objs[0].setVisibility(false);
         objs[1].setVisibility(false);
@@ -208,6 +209,21 @@ public class BrainModel {
         } else {
             objs[2].setShader(shineyShader);
             subCortical[4].setShader(shineyShader);
+        }
+    }
+
+    public static void setColourMode(boolean colourMode)
+    {
+        if (colourMode) {
+            for (Object3D obj : objs)
+            {
+                obj.setShader(null);
+            }
+        } else {
+            for (Object3D obj : objs)
+            {
+                obj.setShader(shineyShader);
+            }
         }
     }
 

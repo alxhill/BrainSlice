@@ -33,6 +33,7 @@ public class SettingsMenu {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         BrainModel.setXRayMode(xRaySwitch.isChecked());
+                        BrainModel.setColourMode(colourSwitch.isChecked());
                         Log.d("BrainSlice","Dialog: save");
                     }
                 })

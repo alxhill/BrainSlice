@@ -16,7 +16,6 @@ public class OverlayScreen
     static Context context;
     static FrameLayout frameLayout;
     static LayoutInflater inflater;
-    static VisualiseController visualiseController;
     public static void setContext(Context c)
     {
         context = c;
@@ -25,7 +24,6 @@ public class OverlayScreen
     {
         frameLayout = l;
     }
-    public static void setVisualiseController(VisualiseController vc) { visualiseController = vc; }
 
     public static void showScreen(int layoutID)
     {
@@ -33,14 +31,6 @@ public class OverlayScreen
         FrameLayout calibrateScreen = (FrameLayout)inflater.inflate(layoutID, null);
 
         assert calibrateScreen != null;
-
-        /*calibrateScreen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideScreen();
-            }
-        });*/
-
         Button calibrateBtn = (Button)calibrateScreen.findViewById(R.id.calibrateOverlayBtn);
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
             @Override

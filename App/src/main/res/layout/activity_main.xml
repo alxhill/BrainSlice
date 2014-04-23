@@ -45,11 +45,37 @@
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:id="@+id/learn_button"
+            android:id="@+id/quiz_button"
             android:background="@android:color/transparent"
             android:textColor="@android:color/white"
             android:clickable="true"
             android:layout_marginLeft="100dp">
+            <TextView
+                android:id="@+id/quiz_button_icon"
+                android:gravity="center"
+                android:text="@string/quiz_icon"
+                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="3dp"
+                android:textSize="20sp" />
+            <TextView
+                android:id="@+id/quiz_button_text"
+                android:gravity="center"
+                android:text="@string/quiz_button_text"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:textSize="24sp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:id="@+id/learn_button"
+            android:background="@android:color/transparent"
+            android:textColor="@android:color/white"
+            android:clickable="true">
             <TextView
                 android:id="@+id/learn_button_icon"
                 android:gravity="center"
@@ -93,6 +119,7 @@
                 android:layout_height="50dp"
                 android:textSize="24sp" />
             </LinearLayout>
+
         <LinearLayout
             android:gravity="center"
             android:layout_width="wrap_content"

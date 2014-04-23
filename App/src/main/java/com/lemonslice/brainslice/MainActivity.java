@@ -50,6 +50,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
     AbstractController baseController;
     LearnController learnController;
     VisualiseController visualiseController;
+    QuizController quizController;
 
     private TextView soundButton;
 
@@ -120,17 +121,19 @@ public class MainActivity extends FragmentActivity implements EventListener {
         visualiseController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
         visualiseController.setOverlayLabel((TextView) findViewById(R.id.label_overlay));
 
-        OverlayScreen.setVisualiseController(visualiseController);
+        quizController = new QuizController(getApplicationContext());
 
         // set up the button events
         iconifyView(R.id.learn_button_icon, 20);
         iconifyView(R.id.visualise_button_icon, 20);
         iconifyView(R.id.help_button_icon, 20);
         iconifyView(R.id.settings_button_icon, 20);
+        iconifyView(R.id.quiz_button_icon, 20);
         soundButton = iconifyView(R.id.volume_button, 25);
 
         addButtonListener(R.id.learn_button, "learn");
         addButtonListener(R.id.visualise_button, "visualise");
+        addButtonListener(R.id.quiz_button, "quiz");
         addButtonListener(R.id.help_button, "help");
         addButtonListener(R.id.settings_button, "settings");
         addButtonListener(soundButton, "volume");
@@ -286,7 +289,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
             String tapType = events[1];
             if (tapType.equals("learn"))
             {
-                visualiseController.unloadView();
+                baseController.unloadView();
                 learnController.loadView();
                 baseController = learnController;
             }
@@ -295,8 +298,12 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 // overlays the calibrate screen, only loads the visualise controller
                 // after the calibrate button has been pressed.
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
-                learnController.unloadView();
+                baseController.unloadView();
                 baseController = visualiseController;
+            }
+            else if (tapType.equals("quiz"))
+            {
+
             }
             else if (tapType.equals("calibrate"))
             {

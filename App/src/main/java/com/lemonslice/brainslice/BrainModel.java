@@ -100,7 +100,7 @@ public class BrainModel {
         // Load the 3d model
         Log.d("BrainSlice", "Loading .3ds file");
 
-        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.ser));
+        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.new_ser));
         Log.d("BrainSlice", "Loaded .3ds file");
 
         subCortical = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.underbrain));
@@ -133,8 +133,7 @@ public class BrainModel {
             obj.setShader(shineyShader);
         }
 
-        setXRayMode(true);
-        setColourMode(false);
+        setDisplayMode(true,false);
 
         objs[0].setVisibility(false);
         objs[1].setVisibility(false);
@@ -227,6 +226,51 @@ public class BrainModel {
         }
     }
 
+    public static void setDisplayMode(boolean xRayMode, boolean colourMode)
+    {
+        if(colourMode && xRayMode) {
+            for (Object3D obj : subCortical)
+            {
+                obj.setShader(null);
+            }
+            for (Object3D obj : objs)
+            {
+                obj.setShader(null);
+            }
+            objs[2].setShader(brainShad);
+            subCortical[4].setShader(brainShad);
+        } else if (colourMode) {
+            for (Object3D obj : objs)
+            {
+                obj.setShader(null);
+            }
+            for (Object3D obj : subCortical)
+            {
+                obj.setShader(null);
+            }
+        } else if (xRayMode) {
+            for (Object3D obj : objs)
+            {
+                obj.setShader(shineyShader);
+            }
+            for (Object3D obj : subCortical)
+            {
+                obj.setShader(shineyShader);
+            }
+            objs[2].setShader(brainShad);
+            subCortical[4].setShader(brainShad);
+        } else {
+            for (Object3D obj : objs)
+            {
+                obj.setShader(shineyShader);
+            }
+            for (Object3D obj : subCortical)
+            {
+                obj.setShader(shineyShader);
+            }
+        }
+
+    }
     public static void setCamera(Camera c)
     {
         cam = c;

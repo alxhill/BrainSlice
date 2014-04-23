@@ -32,8 +32,9 @@ public class SettingsMenu {
                 .setPositiveButton("Close",new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        BrainModel.setXRayMode(xRaySwitch.isChecked());
-                        BrainModel.setColourMode(colourSwitch.isChecked());
+                        //BrainModel.setXRayMode(xRaySwitch.isChecked());
+                        //BrainModel.setColourMode(colourSwitch.isChecked());
+                        BrainModel.setDisplayMode(xRaySwitch.isChecked(), colourSwitch.isChecked());
                         Log.d("BrainSlice","Dialog: save");
                     }
                 })

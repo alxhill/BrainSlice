@@ -80,7 +80,7 @@ public class BrainInfo
 
         JsonReader reader = new JsonReader(new InputStreamReader(data, "UTF-8"));
         BrainInfo.parseJSON(reader);
-        reader.close();
+
         data.close();
 
         BrainInfo.setDataIsLoaded(true);
@@ -132,9 +132,16 @@ public class BrainInfo
                             reader.nextNull();
                         }
                     }
-                    else if (key.equals("audio"))
+                    else if (key.equals("responsibilities"))
                     {
-                        reader.nextBoolean();
+                        reader.beginArray();
+                        while (reader.hasNext())
+                            segment.addTask(reader.nextString());
+                        reader.endArray();
+                    }
+                    else
+                    {
+                        reader.skipValue();
                     }
                 }
             }
@@ -150,6 +157,7 @@ public class BrainInfo
             reader.endObject();
         }
         reader.endObject();
+        reader.close();
         return false;
     }
 
@@ -178,7 +186,6 @@ public class BrainInfo
 
             conn.disconnect();
             in.close();
-            reader.close();
 
             Log.d("BRAININFO", "closed connections");
 

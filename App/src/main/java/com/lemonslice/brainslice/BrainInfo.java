@@ -6,7 +6,7 @@ import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
 
-import com.lemonslice.brainslice.event.Event;
+import com.lemonslice.brainslice.event.Events;
 import android.media.MediaPlayer;
 
 import com.threed.jpct.SimpleVector;
@@ -14,8 +14,6 @@ import com.threed.jpct.SimpleVector;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -43,7 +41,7 @@ public class BrainInfo
     {
         BrainInfo.dataIsLoaded = dataIsLoaded;
         if (dataIsLoaded)
-            Event.trigger("data:loaded");
+            Events.trigger("data:loaded");
     }
 
     public static HashMap<String, BrainSegment> getSegments()

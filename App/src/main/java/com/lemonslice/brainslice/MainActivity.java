@@ -13,19 +13,15 @@ import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.JsonReader;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.lemonslice.brainslice.event.Event;
+import com.lemonslice.brainslice.event.Events;
 import com.lemonslice.brainslice.event.EventListener;
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
@@ -38,11 +34,7 @@ import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -119,10 +111,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         mSettingsMenu = new SettingsMenu(this);
 
         // set up listening for events
-        Event.register("tap:calibrate", this);
-        Event.register("data:loaded", this);
-        Event.register("model:loaded", this);
-        Event.register("visualiseover", this);
+        Events.register(this);
 
         learnController = new LearnController(getApplicationContext());
         learnController.loadView();
@@ -185,13 +174,11 @@ public class MainActivity extends FragmentActivity implements EventListener {
     private void addButtonListener(View v, final String name)
     {
         final String eventName = "tap:" + name;
-        Event.register(eventName, this);
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-
-                Event.trigger(eventName);
+                Events.trigger(eventName);
             }
         });
     }

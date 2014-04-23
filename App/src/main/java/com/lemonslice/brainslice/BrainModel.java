@@ -5,7 +5,7 @@ import android.content.res.Resources;
 import android.hardware.SensorManager;
 import android.util.Log;
 
-import com.lemonslice.brainslice.event.Event;
+import com.lemonslice.brainslice.event.Events;
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.GLSLShader;
@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.media.MediaPlayer;
 import android.media.AudioManager;
 import android.view.KeyEvent;
 
@@ -160,7 +159,7 @@ public class BrainModel {
         frontMatrix.orthonormalize();
 
         isLoaded = true;
-        Event.trigger("model:loaded");
+        Events.trigger("model:loaded");
     }
 
     public static void loadSegments(Resources res)

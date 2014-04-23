@@ -4,25 +4,17 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.content.Context;
 import android.view.Surface;
-import android.view.View;
 import android.view.WindowManager;
 import android.view.Display;
-import android.graphics.Point;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.lemonslice.brainslice.event.Event;
-import com.lemonslice.brainslice.event.EventListener;
-import com.threed.jpct.Matrix;
 import com.threed.jpct.Object3D;
 import com.threed.jpct.SimpleVector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Handles gyro input and passes it to the brain model

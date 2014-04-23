@@ -1,17 +1,12 @@
 package com.lemonslice.brainslice;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
-import com.lemonslice.brainslice.event.Event;
-
-import java.util.zip.Inflater;
+import com.lemonslice.brainslice.event.Events;
 
 /**
  * Created by James on 06/03/14.
@@ -50,7 +45,7 @@ public class OverlayScreen
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Event.trigger("tap:calibrate");
+                Events.trigger("tap:calibrate");
                 hideScreen();
             }
         });

@@ -12,7 +12,7 @@ import android.view.Display;
 import android.graphics.Point;
 import android.os.Build;
 
-import com.lemonslice.brainslice.event.Event;
+import com.lemonslice.brainslice.event.Events;
 import com.lemonslice.brainslice.event.EventListener;
 
 /**
@@ -58,7 +58,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
 
     public LearnController(Context applicationContext)
     {
-        Event.register("tap:centre", this);
+        Events.register(this);
 
         //Resolution stuffs
         WindowManager wm = (WindowManager) applicationContext.getSystemService(Context.WINDOW_SERVICE);

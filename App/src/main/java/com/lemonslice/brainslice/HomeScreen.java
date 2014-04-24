@@ -16,8 +16,6 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by James on 24/04/2014.
@@ -50,6 +48,27 @@ public class HomeScreen {
         LinearLayout btn2 = (LinearLayout)btn_holder.findViewById(R.id.hs_visualizebtn);
         LinearLayout btn3 = (LinearLayout)btn_holder.findViewById(R.id.hs_quizbtn);
 
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        btn3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         LinearLayout icon_holder = (LinearLayout)homeScreen.findViewById(R.id.hs_icon_holder);
 
         btn1.setVisibility(View.INVISIBLE);
@@ -67,9 +86,9 @@ public class HomeScreen {
         slideIn1.setFillAfter(true);
         slideIn2.setFillAfter(true);
         slideIn3.setFillAfter(true);
-        slideIn1.setInterpolator(new DecelerateInterpolator());
-        slideIn2.setInterpolator(new DecelerateInterpolator());
-        slideIn3.setInterpolator(new DecelerateInterpolator());
+        slideIn1.setInterpolator(new AccelerateInterpolator());
+        slideIn2.setInterpolator(new AccelerateDecelerateInterpolator());
+        slideIn3.setInterpolator(new BounceInterpolator());
 
         slideIn1.setStartOffset(500);
         btn1.startAnimation(slideIn1);

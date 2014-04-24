@@ -46,7 +46,7 @@ public class SplashScreen
     public static void finished_splash()
     {
         frameLayout.removeAllViews();
-        Tutorial.show();
+        HomeScreen.show();
     }
 
     public static void show()
@@ -120,26 +120,28 @@ public class SplashScreen
                     public void run() {
                         lemon.startAnimation(scaleLemon);
 
+
                         new Timer().schedule(new TimerTask() {
                             @Override
                             public void run() {
                                 frameLayout.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        lemon.startAnimation(scaleExitLemon);
-                                        teamName.startAnimation(scaleExitTeamName);
-                                        new Timer().schedule(new TimerTask() {
-                                            @Override
-                                            public void run() {
-                                                frameLayout.post(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        SplashScreen.finished_splash();
-                                                    }
-                                                });
-                                                cancel();
-                                            }
-                                        }, 1000);
+//                                        lemon.startAnimation(scaleExitLemon);
+//                                        teamName.startAnimation(scaleExitTeamName);
+//                                        new Timer().schedule(new TimerTask() {
+//                                            @Override
+//                                            public void run() {
+//                                                frameLayout.post(new Runnable() {
+//                                                    @Override
+//                                                    public void run() {
+//                                                        SplashScreen.finished_splash();
+//                                                    }
+//                                                });
+//                                                cancel();
+//                                            }
+//                                        }, 1000);
+                                        SplashScreen.finished_splash();
                                     }
                                 });
                             }

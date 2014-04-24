@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/home_screen"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/home_screen_background"
+        android:orientation="vertical"
+        android:id="@+id/hs_holder"
+        android:clipChildren="false"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:id="@+id/hs_icon_holder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="top|right"
+            android:padding="10dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginTop="10dp"
+            >
+
+            <TextView
+                android:id="@+id/hs_settings_button_icon"
+                android:gravity="center"
+                android:text="@string/settings_icon"
+                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="10dp"
+                android:textSize="25sp"
+                android:textColor="#fff"/>
+
+            <TextView
+                android:id="@+id/hs_help_button_icon"
+                android:gravity="center"
+                android:text="@string/help_icon"
+                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="10dp"
+                android:textSize="25sp"
+                android:textColor="#fff"/>
+
+            <TextView
+                android:id="@+id/hs_volume_button"
+                android:gravity="center"
+                android:text="@string/volume_icon"
+                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="3dp"
+                android:textSize="25sp"
+                android:textColor="#fff"/>
+
+            </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/hs_button_holder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingRight="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center_vertical|right"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            >
+
+            <LinearLayout
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/hs_learnbtn"
+                android:background="@drawable/hs_button"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Learn Mode"
+                    android:textSize="25sp"
+                    android:textColor="#fff"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:layout_marginLeft="10dp"
+                    />
+                </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/hs_visualizebtn"
+                android:background="@drawable/hs_button"
+                android:layout_marginTop="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Window Mode"
+                    android:textSize="25sp"
+                    android:textColor="#fff"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:layout_marginLeft="10dp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/hs_button"
+                android:id="@+id/hs_quizbtn"
+                android:layout_marginTop="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Brain Quiz"
+                    android:textSize="25sp"
+                    android:textColor="#fff"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:layout_marginLeft="10dp"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+        </LinearLayout>
+
+</FrameLayout>

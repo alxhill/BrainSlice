@@ -94,6 +94,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
         OverlayScreen.setFrameLayout(overlayingFrame);
         Tutorial.setContext(this);
         Tutorial.setFrameLayout(overlayingFrame);
+        HomeScreen.setContext(this);
+        HomeScreen.setFrameLayout(overlayingFrame);
 
         VisualiseController.setContext(this);
 
@@ -127,6 +129,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
         iconifyView(R.id.visualise_button_icon, 20);
         iconifyView(R.id.help_button_icon, 20);
         iconifyView(R.id.settings_button_icon, 20);
+
+
         soundButton = iconifyView(R.id.volume_button, 25);
 
         addButtonListener(R.id.learn_button, "learn");

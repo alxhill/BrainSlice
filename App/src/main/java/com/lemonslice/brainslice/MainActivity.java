@@ -134,7 +134,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         soundButton = iconifyView(R.id.volume_button, 25);
 
         addButtonListener(R.id.learn_button, "learn");
-        addButtonListener(R.id.visualise_button, "visualise");
+//        addButtonListener(R.id.visualise_button, "visualise");
         addButtonListener(R.id.help_button, "help");
         addButtonListener(R.id.settings_button, "settings");
         addButtonListener(soundButton, "volume");
@@ -175,7 +175,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         addButtonListener(v, name);
     }
 
-    private void addButtonListener(View v, final String name)
+    static void addButtonListener(View v, final String name)
     {
         final String eventName = "tap:" + name;
         v.setOnClickListener(new View.OnClickListener() {

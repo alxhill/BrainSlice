@@ -48,19 +48,16 @@ public class HomeScreen {
         LinearLayout btn2 = (LinearLayout)btn_holder.findViewById(R.id.hs_visualizebtn);
         LinearLayout btn3 = (LinearLayout)btn_holder.findViewById(R.id.hs_quizbtn);
 
-        btn1.setOnClickListener(new View.OnClickListener() {
+        //to be fixed with below line
+//        MainActivity.addButtonListener(btn1, "learn");
+        btn3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                frameLayout.removeAllViews();
             }
         });
 
-        btn2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        MainActivity.addButtonListener(btn2, "visualise");
 
         btn3.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,8 +84,8 @@ public class HomeScreen {
         slideIn2.setFillAfter(true);
         slideIn3.setFillAfter(true);
         slideIn1.setInterpolator(new AccelerateInterpolator());
-        slideIn2.setInterpolator(new AccelerateDecelerateInterpolator());
-        slideIn3.setInterpolator(new BounceInterpolator());
+        slideIn2.setInterpolator(new AccelerateInterpolator());
+        slideIn3.setInterpolator(new AccelerateInterpolator());
 
         slideIn1.setStartOffset(500);
         btn1.startAnimation(slideIn1);
@@ -98,6 +95,12 @@ public class HomeScreen {
 
         slideIn3.setStartOffset(700);
         btn3.startAnimation(slideIn3);
+
+        Animation slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down);
+        slideDown.setFillAfter(true);
+        slideDown.setInterpolator(new DecelerateInterpolator());
+        slideDown.setStartOffset(600);
+        icon_holder.startAnimation(slideDown);
 
     }
 

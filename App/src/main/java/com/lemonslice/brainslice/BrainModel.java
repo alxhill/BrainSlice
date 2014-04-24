@@ -521,18 +521,9 @@ public class BrainModel {
 
     public static void scale(float scale)
     {
-        try
-        {
-            brainSemaphore.acquire();
-        }
-        catch(InterruptedException e)
-        {
-            return;
-        }
-
         if(scale <= 0)
         {
-            brainSemaphore.release();
+            Log.d("Brainslice","Error: Attempt to scale with factor below or equal to zero");
             return;
         }
 
@@ -542,8 +533,6 @@ public class BrainModel {
         {
             spheres.get(i).scale(1.0f / scale);
         }
-
-        brainSemaphore.release();
     }
 
     public static void smoothMoveToGeneric(SimpleVector simpleVector, int delay, final int duration)
@@ -571,30 +560,28 @@ public class BrainModel {
             Ease zEase = new Ease(zDiff, duration, Ease.Easing.OUT_EXPO);
 
             @Override
-            public void run()
-            {
+            public void run() {
                 float stepMovementX = (float) (xEase.step(i) - xEase.step(i - stepTime));
                 float stepMovementY = (float) (yEase.step(i) - yEase.step(i - stepTime));
                 float stepMovementZ = (float) (zEase.step(i) - zEase.step(i - stepTime));
 
-                try
-                {
+                try {
                     brainSemaphore.acquire();
-                } catch (InterruptedException e)
-                {
-                    return;
+                    plane.translate(stepMovementX, stepMovementY, stepMovementZ);
+                } catch (InterruptedException e) {
+                    // do nothing
+                } finally {
+                    brainSemaphore.release();
                 }
-
-                plane.translate(stepMovementX, stepMovementY, stepMovementZ);
-
-                brainSemaphore.release();
 
                 i += stepTime;
                 if (i >= duration) cancel();
+                }
+
             }
 
-        }, delay, 15);
-    }
+            ,delay,15);
+        }
 
     public static void smoothZoom(final float targetScale, final int zoomTime)
     {
@@ -618,7 +605,17 @@ public class BrainModel {
                 if (Double.isNaN(stepZoom))
                     return;
 
-                scale((float) stepZoom);
+                try
+                {
+                    brainSemaphore.acquire();
+                    scale((float) stepZoom);
+                    brainSemaphore.release();
+                } catch (InterruptedException e) {
+                    // do nothing
+                } finally {
+                    brainSemaphore.release();
+                }
+
                 i += stepTime;
                 if (i >= zoomTime) cancel();
             }
@@ -699,15 +696,14 @@ public class BrainModel {
 
                 try {
                     brainSemaphore.acquire();
+                    // This is 100% necessary to prevent a bug where the brain model disappears
+                    if (stepRotation != 0.0)
+                        plane.rotateAxis(axis, (float) stepRotation);
                 } catch (InterruptedException e) {
-                    return;
+                    // do nothing
+                } finally {
+                    brainSemaphore.release();
                 }
-
-                // This is 100% necessary to prevent a bug where the brain model disappears
-                if (stepRotation != 0.0)
-                    plane.rotateAxis(axis, (float) stepRotation);
-
-                brainSemaphore.release();
 
                 i += stepTime;
                 if (i >= rotateTime) cancel();

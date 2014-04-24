@@ -64,11 +64,10 @@ public class Labels
     {
         LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        FrameLayout overlayingFrame = frameLayout;
-        overlayingFrame.removeAllViews();
+        frameLayout.removeAllViews();
 
         if(Labels.getLabel(inflater, brainSegment) != null)
-            overlayingFrame.addView(Labels.getLabel(inflater, brainSegment));
+            frameLayout.addView(Labels.getLabel(inflater, brainSegment));
     }
 
     public static void removeLabels()

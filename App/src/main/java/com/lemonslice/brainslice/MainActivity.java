@@ -33,7 +33,6 @@ import com.threed.jpct.Texture;
 import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -114,14 +113,18 @@ public class MainActivity extends FragmentActivity implements EventListener {
         // set up listening for events
         Events.register(this);
 
+        TextView overlayLabel = (TextView) findViewById(R.id.label_overlay);
+
         learnController = new LearnController(getApplicationContext());
         learnController.loadView();
         baseController = learnController;
 
         visualiseController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
-        visualiseController.setOverlayLabel((TextView) findViewById(R.id.label_overlay));
+        visualiseController.setOverlayLabel(overlayLabel);
 
         quizController = new QuizController(getApplicationContext());
+        quizController.setTopLabel(overlayLabel);
+        quizController.setMainOverlay(overlayingFrame);
 
         // set up the button events
         iconifyView(R.id.learn_button_icon, 20);
@@ -146,16 +149,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
             loaded = BrainInfo.loadData();
         // if there's no internet or the loading failed, use the local data
         if (!loaded)
-        {
-            try
-            {
-                BrainInfo.readData(getResources());
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-                throw new RuntimeException("Unable to load segment data, aborting.");
-            }
-        }
+            BrainInfo.readData(getResources());
     }
 
     private TextView iconifyView(int resId, int size)
@@ -303,6 +297,9 @@ public class MainActivity extends FragmentActivity implements EventListener {
             }
             else if (tapType.equals("quiz"))
             {
+                baseController.unloadView();
+                quizController.loadView();
+                baseController = quizController;
 
             }
             else if (tapType.equals("calibrate"))

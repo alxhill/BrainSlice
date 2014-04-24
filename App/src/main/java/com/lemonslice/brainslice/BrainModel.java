@@ -62,7 +62,7 @@ public class BrainModel {
 
     private static GLSLShader[] shads = new GLSLShader[0];
 
-    private static SimpleVector sidePosition = SimpleVector.create(-25,20,10);
+    public static SimpleVector sidePosition = SimpleVector.create(-25,20,10);
     public static SimpleVector startPosition = SimpleVector.create(0,20,10);
     public static SimpleVector offScreenRightPosition = SimpleVector.create(50,20,10);
 
@@ -334,15 +334,7 @@ public class BrainModel {
 
                 BrainInfo.getSegment(name).playAudio(context);
 
-                SimpleVector spherePos = sphere.getTransformedCenter();
-                // ignore the translation of the plane when calculating rotation
-                spherePos = spherePos.calcSub(plane.getTransformedCenter());
-
-                // convert the vectors into axis-angle representation
-                SimpleVector axis = spherePos.calcCross(camPos);
-                double angle = spherePos.calcAngle(camPos);
-
-                smoothRotateToGeneric(axis, -angle, false);
+                rotateToSphere(sphere);
 
                 selected = true;
                 pos = i;
@@ -372,6 +364,33 @@ public class BrainModel {
         {
             smoothMoveToGeneric(startPosition, 0, 400);
         }
+    }
+
+    public static void rotateToSegment(String name)
+    {
+        for (Object3D sphere : spheres)
+        {
+            Log.d("SPHERENAME", sphere.getName());
+            if (sphere.getName().equals(name))
+            {
+                rotateToSphere(sphere);
+                return;
+            }
+        }
+        Log.d("BRAINMODEL", "did not rotate to any segment :(");
+    }
+
+    private static void rotateToSphere(Object3D sphere)
+    {
+        SimpleVector spherePos = sphere.getTransformedCenter();
+        // ignore the translation of the plane when calculating rotation
+        spherePos = spherePos.calcSub(plane.getTransformedCenter());
+
+        // convert the vectors into axis-angle representation
+        SimpleVector axis = spherePos.calcCross(camPos);
+        double angle = spherePos.calcAngle(camPos);
+
+        smoothRotateToGeneric(axis, -angle, false);
     }
 
 

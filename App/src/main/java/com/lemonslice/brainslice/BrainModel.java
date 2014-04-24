@@ -2,7 +2,6 @@ package com.lemonslice.brainslice;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.hardware.SensorManager;
 import android.util.Log;
 
 import com.lemonslice.brainslice.event.Events;
@@ -33,8 +32,6 @@ import java.util.concurrent.Semaphore;
  */
 public class BrainModel {
 
-    private static float absX, absY, absZ = 0;
-
     // magic 3D stuff
     private static Object3D plane;
     private static Object3D[] objs;
@@ -64,7 +61,6 @@ public class BrainModel {
 
     private static SimpleVector sidePosition = SimpleVector.create(-25,20,10);
     public static SimpleVector startPosition = SimpleVector.create(0,20,10);
-    public static SimpleVector offScreenRightPosition = SimpleVector.create(50,20,10);
 
     private static GLSLShader brainShad;
     private static GLSLShader shineyShader;
@@ -294,7 +290,7 @@ public class BrainModel {
     public static void notifyTap(float x, float y)
     {
         boolean selected = false;
-        int i = 0;
+        int i;
         int pos = -1;
 
         if(cam == null || buf == null || spheres == null)
@@ -470,55 +466,6 @@ public class BrainModel {
         brainSemaphore.release();
     }
 
-    // moves the camera so it's a constant distance from the brain.
-    public static void adjustCamera()
-    {
-        Matrix m = plane.getRotationMatrix().cloneMatrix().invert3x3();
-        m.orthonormalize();
-        m.matMul(frontMatrix);
-
-        float R[] = m.getDump();
-        float axis[] = new float[3];
-
-        SensorManager.getOrientation(R, axis);
-
-        float x = axis[1];
-        float y = axis[2];
-
-        if (Float.isNaN(y) || Float.isNaN(x))
-        {
-            Log.e("BrainSlice", "Invalid x and y values");
-            return;
-        }
-
-        float maxDist = 20.0f;
-        float minDist = 10.0f;
-
-        float ex = (float) (maxDist*Math.cos(y));
-        float ey = (float) (minDist*Math.sin(y));
-
-        float dist = (float) Math.sqrt(ex*ex + ey*ey);
-
-        float maxSize = 0.6f;
-        float minSize = 0.5f;
-
-        float distScale = (dist - minDist) / (maxDist - minDist);
-
-        distScale = 1.0f - distScale;
-
-        float xAdjust = 0;
-        float scaleFactor = distScale*(maxSize - minSize);
-
-        final double eighthPi = Math.PI / 8.0f;
-
-        if (x < eighthPi && x > -eighthPi)
-            xAdjust = (float) ((eighthPi - Math.abs(x)) / eighthPi);
-
-        //plane.setScale(scaleFactor*xAdjust + minSize);
-
-
-    }
-
     public static void scale(float scale)
     {
         if(scale <= 0)
@@ -529,9 +476,8 @@ public class BrainModel {
 
         plane.scale(scale);
         shader.setUniform("heightScale", 1.0f);
-        for(int i=0; i<spheres.size(); i++)
-        {
-            spheres.get(i).scale(1.0f / scale);
+        for (Object3D sphere : spheres) {
+            sphere.scale(1.0f / scale);
         }
     }
 
@@ -736,10 +682,6 @@ public class BrainModel {
 
     }
 
-    public static Matrix getRotationMatrix()
-    {
-        return plane.getRotationMatrix();
-    }
 
     static class Ease {
 

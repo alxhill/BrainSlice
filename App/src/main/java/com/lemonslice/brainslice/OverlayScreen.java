@@ -13,10 +13,10 @@ import com.lemonslice.brainslice.event.Events;
  */
 public class OverlayScreen
 {
-    static Context context;
-    static FrameLayout frameLayout;
-    static LayoutInflater inflater;
-    static VisualiseController visualiseController;
+    private static Context context;
+    private static FrameLayout frameLayout;
+    private static LayoutInflater inflater;
+    private static VisualiseController visualiseController;
     public static void setContext(Context c)
     {
         context = c;
@@ -33,13 +33,6 @@ public class OverlayScreen
         FrameLayout calibrateScreen = (FrameLayout)inflater.inflate(layoutID, null);
 
         assert calibrateScreen != null;
-
-        /*calibrateScreen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideScreen();
-            }
-        });*/
 
         Button calibrateBtn = (Button)calibrateScreen.findViewById(R.id.calibrateOverlayBtn);
         calibrateBtn.setOnClickListener(new View.OnClickListener() {

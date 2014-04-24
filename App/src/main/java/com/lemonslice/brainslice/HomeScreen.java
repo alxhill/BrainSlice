@@ -48,11 +48,14 @@ public class HomeScreen {
         LinearLayout btn2 = (LinearLayout)btn_holder.findViewById(R.id.hs_visualizebtn);
         LinearLayout btn3 = (LinearLayout)btn_holder.findViewById(R.id.hs_quizbtn);
 
-        //to be fixed with below line
+        //REPLACE ON CLICK LISTENER WITH SINGLE LINE BELOW LATER
 //        MainActivity.addButtonListener(btn1, "learn");
-        btn3.setOnClickListener(new View.OnClickListener() {
+        btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                BrainModel.smoothRotateToFront();
+                BrainModel.smoothZoom(0.3f, 1200);
+                BrainModel.setLabelsToDisplay(true);
                 frameLayout.removeAllViews();
             }
         });

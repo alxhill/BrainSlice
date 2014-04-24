@@ -19,6 +19,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lemonslice.brainslice.event.Events;
@@ -125,19 +127,29 @@ public class MainActivity extends FragmentActivity implements EventListener {
         OverlayScreen.setVisualiseController(visualiseController);
 
         // set up the button events
-        iconifyView(R.id.learn_button_icon, 20);
-        iconifyView(R.id.visualise_button_icon, 20);
-        iconifyView(R.id.help_button_icon, 20);
-        iconifyView(R.id.settings_button_icon, 20);
-
-
+        iconifyView(R.id.help_button, 25);
+        iconifyView(R.id.settings_button, 25);
         soundButton = iconifyView(R.id.volume_button, 25);
 
-        addButtonListener(R.id.learn_button, "learn");
-//        addButtonListener(R.id.visualise_button, "visualise");
         addButtonListener(R.id.help_button, "help");
         addButtonListener(R.id.settings_button, "settings");
         addButtonListener(soundButton, "volume");
+
+        LinearLayout homeButton = (LinearLayout)findViewById(R.id.home_button);
+        homeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HomeScreen.show();
+            }
+        });
+        LinearLayout infoButton = (LinearLayout)findViewById(R.id.info_button);
+        infoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //show info on current part
+            }
+        });
+        infoButton.setVisibility(View.INVISIBLE); // for now, cause it's ugly and I don't like looking at it
 
         // check for internet connectivity and load the data
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

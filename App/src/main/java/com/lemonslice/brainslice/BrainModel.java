@@ -100,10 +100,10 @@ public class BrainModel {
         // Load the 3d model
         Log.d("BrainSlice", "Loading .3ds file");
 
-        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.new_ser));
+        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.twohalves2));
         Log.d("BrainSlice", "Loaded .3ds file");
 
-        subCortical = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.underbrain));
+        subCortical = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.subcor));
 
         // compile and load shaders for plane
         plane.setShader(shader);
@@ -135,7 +135,7 @@ public class BrainModel {
 
         setDisplayMode(true,false);
 
-        objs[0].setVisibility(false);
+        objs[2].setVisibility(false);
         objs[1].setVisibility(false);
 
         brainShad.setUniform("transparent", 1);
@@ -237,8 +237,8 @@ public class BrainModel {
             {
                 obj.setShader(null);
             }
-            objs[2].setShader(brainShad);
-            subCortical[4].setShader(brainShad);
+            objs[4].setShader(brainShad);
+            subCortical[3].setShader(brainShad);
         } else if (colourMode) {
             for (Object3D obj : objs)
             {
@@ -257,8 +257,8 @@ public class BrainModel {
             {
                 obj.setShader(shineyShader);
             }
-            objs[2].setShader(brainShad);
-            subCortical[4].setShader(brainShad);
+            objs[4].setShader(brainShad);
+            subCortical[3].setShader(brainShad);
         } else {
             for (Object3D obj : objs)
             {
@@ -485,8 +485,8 @@ public class BrainModel {
         if(subCortical == null || objs == null)
             return;
 
-        world.addObject(subCortical[4]);
-        world.addObject(objs[2]);
+        world.addObject(subCortical[3]);
+        world.addObject(objs[4]);
     }
 
     public static void removeAll(World world)

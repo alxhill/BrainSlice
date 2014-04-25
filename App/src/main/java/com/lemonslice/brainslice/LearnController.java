@@ -48,7 +48,6 @@ public class LearnController extends AbstractController implements OnScaleGestur
 
     private static boolean isScaling = false;
 
-
     private boolean isLoaded;
 
     // Used to interpret motion events as gestures

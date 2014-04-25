@@ -138,14 +138,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         addButtonListener(R.id.help_button, "help");
         addButtonListener(R.id.settings_button, "settings");
         addButtonListener(soundButton, "volume");
-
-        LinearLayout homeButton = (LinearLayout)findViewById(R.id.home_button);
-        homeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                HomeScreen.show();
-            }
-        });
+        addButtonListener(findViewById(R.id.home_button), "home");
         LinearLayout infoButton = (LinearLayout)findViewById(R.id.info_button);
         infoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -307,7 +300,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
             if (tapType.equals("learn"))
             {
                 visualiseController.unloadView();
-                BrainModel.showBrain = true;
                 BrainModel.disableDoubleTap = false;
                 learnController.loadView();
                 overlayingFrame.removeAllViews();
@@ -320,6 +312,12 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
                 learnController.unloadView();
                 baseController = visualiseController;
+            }
+            else if (tapType.equals("home"))
+            {
+                baseController = learnController;
+                BrainModel.onlyRotateY = true;
+                HomeScreen.show();
             }
             else if (tapType.equals("calibrate"))
             {

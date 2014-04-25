@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -32,6 +33,7 @@ public class HomeScreen {
     }
     public static void setFrameLayout(FrameLayout l){frameLayout = l; }
     private static Typeface fontAwesome;
+    private GestureDetector gestureDetector = null;
 
     private  static int btncount = 0;
 
@@ -98,6 +100,7 @@ public class HomeScreen {
 
         BrainModel.showBrain = true;
         BrainModel.smoothMoveToGeneric(BrainModel.homePosition, 120, 400);
+        BrainModel.smoothRotateToFront();
         BrainModel.smoothZoom(0.23f, 1200);
         BrainModel.setLabelsToDisplay(false);
         BrainModel.onlyRotateY = true;

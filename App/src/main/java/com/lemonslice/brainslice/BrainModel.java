@@ -63,7 +63,7 @@ public class BrainModel {
     private static GLSLShader[] shads = new GLSLShader[0];
 
     public static SimpleVector sidePosition = SimpleVector.create(-25,20,10);
-    public static SimpleVector homePosition = SimpleVector.create(-25,15,10);
+    public static SimpleVector homePosition = SimpleVector.create(-25,25,10);
     public static SimpleVector startPosition = SimpleVector.create(0,20,10);
     public static SimpleVector offScreenRightPosition = SimpleVector.create(50,20,10);
 
@@ -78,6 +78,7 @@ public class BrainModel {
     private static boolean shouldDisplaySpheres = true;
 
     static boolean showBrain = false;
+    static boolean onlyRotateY = true;
 
     public static void load(Resources res, AudioManager audio, Context con)
     {
@@ -445,9 +446,12 @@ public class BrainModel {
             return;
         }
 
-        plane.rotateX(x);
+        if(!onlyRotateY) {
+            plane.rotateX(x);
+            plane.rotateZ(z);
+        }
+
         plane.rotateY(y);
-        plane.rotateZ(z);
 
         if (!spheresLoaded) return;
 

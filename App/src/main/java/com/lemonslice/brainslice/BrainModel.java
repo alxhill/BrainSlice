@@ -418,7 +418,7 @@ public class BrainModel {
 
     public static void addToTransp(World world)
     {
-        if(subCortical == null || objs == null)
+        if(subCortical == null || objs == null || !showBrain)
             return;
 
         world.addObject(subCortical[4]);

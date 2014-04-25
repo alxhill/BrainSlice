@@ -16,6 +16,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.threed.jpct.SimpleVector;
+
 
 /**
  * Created by James on 24/04/2014.
@@ -53,7 +55,9 @@ public class HomeScreen {
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                BrainModel.showBrain = true;
                 BrainModel.smoothRotateToFront();
+                BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
                 BrainModel.smoothZoom(0.3f, 1200);
                 BrainModel.setLabelsToDisplay(true);
                 frameLayout.removeAllViews();
@@ -65,7 +69,6 @@ public class HomeScreen {
         btn3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
             }
         });
 
@@ -104,6 +107,11 @@ public class HomeScreen {
         slideDown.setInterpolator(new DecelerateInterpolator());
         slideDown.setStartOffset(600);
         icon_holder.startAnimation(slideDown);
+
+        BrainModel.showBrain = true;
+        BrainModel.smoothMoveToGeneric(BrainModel.homePosition, 0, 400);
+        BrainModel.smoothZoom(0.23f, 1200);
+        BrainModel.setLabelsToDisplay(true);
 
     }
 

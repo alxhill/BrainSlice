@@ -3,6 +3,7 @@ package com.lemonslice.brainslice;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.PixelFormat;
 import android.graphics.Typeface;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
@@ -64,7 +65,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
     private FrameBuffer fb = null;
     private World world = null;
     //private World transparentWorld = null;
-    private RGBColor back = new RGBColor(0, 17, 34);
+    private RGBColor back = new RGBColor(0,0,0,0);
 
     // Frame overlaying 3d rendering for labels, instructions etc...
     private FrameLayout overlayingFrame;
@@ -106,6 +107,9 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         // Enable the OpenGL ES2.0 context
         mGLView.setEGLContextClientVersion(2);
+        mGLView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        mGLView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        mGLView.setZOrderOnTop(true);
 
         // initialise and show the 3D renderer
         mGLView.setRenderer(renderer);
@@ -439,7 +443,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
             GLES20.glEnable(GLES20.GL_BLEND);
             GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-            //GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE);
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
             BrainModel.updateCameraPos();
             // clear buffers and draw framerate

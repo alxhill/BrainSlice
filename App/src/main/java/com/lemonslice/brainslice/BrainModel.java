@@ -371,7 +371,8 @@ public class BrainModel {
         }
         else
         {
-            smoothMoveToGeneric(startPosition, 0, 400);
+            if(!disableDoubleTap)
+                smoothMoveToGeneric(startPosition, 0, 400);
         }
     }
 
@@ -463,9 +464,6 @@ public class BrainModel {
                     continue;
 
                 vec.y = buf.getHeight() - vec.y;
-                //GOT A NULL POINTER HERE ^, ON THIS LINE ABOVE WHEN TAPPING A PRETTY BUTTON
-                //ASSUMING IT WAS buf.getHeight(); ... Berrow?
-                ///fixed another nullptr expection as well. Double whoops
 
                 shads[i].setUniform("spherePos", vec);
             }

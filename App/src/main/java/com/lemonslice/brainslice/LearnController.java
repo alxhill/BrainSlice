@@ -245,6 +245,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
 
     @Override
     public boolean onDoubleTap(MotionEvent event) {
+        if(!BrainModel.disableDoubleTap)
+            BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
         return true;
     }
 

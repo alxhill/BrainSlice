@@ -64,7 +64,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
     private MyRenderer renderer = null;
     private FrameBuffer fb = null;
     private World world = null;
-    //private World transparentWorld = null;
     private RGBColor back = new RGBColor(0,0,0,0);
 
     // Frame overlaying 3d rendering for labels, instructions etc...

@@ -108,10 +108,9 @@ public class SplashScreen
             }
         });
 
-
-
         //NOBODY LOOK AT THIS CODE!!!
         //wait for screen orient ro load properly
+        //REPLACE WITH START TIME OFFSETS
         new Timer().schedule(new TimerTask()
         {
             @Override
@@ -121,28 +120,12 @@ public class SplashScreen
                     @Override
                     public void run() {
                         lemon.startAnimation(scaleLemon);
-
-
                         new Timer().schedule(new TimerTask() {
                             @Override
                             public void run() {
                                 frameLayout.post(new Runnable() {
                                     @Override
                                     public void run() {
-//                                        lemon.startAnimation(scaleExitLemon);
-//                                        teamName.startAnimation(scaleExitTeamName);
-//                                        new Timer().schedule(new TimerTask() {
-//                                            @Override
-//                                            public void run() {
-//                                                frameLayout.post(new Runnable() {
-//                                                    @Override
-//                                                    public void run() {
-//                                                        SplashScreen.finished_splash();
-//                                                    }
-//                                                });
-//                                                cancel();
-//                                            }
-//                                        }, 1000);
                                         SplashScreen.finished_splash();
                                     }
                                 });

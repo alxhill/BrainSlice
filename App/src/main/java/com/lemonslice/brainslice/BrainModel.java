@@ -100,7 +100,7 @@ public class BrainModel {
         // Load the 3d model
         Log.d("BrainSlice", "Loading .3ds file");
 
-        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.twohalves2));
+        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.fullmodel2));
         Log.d("BrainSlice", "Loaded .3ds file");
 
         subCortical = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.subcor));
@@ -136,7 +136,7 @@ public class BrainModel {
         setDisplayMode(true,false);
 
         objs[2].setVisibility(false);
-        objs[1].setVisibility(false);
+        objs[12].setVisibility(false);
 
         brainShad.setUniform("transparent", 1);
 
@@ -200,31 +200,6 @@ public class BrainModel {
         spheresLoaded = true;
     }
 
-    public static void setXRayMode(boolean xRayMode)
-    {
-        if (xRayMode) {
-            objs[2].setShader(brainShad);
-            subCortical[4].setShader(brainShad);
-        } else {
-            objs[2].setShader(shineyShader);
-            subCortical[4].setShader(shineyShader);
-        }
-    }
-
-    public static void setColourMode(boolean colourMode)
-    {
-        if (colourMode) {
-            for (Object3D obj : objs)
-            {
-                obj.setShader(null);
-            }
-        } else {
-            for (Object3D obj : objs)
-            {
-                obj.setShader(shineyShader);
-            }
-        }
-    }
 
     public static void setDisplayMode(boolean xRayMode, boolean colourMode)
     {
@@ -238,6 +213,10 @@ public class BrainModel {
                 obj.setShader(null);
             }
             objs[4].setShader(brainShad);
+            objs[5].setShader(brainShad);
+            objs[6].setShader(brainShad);
+            objs[7].setShader(brainShad);
+            objs[9].setShader(brainShad);
             subCortical[3].setShader(brainShad);
         } else if (colourMode) {
             for (Object3D obj : objs)
@@ -258,6 +237,10 @@ public class BrainModel {
                 obj.setShader(shineyShader);
             }
             objs[4].setShader(brainShad);
+            objs[5].setShader(brainShad);
+            objs[6].setShader(brainShad);
+            objs[7].setShader(brainShad);
+            objs[9].setShader(brainShad);
             subCortical[3].setShader(brainShad);
         } else {
             for (Object3D obj : objs)
@@ -487,6 +470,10 @@ public class BrainModel {
 
         world.addObject(subCortical[3]);
         world.addObject(objs[4]);
+        world.addObject(objs[5]);
+        world.addObject(objs[6]);
+        world.addObject(objs[7]);
+        world.addObject(objs[9]);
     }
 
     public static void removeAll(World world)

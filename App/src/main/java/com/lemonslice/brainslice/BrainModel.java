@@ -79,6 +79,7 @@ public class BrainModel {
 
     static boolean showBrain = false;
     static boolean onlyRotateY = true;
+    static boolean disableDoubleTap = true;
 
     public static void load(Resources res, AudioManager audio, Context con)
     {

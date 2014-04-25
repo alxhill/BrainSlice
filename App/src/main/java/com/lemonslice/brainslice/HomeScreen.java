@@ -50,21 +50,8 @@ public class HomeScreen {
         LinearLayout btn2 = (LinearLayout)btn_holder.findViewById(R.id.hs_visualizebtn);
         LinearLayout btn3 = (LinearLayout)btn_holder.findViewById(R.id.hs_quizbtn);
 
-        //REPLACE ON CLICK LISTENER WITH SINGLE LINE BELOW LATER
-//        MainActivity.addButtonListener(btn1, "learn");
-        btn1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BrainModel.showBrain = true;
-                BrainModel.smoothRotateToFront();
-                BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
-                BrainModel.smoothZoom(0.3f, 1200);
-                BrainModel.setLabelsToDisplay(true);
-                BrainModel.onlyRotateY = false;
-                frameLayout.removeAllViews();
-            }
-        });
 
+        MainActivity.addButtonListener(btn1, "learn");
         MainActivity.addButtonListener(btn2, "visualise");
 
         btn3.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +101,7 @@ public class HomeScreen {
         BrainModel.smoothZoom(0.23f, 1200);
         BrainModel.setLabelsToDisplay(false);
         BrainModel.onlyRotateY = true;
+        BrainModel.disableDoubleTap = true;
 
     }
 

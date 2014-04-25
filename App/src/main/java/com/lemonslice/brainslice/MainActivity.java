@@ -307,7 +307,10 @@ public class MainActivity extends FragmentActivity implements EventListener {
             if (tapType.equals("learn"))
             {
                 visualiseController.unloadView();
+                BrainModel.showBrain = true;
+                BrainModel.disableDoubleTap = false;
                 learnController.loadView();
+                overlayingFrame.removeAllViews();
                 baseController = learnController;
             }
             else if (tapType.equals("visualise"))

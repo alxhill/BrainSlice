@@ -51,6 +51,8 @@ public class SplashScreen
 
     public static void show()
     {
+        BrainModel.showBrain = false;
+        BrainModel.disableDoubleTap = true;
         //inflate and show the xml loading screen
         FrameLayout splashScreen = (FrameLayout)inflateView();
         final ImageView lemon = (ImageView)splashScreen.findViewById(R.id.lemon);

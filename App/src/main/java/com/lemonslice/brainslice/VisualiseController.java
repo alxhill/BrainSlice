@@ -51,6 +51,9 @@ public class VisualiseController extends AbstractController implements SensorEve
     @Override
     public void loadView()
     {
+        BrainModel.onlyRotateY = false;
+        BrainModel.showBrain = true;
+        BrainModel.disableDoubleTap = true;
         isLoaded = true;
         oldTime = System.currentTimeMillis();
         sensorManager.registerListener(this, gyroSensor, SensorManager.SENSOR_DELAY_GAME);

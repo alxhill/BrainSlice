@@ -1,15 +1,12 @@
 package com.lemonslice.brainslice;
 
 import android.content.Context;
-import android.graphics.Typeface;
-import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 /**
@@ -47,7 +44,7 @@ public class Labels
         return label;
     }
 
-    public static View getLabel(LayoutInflater inflater, String brainSegment)
+    private static View getLabel(LayoutInflater inflater, String brainSegment)
     {
         BrainSegment seg = BrainInfo.getSegment(brainSegment);
 

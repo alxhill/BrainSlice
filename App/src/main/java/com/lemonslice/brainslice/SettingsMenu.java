@@ -14,10 +14,10 @@ import android.widget.Switch;
  */
 public class SettingsMenu {
 
-    private AlertDialog settingsDialog;
+    private final AlertDialog settingsDialog;
 
-    private Switch colourSwitch;
-    private Switch xRaySwitch;
+    private final Switch colourSwitch;
+    private final Switch xRaySwitch;
 
     public SettingsMenu(Context context) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

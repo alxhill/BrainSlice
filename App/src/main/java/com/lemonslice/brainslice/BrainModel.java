@@ -2,7 +2,6 @@ package com.lemonslice.brainslice;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.hardware.SensorManager;
 import android.util.Log;
 
 import com.lemonslice.brainslice.event.Events;
@@ -32,8 +31,6 @@ import java.util.concurrent.Semaphore;
  * Created by alexander on 27/01/2014.
  */
 public class BrainModel {
-
-    private static float absX, absY, absZ = 0;
 
     // magic 3D stuff
     private static Object3D plane;
@@ -65,7 +62,6 @@ public class BrainModel {
     public static SimpleVector sidePosition = SimpleVector.create(-25,20,10);
     public static SimpleVector homePosition = SimpleVector.create(-25,25,10);
     public static SimpleVector startPosition = SimpleVector.create(0,20,10);
-    public static SimpleVector offScreenRightPosition = SimpleVector.create(50,20,10);
 
     private static GLSLShader brainShad;
     private static GLSLShader shineyShader;
@@ -299,7 +295,7 @@ public class BrainModel {
     public static void notifyTap(float x, float y)
     {
         boolean selected = false;
-        int i = 0;
+        int i;
         int pos = -1;
 
         if(cam == null || buf == null || spheres == null)
@@ -478,80 +474,19 @@ public class BrainModel {
         brainSemaphore.release();
     }
 
-    // moves the camera so it's a constant distance from the brain.
-    public static void adjustCamera()
-    {
-        Matrix m = plane.getRotationMatrix().cloneMatrix().invert3x3();
-        m.orthonormalize();
-        m.matMul(frontMatrix);
-
-        float R[] = m.getDump();
-        float axis[] = new float[3];
-
-        SensorManager.getOrientation(R, axis);
-
-        float x = axis[1];
-        float y = axis[2];
-
-        if (Float.isNaN(y) || Float.isNaN(x))
-        {
-            Log.e("BrainSlice", "Invalid x and y values");
-            return;
-        }
-
-        float maxDist = 20.0f;
-        float minDist = 10.0f;
-
-        float ex = (float) (maxDist*Math.cos(y));
-        float ey = (float) (minDist*Math.sin(y));
-
-        float dist = (float) Math.sqrt(ex*ex + ey*ey);
-
-        float maxSize = 0.6f;
-        float minSize = 0.5f;
-
-        float distScale = (dist - minDist) / (maxDist - minDist);
-
-        distScale = 1.0f - distScale;
-
-        float xAdjust = 0;
-        float scaleFactor = distScale*(maxSize - minSize);
-
-        final double eighthPi = Math.PI / 8.0f;
-
-        if (x < eighthPi && x > -eighthPi)
-            xAdjust = (float) ((eighthPi - Math.abs(x)) / eighthPi);
-
-        //plane.setScale(scaleFactor*xAdjust + minSize);
-
-
-    }
-
     public static void scale(float scale)
     {
-        try
-        {
-            brainSemaphore.acquire();
-        }
-        catch(InterruptedException e)
-        {
-            return;
-        }
-
         if(scale <= 0)
         {
-            brainSemaphore.release();
+            Log.d("Brainslice","Error: Attempt to scale with factor below or equal to zero");
             return;
         }
 
         plane.scale(scale);
         shader.setUniform("heightScale", 1.0f);
-        for(int i=0; i<spheres.size(); i++)
-        {
-            spheres.get(i).scale(1.0f / scale);
+        for (Object3D sphere : spheres) {
+            sphere.scale(1.0f / scale);
         }
-
-        brainSemaphore.release();
     }
 
     public static void smoothMoveToGeneric(SimpleVector simpleVector, int delay, final int duration)
@@ -579,30 +514,28 @@ public class BrainModel {
             Ease zEase = new Ease(zDiff, duration, Ease.Easing.OUT_EXPO);
 
             @Override
-            public void run()
-            {
+            public void run() {
                 float stepMovementX = (float) (xEase.step(i) - xEase.step(i - stepTime));
                 float stepMovementY = (float) (yEase.step(i) - yEase.step(i - stepTime));
                 float stepMovementZ = (float) (zEase.step(i) - zEase.step(i - stepTime));
 
-                try
-                {
+                try {
                     brainSemaphore.acquire();
-                } catch (InterruptedException e)
-                {
-                    return;
+                    plane.translate(stepMovementX, stepMovementY, stepMovementZ);
+                } catch (InterruptedException e) {
+                    // do nothing
+                } finally {
+                    brainSemaphore.release();
                 }
-
-                plane.translate(stepMovementX, stepMovementY, stepMovementZ);
-
-                brainSemaphore.release();
 
                 i += stepTime;
                 if (i >= duration) cancel();
+                }
+
             }
 
-        }, delay, 15);
-    }
+            ,delay,15);
+        }
 
     public static void smoothZoom(final float targetScale, final int zoomTime)
     {
@@ -626,7 +559,17 @@ public class BrainModel {
                 if (Double.isNaN(stepZoom))
                     return;
 
-                scale((float) stepZoom);
+                try
+                {
+                    brainSemaphore.acquire();
+                    scale((float) stepZoom);
+                    brainSemaphore.release();
+                } catch (InterruptedException e) {
+                    // do nothing
+                } finally {
+                    brainSemaphore.release();
+                }
+
                 i += stepTime;
                 if (i >= zoomTime) cancel();
             }
@@ -707,15 +650,14 @@ public class BrainModel {
 
                 try {
                     brainSemaphore.acquire();
+                    // This is 100% necessary to prevent a bug where the brain model disappears
+                    if (stepRotation != 0.0)
+                        plane.rotateAxis(axis, (float) stepRotation);
                 } catch (InterruptedException e) {
-                    return;
+                    // do nothing
+                } finally {
+                    brainSemaphore.release();
                 }
-
-                // This is 100% necessary to prevent a bug where the brain model disappears
-                if (stepRotation != 0.0)
-                    plane.rotateAxis(axis, (float) stepRotation);
-
-                brainSemaphore.release();
 
                 i += stepTime;
                 if (i >= rotateTime) cancel();
@@ -748,10 +690,6 @@ public class BrainModel {
 
     }
 
-    public static Matrix getRotationMatrix()
-    {
-        return plane.getRotationMatrix();
-    }
 
     static class Ease {
 

@@ -145,7 +145,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 //show info on current part
             }
         });
-        infoButton.setVisibility(View.INVISIBLE); // for now, cause it's ugly and I don't like looking at it
+        
 
         // check for internet connectivity and load the data
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

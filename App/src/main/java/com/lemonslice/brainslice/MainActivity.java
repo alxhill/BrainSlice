@@ -215,7 +215,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         Logger.log("onPause");
         super.onPause();
         mGLView.onPause();
-        finish();
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     @Override

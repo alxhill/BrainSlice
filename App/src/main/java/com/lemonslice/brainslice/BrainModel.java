@@ -480,11 +480,22 @@ public class BrainModel {
             return;
         }
 
-        plane.scale(scale);
-        shader.setUniform("heightScale", 1.0f);
-        for (Object3D sphere : spheres) {
-            sphere.scale(1.0f / scale);
+        try
+        {
+            brainSemaphore.acquire();
+            plane.scale(scale);
+            shader.setUniform("heightScale", 1.0f);
+            for (Object3D sphere : spheres) {
+                sphere.scale(1.0f / scale);
+            }
+        } catch (InterruptedException e) {
+            // do nothing
+        } finally {
+            brainSemaphore.release();
         }
+
+
+
     }
 
     public static void smoothMoveToGeneric(SimpleVector simpleVector, int delay, final int duration)
@@ -557,16 +568,7 @@ public class BrainModel {
                 if (Double.isNaN(stepZoom))
                     return;
 
-                try
-                {
-                    brainSemaphore.acquire();
-                    scale((float) stepZoom);
-                    brainSemaphore.release();
-                } catch (InterruptedException e) {
-                    // do nothing
-                } finally {
-                    brainSemaphore.release();
-                }
+                scale((float) stepZoom);
 
                 i += stepTime;
                 if (i >= zoomTime) cancel();
@@ -618,6 +620,9 @@ public class BrainModel {
 
     public static void smoothRotateToGeneric(final SimpleVector axis, final double angle, final boolean elasticBounce)
     {
+        if (!isLoaded)
+            return;
+
         final int rotateTime = 300 + (int) Math.round(Math.abs(angle)*350.0f);
 
         final Ease ease;

@@ -20,5 +20,10 @@
     <string name="ColourCodingSetting">Colour coding</string>
     <string name="XRayModeSetting">X-ray mode</string>
     <string name="welcome_message">Welcome to BrainSlice</string>
+    <string name="card1text2">Swipe right to start the tutorial</string>
+    <string name="card1text3">Swipe left to skip the tutorial</string>
+    <string name="card2text1">Learn Mode:</string>
+    <string name="card2text2">Touch the circles to learn about the brain</string>
+    <string name="card2text3">Use your finger to move the brain around</string>
 
 </resources>

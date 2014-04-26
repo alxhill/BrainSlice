@@ -50,9 +50,6 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class MainActivity extends FragmentActivity implements EventListener {
 
-    // Used to handle pause and resume...
-    private static MainActivity master = null;
-
     AbstractController baseController;
     LearnController learnController;
     VisualiseController visualiseController;
@@ -77,9 +74,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
     {
         Logger.log("onCreate");
         Logger.setLogLevel(Logger.LL_DEBUG);
-
-        if (master != null)
-            copy(master);
 
         setContentView(R.layout.activity_main);
 
@@ -231,23 +225,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
         super.onStop();
     }
 
-    private void copy(Object src)
-    {
-        try
-        {
-            Logger.log("Copying data from master Activity!");
-            Field[] fs = src.getClass().getDeclaredFields();
-            for (Field f : fs)
-            {
-                f.setAccessible(true);
-                f.set(this, f.get(src));
-            }
-        } catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-
     // activities are sent touch events,
     public boolean onTouchEvent(MotionEvent me)
     {
@@ -391,50 +368,39 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
             BrainModel.setFrameBuffer(fb);
 
-            if (master == null)
-            {
-                world = new World();
-                //transparentWorld = new World();
+            world = new World();
 
-                BrainModel.load(res, (AudioManager) getSystemService(Context.AUDIO_SERVICE), getApplicationContext());
+            BrainModel.load(res, (AudioManager) getSystemService(Context.AUDIO_SERVICE), getApplicationContext());
 
-                BrainModel.addToScene(world);
+            BrainModel.addToScene(world);
 
-                //BrainModel.addToTransp(transparentWorld);
+            // create a light
+            Light light = new Light(world);
+            light.enable();
+            light.setIntensity(122, 80, 80);
+            light.setPosition(SimpleVector.create(100, 100, 0));
 
-                // create a light
-                Light light = new Light(world);
-                light.enable();
-                light.setIntensity(122, 80, 80);
-                light.setPosition(SimpleVector.create(100, 100, 0));
+            Light light2 = new Light(world);
+            light2.enable();
+            light2.setIntensity(122, 80, 80);
+            light2.setPosition(SimpleVector.create(100, -100, 0));
 
-                Light light2 = new Light(world);
-                light2.enable();
-                light2.setIntensity(122, 80, 80);
-                light2.setPosition(SimpleVector.create(100, -100, 0));
+            Light light3 = new Light(world);
+            light3.enable();
+            light3.setIntensity(122, 80, 80);
+            light3.setPosition(SimpleVector.create(-1000, 0, 0));
 
-                Light light3 = new Light(world);
-                light3.enable();
-                light3.setIntensity(122, 80, 80);
-                light3.setPosition(SimpleVector.create(-1000, 0, 0));
+            world.setAmbientLight(61, 40, 40);
 
-                world.setAmbientLight(61, 40, 40);
+            // construct camera and move it into position
+            Camera camera = world.getCamera();
+            camera.moveCamera(Camera.CAMERA_MOVEOUT, 70);
+            camera.lookAt(BrainModel.getTransformedCenter());
 
-                // construct camera and move it into position
-                Camera cam = world.getCamera();
-                cam.moveCamera(Camera.CAMERA_MOVEOUT, 70);
-                cam.lookAt(BrainModel.getTransformedCenter());
+            BrainModel.setCamera(camera);
 
-                BrainModel.setCamera(cam);
+            MemoryHelper.compact();
 
-                MemoryHelper.compact();
-
-                if (master == null)
-                {
-                    Logger.log("Saving master Activity!");
-                    master = MainActivity.this;
-                }
-            }
             isLoaded=true;
         }
 

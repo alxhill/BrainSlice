@@ -76,6 +76,7 @@ public class BrainModel {
     static boolean showBrain = false;
     static boolean onlyRotateY = true;
     static boolean disableDoubleTap = true;
+    static boolean infoShowing = false;
 
     public static void load(Resources res, AudioManager audio, Context con)
     {
@@ -371,8 +372,27 @@ public class BrainModel {
         }
         else
         {
-            if(!disableDoubleTap)
+            if(!disableDoubleTap) {
+                infoShowing = false;
                 smoothMoveToGeneric(startPosition, 0, 400);
+            }
+        }
+    }
+
+    public static void infoTapped()
+    {
+        if(!infoShowing && !disableDoubleTap)
+        {
+            infoShowing = true;
+            smoothMoveToGeneric(sidePosition, 0, 400);
+            smoothZoom(0.25f,400);
+        }
+        else
+        {
+            if(!disableDoubleTap) {
+                infoShowing = false;
+                smoothMoveToGeneric(startPosition, 0, 400);
+            }
         }
     }
 

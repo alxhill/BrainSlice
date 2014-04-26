@@ -33,6 +33,26 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/current_segment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:layout_marginTop="10dp"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:textColor="#fff"
+            android:padding="10dp"
+            android:text="Frontal Lobe"
+            />
+
+        </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/info_button"
@@ -42,15 +62,10 @@
         android:layout_gravity="center|right"
         android:background="@drawable/hs_button"
         >
-        <TextView
-            android:gravity="center"
-            android:layout_height="30dp"
-            android:layout_width="30dp"
-            android:textSize="20sp"
-            android:textColor="#fff"
-            android:textAlignment="center"
-            />
-
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/i"/>
     </LinearLayout>
 
     <LinearLayout

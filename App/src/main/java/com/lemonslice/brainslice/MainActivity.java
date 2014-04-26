@@ -18,7 +18,10 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.Surface;
+import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewStub;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -137,15 +140,10 @@ public class MainActivity extends FragmentActivity implements EventListener {
         addButtonListener(R.id.help_button, "help");
         addButtonListener(R.id.settings_button, "settings");
         addButtonListener(soundButton, "volume");
-        addButtonListener(findViewById(R.id.home_button), "home");
-        LinearLayout infoButton = (LinearLayout)findViewById(R.id.info_button);
-        infoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //show info on current part
-            }
-        });
-        
+        addButtonListener(R.id.home_button, "home");
+        addButtonListener(R.id.info_button, "info");
+
+
 
         // check for internet connectivity and load the data
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -303,6 +301,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 learnController.loadView();
                 overlayingFrame.removeAllViews();
                 baseController = learnController;
+                (findViewById(R.id.info_button)).setVisibility(View.VISIBLE);
+                (findViewById(R.id.current_segment)).setVisibility(View.VISIBLE);
             }
             else if (tapType.equals("visualise"))
             {
@@ -311,12 +311,18 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
                 learnController.unloadView();
                 baseController = visualiseController;
+                (findViewById(R.id.info_button)).setVisibility(View.INVISIBLE);
+                (findViewById(R.id.current_segment)).setVisibility(View.INVISIBLE);
             }
             else if (tapType.equals("home"))
             {
                 baseController = learnController;
                 BrainModel.onlyRotateY = true;
                 HomeScreen.show();
+            }
+            else if (tapType.equals("info"))
+            {
+                BrainModel.infoTapped();
             }
             else if (tapType.equals("calibrate"))
             {

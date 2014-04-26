@@ -8,7 +8,7 @@
     android:layout_margin="20dp"
     android:layout_gravity="center"
     android:paddingLeft="20dp"
-    android:paddingTop="10dp"
+    android:paddingTop="0dp"
     android:paddingRight="20dp"
     android:paddingBottom="30dp">
     <LinearLayout
@@ -17,16 +17,65 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="center"
-        android:background="@drawable/card_background_green">
+        android:background="@drawable/card_background_green"
+        android:gravity="center"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/card2text1"
+            android:textSize="30sp"
+            android:textColor="#fff"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/textView"
+            android:layout_weight="1"/>
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:weightSum="1">
-
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                android:layout_weight="8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/card2text2"
+                android:layout_gravity="center_vertical"
+                android:paddingRight="0dp"
+                android:textAlignment="center"/>
+           <ImageView
+               android:layout_width="0dp"
+               android:layout_height="60dp"
+               android:layout_weight="1"
+               android:src="@drawable/hand_circle"/>
+            </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <TextView
+                android:layout_weight="4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="@string/card2text3"
+                android:layout_gravity="center_horizontal"
+                android:paddingRight="20dp"
+                android:textAlignment="center"/>
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="75dp"
+                android:layout_weight="1"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:src="@drawable/hand_brain"/>
         </LinearLayout>
+
+
     </LinearLayout>
 
 </LinearLayout>

@@ -32,46 +32,43 @@ import java.util.concurrent.Semaphore;
  */
 public class BrainModel {
 
-    // magic 3D stuff
+    // 3D stuff
     private static Object3D plane;
     private static Object3D[] objs;
     private static Object3D[] subCortical;
+
+    // Shaders
     private static GLSLShader shader = null;
+    private static GLSLShader brainShad;
+    private static GLSLShader shineyShader;
+    private static GLSLShader[] shads = new GLSLShader[0];
 
-    private static Semaphore brainSemaphore = new Semaphore(1);
+    // camera
+    private static Camera camera = null;
+    private static SimpleVector camPos;
 
-    private static Matrix frontMatrix;
+    private static FrameBuffer buf = null;
 
+
+    // Spheres
+    private static boolean shouldDisplaySpheres = true;
+    private static final float sphereRad = 2.0f;
     private static ArrayList<Object3D> spheres = new ArrayList<Object3D>();
     public static boolean spheresLoaded = false;
 //    private static RGBColor sphereNormalColor = new RGBColor(255, 255, 255);
 //    private static RGBColor sphereTouchedColor = new RGBColor(255, 255, 0);
 
-    private static Camera cam = null;
-
-
-    private static FrameBuffer buf = null;
-    private static float sphereRad = 2.0f;
-
-    public static boolean isLoaded = false;
-
-    private static int selection = -1;
-
-    private static GLSLShader[] shads = new GLSLShader[0];
-
     public static SimpleVector sidePosition = SimpleVector.create(-25,20,10);
     public static SimpleVector homePosition = SimpleVector.create(-25,25,10);
     public static SimpleVector startPosition = SimpleVector.create(0,20,10);
 
-    private static GLSLShader brainShad;
-    private static GLSLShader shineyShader;
-
-    private static SimpleVector camPos;
-
     private static Context context;
     private static AudioManager audioManager;
+    private static final Semaphore brainSemaphore = new Semaphore(1);
 
-    private static boolean shouldDisplaySpheres = true;
+    public static boolean isLoaded = false;
+    private static int selection = -1;
+    private static Matrix frontMatrix;
 
     static boolean showBrain = false;
     static boolean onlyRotateY = true;
@@ -101,12 +98,10 @@ public class BrainModel {
         plane.setCulling(true);
 
         // Load the 3d model
-        Log.d("BrainSlice", "Loading .3ds file");
-
         objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.new_ser));
-        Log.d("BrainSlice", "Loaded .3ds file");
-
+        Log.d("BrainSlice", "Copied serialised brain model into memory");
         subCortical = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.underbrain));
+        Log.d("BrainSlice", "Copied serialised subcortical sections into memory");
 
         // compile and load shaders for plane
         plane.setShader(shader);
@@ -162,6 +157,7 @@ public class BrainModel {
 
         isLoaded = true;
         Events.trigger("model:loaded");
+        Log.d("Brainslice","BrainModel isLoaded");
     }
 
     public static void loadSegments(Resources res)
@@ -221,7 +217,7 @@ public class BrainModel {
 
     public static void setCamera(Camera c)
     {
-        cam = c;
+        camera = c;
         if(buf == null)
             return;
 
@@ -229,7 +225,7 @@ public class BrainModel {
 
         for(int i=0; i<spheres.size(); i++)
         {
-            SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres.get(i).getTransformedCenter());
+            SimpleVector vec = Interact2D.project3D2D(camera, buf, spheres.get(i).getTransformedCenter());
             vec.y = buf.getHeight() - vec.y;
             shads[i].setUniform("spherePos", vec);
         }
@@ -237,25 +233,25 @@ public class BrainModel {
 
     public static void updateCameraPos()
     {
-        shineyShader.setUniform("cameraPos", cam.getPosition());
+        shineyShader.setUniform("cameraPos", camera.getPosition());
     }
 
     public static Camera getCamera()
     {
-        return cam;
+        return camera;
     }
 
     public static void setFrameBuffer(FrameBuffer b)
     {
         buf = b;
-        if(cam == null)
+        if(camera == null)
             return;
 
         if (!spheresLoaded) return;
 
         for(int i=0; i<spheres.size(); i++)
         {
-            SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres.get(i).getTransformedCenter());
+            SimpleVector vec = Interact2D.project3D2D(camera, buf, spheres.get(i).getTransformedCenter());
             vec.y = buf.getHeight() - vec.y;
             shads[i].setUniform("spherePos", vec);
         }
@@ -271,14 +267,14 @@ public class BrainModel {
         float hodgeFactor = 1.0f;
 
         SimpleVector bvec = plane.getTransformedCenter();
-        SimpleVector cvec = cam.getPosition();
+        SimpleVector cvec = camera.getPosition();
 
         float dx, dy, dz;
         dx = bvec.x - cvec.x;
         dy = bvec.y - cvec.y;
         dz = bvec.z - cvec.z;
 
-        ///Not really a Z value but nevermind
+        ///Not really a Z value but never mind
         float brainZFromCamera = (float)Math.sqrt(dx*dx + dy*dy + dz*dz);
 
         SimpleVector svec = sphere.getTransformedCenter();
@@ -299,13 +295,13 @@ public class BrainModel {
         int i;
         int pos = -1;
 
-        if(cam == null || buf == null || spheres == null)
+        if(camera == null || buf == null || spheres == null)
             return;
 
         if (camPos == null)
         {
             // get a vector pointing directly to the camera
-            camPos = cam.getDirection();
+            camPos = camera.getDirection();
             camPos = camPos.reflect(camPos);
         }
 
@@ -313,7 +309,7 @@ public class BrainModel {
         {
             Object3D sphere = spheres.get(i);
 
-            SimpleVector v = Interact2D.project3D2D(cam, buf, sphere.getTransformedCenter());
+            SimpleVector v = Interact2D.project3D2D(camera, buf, sphere.getTransformedCenter());
 
             float xd = v.x - x;
             float yd = v.y - y;
@@ -458,38 +454,35 @@ public class BrainModel {
         try
         {
             brainSemaphore.acquire();
-        }
-        catch(InterruptedException e)
-        {
-            return;
-        }
-
-        if(!onlyRotateY) {
-            plane.rotateX(x);
-            plane.rotateZ(z);
-        }
-
-        plane.rotateY(y);
-
-        if (!spheresLoaded) return;
-
-        // updates the sphere shaders so the gradient is drawn in the right location
-        for(int i=0; i<spheres.size(); i++)
-        {
-            if(cam!=null && buf!=null)
-            {
-                SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres.get(i).getTransformedCenter());
-
-                if(vec == null)
-                    continue;
-
-                vec.y = buf.getHeight() - vec.y;
-
-                shads[i].setUniform("spherePos", vec);
+            if(!onlyRotateY) {
+                plane.rotateX(x);
+                plane.rotateZ(z);
             }
-        }
 
-        brainSemaphore.release();
+            plane.rotateY(y);
+
+            if (!spheresLoaded) return;
+
+            // updates the sphere shaders so the gradient is drawn in the right location
+            for(int i=0; i<spheres.size(); i++)
+            {
+                if(camera !=null && buf!=null)
+                {
+                    SimpleVector vec = Interact2D.project3D2D(camera, buf, spheres.get(i).getTransformedCenter());
+
+                    if(vec == null)
+                        continue;
+
+                    vec.y = buf.getHeight() - vec.y;
+
+                    shads[i].setUniform("spherePos", vec);
+                }
+            }
+        } catch(InterruptedException e) {
+            // do nothing
+        } finally {
+            brainSemaphore.release();
+        }
     }
 
     public static void scale(float scale)
@@ -538,9 +531,9 @@ public class BrainModel {
             // current number of milliseconds elapsed
             int i = stepTime;
 
-            Ease xEase = new Ease(xDiff, duration, Ease.Easing.OUT_EXPO);
-            Ease yEase = new Ease(yDiff, duration, Ease.Easing.OUT_EXPO);
-            Ease zEase = new Ease(zDiff, duration, Ease.Easing.OUT_EXPO);
+            final Ease xEase = new Ease(xDiff, duration, Ease.Easing.OUT_EXPO);
+            final Ease yEase = new Ease(yDiff, duration, Ease.Easing.OUT_EXPO);
+            final Ease zEase = new Ease(zDiff, duration, Ease.Easing.OUT_EXPO);
 
             @Override
             public void run() {
@@ -578,7 +571,7 @@ public class BrainModel {
             // current number of milliseconds elapsed
             int i = stepTime;
 
-            Ease ease = new Ease(scaleDiff, zoomTime, Ease.Easing.OUT_EXPO);
+            final Ease ease = new Ease(scaleDiff, zoomTime, Ease.Easing.OUT_EXPO);
 
             @Override
             public void run()
@@ -716,9 +709,9 @@ public class BrainModel {
 
     static class Ease {
 
-        private double delta;
-        private double totalTime;
-        private Easing type;
+        private final double delta;
+        private final double totalTime;
+        private final Easing type;
 
         public enum Easing {
             OUT_EXPO, IN_OUT_EXPO, OUT_ELASTIC, OUT_BACK

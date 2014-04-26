@@ -18,13 +18,8 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.Surface;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewStub;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.lemonslice.brainslice.event.Events;
@@ -40,7 +35,6 @@ import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -50,9 +44,9 @@ import javax.microedition.khronos.opengles.GL10;
  */
 public class MainActivity extends FragmentActivity implements EventListener {
 
-    AbstractController baseController;
-    LearnController learnController;
-    VisualiseController visualiseController;
+    private AbstractController baseController;
+    private LearnController learnController;
+    private VisualiseController visualiseController;
 
     private TextView soundButton;
 
@@ -61,10 +55,9 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
     // 3D stuff
     private GLSurfaceView mGLView;
-    private MyRenderer renderer = null;
     private FrameBuffer fb = null;
     private World world = null;
-    private RGBColor back = new RGBColor(0,0,0,0);
+    private final RGBColor back = new RGBColor(0,0,0,0);
 
     // Frame overlaying 3d rendering for labels, instructions etc...
     private FrameLayout overlayingFrame;
@@ -80,7 +73,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
         hideSystemBars();
 
-        renderer = new MyRenderer();
+        MyRenderer renderer = new MyRenderer();
 
         SplashScreen.setContext(this);
         SplashScreen.setFrameLayout(overlayingFrame);
@@ -417,7 +410,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
             GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
             GLES20.glEnable(GLES20.GL_DEPTH_TEST);
             BrainModel.updateCameraPos();
-            // clear buffers and draw framerate
             fb.clear(back);
 
             BrainModel.removeAll(world);
@@ -425,8 +417,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
             world.renderScene(fb);
             world.draw(fb);
-
-            //GLES20.glDisable(GLES20.GL_DEPTH_TEST);
 
             BrainModel.removeAll(world);
             BrainModel.addToTransp(world);

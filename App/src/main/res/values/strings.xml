@@ -25,5 +25,9 @@
     <string name="card2text1">Learn Mode:</string>
     <string name="card2text2">Touch the circles to learn about the brain</string>
     <string name="card2text3">Use your finger to move the brain around</string>
+    <string name="card3text1">Visualise Mode:</string>
+    <string name="card3text2">Place the device on a friend\'s forehead to start</string>
+    <string name="card3text3">Move the device around your friend\'s head to see their brain!</string>
+    <string name="card4text1">Quiz Mode:</string>
 
 </resources>

@@ -113,6 +113,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
         Events.register(this);
 
         learnController = new LearnController(getApplicationContext());
+        learnController.setOverlayLabel((TextView) findViewById(R.id.currentSegment));
+
         learnController.loadView();
         baseController = learnController;
 

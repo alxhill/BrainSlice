@@ -11,6 +11,11 @@ import android.view.WindowManager;
 import android.view.Display;
 import android.graphics.Point;
 import android.os.Build;
+import android.widget.TextView;
+import com.threed.jpct.Object3D;
+import com.threed.jpct.SimpleVector;
+
+import java.util.ArrayList;
 
 import com.lemonslice.brainslice.event.Events;
 import com.lemonslice.brainslice.event.EventListener;
@@ -47,7 +52,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
     private static int screenHeight;
 
     private static boolean isScaling = false;
-
+    private TextView overlayLabel;
     private boolean isLoaded;
 
     // Used to interpret motion events as gestures
@@ -135,6 +140,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
 
         BrainModel.scale(scale);
         scale = 1.0f;
+        showSection();
     }
 
     @Override
@@ -282,5 +288,60 @@ public class LearnController extends AbstractController implements OnScaleGestur
             velocityX = 0;
             velocityY = 0;
         }
+    }
+    public void showSection()
+    {
+        SimpleVector camPos = BrainModel.getCamera().getPosition();
+        SimpleVector minPos = null;
+
+        ArrayList<Object3D> spheresx = BrainModel.getSpheres();
+        String segmentName = null;
+
+        for (Object3D sphere : spheresx)
+        {
+            SimpleVector spherePos = sphere.getTransformedCenter();
+            if (minPos == null || minPos.distance(camPos) > spherePos.distance(camPos))
+            {
+                minPos = spherePos;
+                segmentName = sphere.getName();
+            }
+        }
+
+        if (segmentName == null) return;
+
+        if (minPos.distance(camPos) > 100)
+        {
+            overlayLabel.post(new Runnable() {
+                @Override
+                public void run()
+                {
+                    overlayLabel.setText("");
+
+                }
+            });
+        }
+        else
+        {
+            final BrainSegment finalCurrentSegment = BrainInfo.getSegment(segmentName);
+
+
+            overlayLabel.post(new Runnable() {
+                @Override
+                public void run()
+                {
+                    overlayLabel.setText(finalCurrentSegment.getTitle());
+                    if (finalCurrentSegment.getTitle() == "Parietal Lobe") {
+//                        BrainModel.changeObjectShader(2, "colour");
+                    } else {
+//                        BrainModel.changeObjectShader(2, "xray");
+                    }
+                }
+            });
+        }
+    }
+
+    public void setOverlayLabel(TextView overlayLabel)
+    {
+        this.overlayLabel = overlayLabel;
     }
 }

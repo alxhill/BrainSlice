@@ -48,7 +48,7 @@
             android:textColor="#fff"
             android:padding="10dp"
             android:text="Frontal Lobe"
-            />
+            android:id="@+id/currentSegment" />
 
         </LinearLayout>
 

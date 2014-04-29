@@ -35,6 +35,8 @@ import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
 
+import java.io.IOException;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -63,6 +65,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
     private FrameLayout overlayingFrame;
     private FrameLayout tutorialFrame;
     private Typeface fontAwesome;
+
+    public static GLSurfaceView sMGLView;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -100,10 +104,12 @@ public class MainActivity extends FragmentActivity implements EventListener {
         mGLView.setEGLContextClientVersion(2);
         mGLView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         mGLView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        mGLView.setZOrderOnTop(false);
+        //mGLView.setZOrderOnTop(true);
 
         // initialise and show the 3D renderer
         mGLView.setRenderer(renderer);
+
+        sMGLView = mGLView;
 
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
@@ -144,9 +150,25 @@ public class MainActivity extends FragmentActivity implements EventListener {
         boolean loaded = false;
         if (networkInfo != null && networkInfo.isConnected())
             loaded = BrainInfo.loadData();
+
         // if there's no internet or the loading failed, use the local data
         if (!loaded)
             BrainInfo.readData(getResources());
+
+        setZOnTop();
+    }
+
+    public static void setZOnTop()
+    {
+        //sMGLView.setZOrderOnTop(true);
+        //BrainModel.drawBackground = false;
+        BrainModel.drawBackground = true;
+    }
+
+    public static void setZOnBottom()
+    {
+        //sMGLView.setZOrderOnTop(false);
+        BrainModel.drawBackground = true;
     }
 
     private TextView iconifyView(int resId, int size)

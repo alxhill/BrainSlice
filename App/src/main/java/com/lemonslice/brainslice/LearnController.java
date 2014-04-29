@@ -99,6 +99,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
         BrainModel.smoothRotateToFront();
         BrainModel.smoothZoom(0.3f, 1200);
         BrainModel.setLabelsToDisplay(true);
+        BrainModel.enableBackgroundGlow();
+        MainActivity.setZOnBottom();
     }
 
     @Override

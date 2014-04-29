@@ -99,7 +99,7 @@ public class HomeScreen {
         BrainModel.setLabelsToDisplay(false);
         BrainModel.onlyRotateY = true;
         BrainModel.disableDoubleTap = true;
-
+        MainActivity.setZOnTop();
     }
 
     private static TextView iconifyView(int resId, int size)

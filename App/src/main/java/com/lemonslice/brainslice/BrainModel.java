@@ -78,6 +78,8 @@ public class BrainModel {
     static boolean infoShowing = false;
     private static int screenWidth, screenHeight;
 
+    public static Boolean drawBackground;
+
     public static void load(Resources res, Context con)
     {
         context = con;
@@ -206,6 +208,8 @@ public class BrainModel {
         glowShader.setUniform("sw", screenWidth);
         glowShader.setUniform("sh", screenHeight);
 
+        enableBackgroundGlow();
+
         isLoaded=true;
         Events.trigger("model:loaded");
         Log.d("Brainslice","BrainModel isLoaded");
@@ -255,11 +259,11 @@ public class BrainModel {
         if(colourMode && xRayMode) {
             for (Object3D obj : subCortical)
             {
-                obj.setShader(null);
+                obj.clearShader();
             }
             for (Object3D obj : objs)
             {
-                obj.setShader(null);
+                obj.clearShader();
             }
             objs[4].setShader(brainShad);
             objs[5].setShader(brainShad);
@@ -270,11 +274,11 @@ public class BrainModel {
         } else if (colourMode) {
             for (Object3D obj : objs)
             {
-                obj.setShader(null);
+                obj.clearShader();
             }
             for (Object3D obj : subCortical)
             {
-                obj.setShader(null);
+                obj.clearShader();
             }
         } else if (xRayMode) {
             for (Object3D obj : objs)
@@ -548,13 +552,13 @@ public class BrainModel {
             //    continue;
             if(i == 3)
                 continue;
-            
+
             world.addObject(subCortical[i]);
         }
 
 
-
-        world.addObject(glowPlane);
+        if(drawBackground)
+            world.addObject(glowPlane);
 
         if(plane == null || camera == null || buf == null)
             return;
@@ -564,6 +568,7 @@ public class BrainModel {
         if(v == null)
             return;
 
+        glowShader.setUniform("scale", plane.getScale());
         glowShader.setUniform("centre", v);
     }
 
@@ -939,5 +944,17 @@ public class BrainModel {
             double s = 1.70158;
             return delta*((currentTime=currentTime/totalTime-1)*currentTime*((s+1)*currentTime + s) + 1) + 1;
         }
+    }
+
+    public static void enableBackgroundGlow()
+    {
+        if(glowShader != null)
+            glowShader.setUniform("is_back", 1);
+    }
+
+    public static void disableBackgroundGlow()
+    {
+        if(glowShader != null)
+            glowShader.setUniform("is_back", 0);
     }
 }

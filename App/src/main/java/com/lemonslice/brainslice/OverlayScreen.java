@@ -16,7 +16,7 @@ public class OverlayScreen
     private static Context context;
     private static FrameLayout frameLayout;
     private static LayoutInflater inflater;
-    private static VisualiseController visualiseController;
+
     public static void setContext(Context c)
     {
         context = c;
@@ -25,11 +25,11 @@ public class OverlayScreen
     {
         frameLayout = l;
     }
-    public static void setVisualiseController(VisualiseController vc) { visualiseController = vc; }
 
     public static void showScreen(int layoutID)
     {
-        inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if (inflater == null)
+            inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         FrameLayout calibrateScreen = (FrameLayout)inflater.inflate(layoutID, null);
 
         assert calibrateScreen != null;

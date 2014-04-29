@@ -95,8 +95,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
         velocityX = 0;
         velocityY = 0;
         isLoaded = true;
-        BrainModel.smoothRotateToFront();
         BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
+        BrainModel.smoothRotateToFront();
         BrainModel.smoothZoom(0.3f, 1200);
         BrainModel.setLabelsToDisplay(true);
     }
@@ -106,8 +106,9 @@ public class LearnController extends AbstractController implements OnScaleGestur
     {
         velocityX = 0;
         velocityY = 0;
-        BrainModel.smoothMoveToGeneric(BrainModel.startPosition,0, 400);
+        BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
         isLoaded = false;
+        overlayLabel.setText("");
     }
 
     @Override
@@ -140,6 +141,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
 
         BrainModel.scale(scale);
         scale = 1.0f;
+
         showSection();
     }
 
@@ -289,6 +291,7 @@ public class LearnController extends AbstractController implements OnScaleGestur
             velocityY = 0;
         }
     }
+
     public void showSection()
     {
         SimpleVector camPos = BrainModel.getCamera().getPosition();
@@ -324,17 +327,11 @@ public class LearnController extends AbstractController implements OnScaleGestur
         {
             final BrainSegment finalCurrentSegment = BrainInfo.getSegment(segmentName);
 
-
             overlayLabel.post(new Runnable() {
                 @Override
                 public void run()
                 {
                     overlayLabel.setText(finalCurrentSegment.getTitle());
-                    if (finalCurrentSegment.getTitle() == "Parietal Lobe") {
-//                        BrainModel.changeObjectShader(2, "colour");
-                    } else {
-//                        BrainModel.changeObjectShader(2, "xray");
-                    }
                 }
             });
         }

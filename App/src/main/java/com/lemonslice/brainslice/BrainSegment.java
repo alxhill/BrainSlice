@@ -8,7 +8,8 @@ import android.util.Log;
 import com.threed.jpct.SimpleVector;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -32,9 +33,22 @@ public class BrainSegment {
     private String description;
     private SimpleVector position;
 
+    private Set<String> tasks;
+
+    public Set<String> getTasks()
+    {
+        return tasks;
+    }
+
     public BrainSegment(String name)
     {
         this.name = name;
+        tasks = new HashSet<String>(10);
+    }
+
+    public void addTask(String responsibility)
+    {
+        tasks.add(responsibility);
     }
 
     public void playAudio(Context ctx)

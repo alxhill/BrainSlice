@@ -34,7 +34,6 @@ import com.threed.jpct.Texture;
 import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
-import java.io.IOException;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -47,6 +46,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
     private AbstractController baseController;
     private LearnController learnController;
     private VisualiseController visualiseController;
+    QuizController quizController;
 
     private TextView soundButton;
 
@@ -112,16 +112,20 @@ public class MainActivity extends FragmentActivity implements EventListener {
         // set up listening for events
         Events.register(this);
 
+        TextView overlayLabel = (TextView) findViewById(R.id.label_overlay);
+
         learnController = new LearnController(getApplicationContext());
-        learnController.setOverlayLabel((TextView) findViewById(R.id.currentSegment));
+        learnController.setOverlayLabel(overlayLabel);
 
         learnController.loadView();
         baseController = learnController;
 
         visualiseController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
-        visualiseController.setOverlayLabel((TextView) findViewById(R.id.label_overlay));
+        visualiseController.setOverlayLabel(overlayLabel);
 
-        OverlayScreen.setVisualiseController(visualiseController);
+        quizController = new QuizController(getApplicationContext());
+        quizController.setMainOverlay(overlayingFrame);
+        quizController.setOverlayLabel(overlayLabel);
 
         // set up the button events
         iconifyView(R.id.help_button, 25);
@@ -134,8 +138,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
         addButtonListener(R.id.home_button, "home");
         addButtonListener(R.id.info_button, "info");
 
-
-
         // check for internet connectivity and load the data
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -144,16 +146,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
             loaded = BrainInfo.loadData();
         // if there's no internet or the loading failed, use the local data
         if (!loaded)
-        {
-            try
-            {
-                BrainInfo.readData(getResources());
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-                throw new RuntimeException("Unable to load segment data, aborting.");
-            }
-        }
+            BrainInfo.readData(getResources());
     }
 
     private TextView iconifyView(int resId, int size)
@@ -270,23 +263,21 @@ public class MainActivity extends FragmentActivity implements EventListener {
             String tapType = events[1];
             if (tapType.equals("learn"))
             {
-                visualiseController.unloadView();
+                baseController.unloadView();
                 BrainModel.disableDoubleTap = false;
                 learnController.loadView();
                 overlayingFrame.removeAllViews();
                 baseController = learnController;
-                (findViewById(R.id.info_button)).setVisibility(View.VISIBLE);
-                (findViewById(R.id.current_segment)).setVisibility(View.VISIBLE);
+                findViewById(R.id.info_button).setVisibility(View.VISIBLE);
             }
             else if (tapType.equals("visualise"))
             {
                 // overlays the calibrate screen, only loads the visualise controller
                 // after the calibrate button has been pressed.
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
-                learnController.unloadView();
+                baseController.unloadView();
                 baseController = visualiseController;
-                (findViewById(R.id.info_button)).setVisibility(View.INVISIBLE);
-                (findViewById(R.id.current_segment)).setVisibility(View.INVISIBLE);
+                findViewById(R.id.info_button).setVisibility(View.INVISIBLE);
             }
             else if (tapType.equals("home"))
             {
@@ -297,6 +288,14 @@ public class MainActivity extends FragmentActivity implements EventListener {
             else if (tapType.equals("info"))
             {
                 BrainModel.infoTapped();
+            }
+            else if (tapType.equals("quiz"))
+            {
+                baseController.unloadView();
+                overlayingFrame.removeAllViews();
+                quizController.loadView();
+                baseController = quizController;
+                findViewById(R.id.info_button).setVisibility(View.VISIBLE);
             }
             else if (tapType.equals("calibrate"))
             {

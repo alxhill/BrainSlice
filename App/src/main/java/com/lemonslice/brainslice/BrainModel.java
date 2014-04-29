@@ -311,7 +311,15 @@ public class BrainModel {
 
     public static void setCamera(Camera c)
     {
+
         camera = c;
+        if (camPos == null)
+        {
+            // get a vector pointing directly to the camera
+            camPos = camera.getDirection();
+            camPos = camPos.reflect(camPos);
+        }
+
         if(buf == null)
             return;
 
@@ -432,15 +440,7 @@ public class BrainModel {
 
                 BrainInfo.getSegment(name).playAudio(context);
 
-                SimpleVector spherePos = sphere.getTransformedCenter();
-                // ignore the translation of the plane when calculating rotation
-                spherePos = spherePos.calcSub(plane.getTransformedCenter());
-
-                // convert the vectors into axis-angle representation
-                SimpleVector axis = spherePos.calcCross(camPos);
-                double angle = spherePos.calcAngle(camPos);
-
-                smoothRotateToGeneric(axis, -angle, false);
+                rotateToSphere(sphere);
 
                 selected = true;
                 pos = i;
@@ -492,6 +492,32 @@ public class BrainModel {
         }
     }
 
+    public static void rotateToSegment(String name)
+    {
+        for (Object3D sphere : spheres)
+        {
+            Log.d("SPHERENAME", sphere.getName());
+            if (sphere.getName().equals(name))
+            {
+                rotateToSphere(sphere);
+                return;
+            }
+        }
+        Log.d("BRAINMODEL", "did not rotate to any segment :(");
+    }
+
+    private static void rotateToSphere(Object3D sphere)
+    {
+        SimpleVector spherePos = sphere.getTransformedCenter();
+        // ignore the translation of the plane when calculating rotation
+        spherePos = spherePos.calcSub(plane.getTransformedCenter());
+
+        // convert the vectors into axis-angle representation
+        SimpleVector axis = spherePos.calcCross(camPos);
+        double angle = spherePos.calcAngle(camPos);
+
+        smoothRotateToGeneric(axis, -angle, false);
+    }
 
     public static void addToScene(World world)
     {
@@ -581,31 +607,55 @@ public class BrainModel {
                 plane.rotateX(x);
                 plane.rotateZ(z);
             }
-
             plane.rotateY(y);
 
-            if (!spheresLoaded) return;
-
-            // updates the sphere shaders so the gradient is drawn in the right location
-            for(int i=0; i<spheres.size(); i++)
-            {
-                if(camera !=null && buf!=null)
-                {
-                    SimpleVector vec = Interact2D.project3D2D(camera, buf, spheres.get(i).getTransformedCenter());
-
-                    if(vec == null)
-                        continue;
-
-                    vec.y = buf.getHeight() - vec.y;
-
-                    shads[i].setUniform("spherePos", vec);
-                }
-            }
-        } catch(InterruptedException e) {
-            // do nothing
-        } finally {
+            updateSpheres();
+        }
+        catch(InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
             brainSemaphore.release();
         }
+    }
+
+    public static void rotate(SimpleVector axis, float angle)
+    {
+        try
+        {
+            brainSemaphore.acquire();
+            plane.rotateAxis(axis, angle);
+            updateSpheres();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            brainSemaphore.release();
+        }
+    }
+
+    public static void translate(float x, float y, float z)
+    {
+        try
+        {
+            brainSemaphore.acquire();
+            plane.translate(x, y, z);
+            updateSpheres();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            brainSemaphore.release();
+        }
+
     }
 
     public static void scale(float scale)
@@ -624,14 +674,37 @@ public class BrainModel {
             for (Object3D sphere : spheres) {
                 sphere.scale(1.0f / scale);
             }
-        } catch (InterruptedException e) {
-            // do nothing
-        } finally {
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
             brainSemaphore.release();
         }
 
+    }
 
+    private static void updateSpheres()
+    {
+        // updates the sphere shaders so the gradient is drawn in the right location
+        if (!spheresLoaded) return;
 
+        for (int i = 0; i < spheres.size(); i++)
+        {
+            if(camera !=null && buf!=null)
+            {
+                SimpleVector vec = Interact2D.project3D2D(camera, buf, spheres.get(i).getTransformedCenter());
+
+                if(vec == null)
+                    continue;
+
+                vec.y = buf.getHeight() - vec.y;
+
+                shads[i].setUniform("spherePos", vec);
+            }
+        }
     }
 
     public static void smoothMoveToGeneric(SimpleVector simpleVector, int delay, final int duration)
@@ -664,28 +737,20 @@ public class BrainModel {
                 float stepMovementY = (float) (yEase.step(i) - yEase.step(i - stepTime));
                 float stepMovementZ = (float) (zEase.step(i) - zEase.step(i - stepTime));
 
-                try {
-                    brainSemaphore.acquire();
-                    plane.translate(stepMovementX, stepMovementY, stepMovementZ);
-                } catch (InterruptedException e) {
-                    // do nothing
-                } finally {
-                    brainSemaphore.release();
-                }
+                translate(stepMovementX, stepMovementY, stepMovementZ);
 
                 i += stepTime;
                 if (i >= duration) cancel();
                 }
 
-            }
-
-            ,delay,15);
+            }, delay, 15);
         }
 
     public static void smoothZoom(final float targetScale, final int zoomTime)
     {
         if (!isLoaded)
             return;
+
         Timer zoomTimer = new Timer();
         zoomTimer.schedule(new TimerTask() {
             final double scaleDiff = targetScale - getScale();
@@ -725,9 +790,6 @@ public class BrainModel {
         target.orthonormalize();
         r.orthonormalize();
         r.matMul(target);
-
-        //Log.d("BrainSlice", "front matrix: " + targetMatrix.toString());
-        //Log.d("BrainSlice", "rotation matrix: " + r.toString());
 
         /*
         convert matrix into axis-angle representation.
@@ -787,16 +849,9 @@ public class BrainModel {
                 if (Double.isInfinite(stepRotation))
                     return;
 
-                try {
-                    brainSemaphore.acquire();
-                    // This is 100% necessary to prevent a bug where the brain model disappears
-                    if (stepRotation != 0.0)
-                        plane.rotateAxis(axis, (float) stepRotation);
-                } catch (InterruptedException e) {
-                    // do nothing
-                } finally {
-                    brainSemaphore.release();
-                }
+                // This is 100% necessary to prevent a bug where the brain model disappears
+                if (stepRotation != 0.0)
+                    rotate(axis, (float) stepRotation);
 
                 i += stepTime;
                 if (i >= rotateTime) cancel();

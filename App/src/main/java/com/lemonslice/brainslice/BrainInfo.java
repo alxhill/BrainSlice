@@ -14,6 +14,7 @@ import com.threed.jpct.SimpleVector;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -73,15 +74,22 @@ public class BrainInfo
     }
 
     // reads data from the 'backup copy' on the device
-    public static void readData(Resources resources) throws IOException
+    public static void readData(Resources resources)
     {
         Log.d("BRAININFO", "Loading data from file");
         InputStream data = resources.openRawResource(R.raw.data);
 
-        JsonReader reader = new JsonReader(new InputStreamReader(data, "UTF-8"));
-        BrainInfo.parseJSON(reader);
-        reader.close();
-        data.close();
+        JsonReader reader = null;
+        try
+        {
+            reader = new JsonReader(new InputStreamReader(data, "UTF-8"));
+            BrainInfo.parseJSON(reader);
+            data.close();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+            throw new RuntimeException("Unable to load segment data, aborting.");
+        }
 
         BrainInfo.setDataIsLoaded(true);
     }
@@ -132,9 +140,16 @@ public class BrainInfo
                             reader.nextNull();
                         }
                     }
-                    else if (key.equals("audio"))
+                    else if (key.equals("tasks"))
                     {
-                        reader.nextBoolean();
+                        reader.beginArray();
+                        while (reader.hasNext())
+                            segment.addTask(reader.nextString());
+                        reader.endArray();
+                    }
+                    else
+                    {
+                        reader.skipValue();
                     }
                 }
             }
@@ -150,7 +165,8 @@ public class BrainInfo
             reader.endObject();
         }
         reader.endObject();
-        return true;
+        reader.close();
+        return false;
     }
 
     private static class BrainApiTask extends AsyncTask<String, String, Boolean> {
@@ -178,7 +194,6 @@ public class BrainInfo
 
             conn.disconnect();
             in.close();
-            reader.close();
 
             Log.d("BRAININFO", "closed connections");
 

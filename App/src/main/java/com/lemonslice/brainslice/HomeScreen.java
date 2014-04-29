@@ -52,15 +52,9 @@ public class HomeScreen {
         LinearLayout btn2 = (LinearLayout)btn_holder.findViewById(R.id.hs_visualizebtn);
         LinearLayout btn3 = (LinearLayout)btn_holder.findViewById(R.id.hs_quizbtn);
 
-
         MainActivity.addButtonListener(btn1, "learn");
         MainActivity.addButtonListener(btn2, "visualise");
-
-        btn3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            }
-        });
+        MainActivity.addButtonListener(btn3, "quiz");
 
         LinearLayout icon_holder = (LinearLayout)homeScreen.findViewById(R.id.hs_icon_holder);
 

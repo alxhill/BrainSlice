@@ -393,7 +393,6 @@ public class BrainModel {
         smoothRotateToGeneric(axis, -angle, false);
     }
 
-
     public static void addToScene(World world)
     {
         if(plane == null)
@@ -455,38 +454,78 @@ public class BrainModel {
         try
         {
             brainSemaphore.acquire();
+            plane.rotateX(x);
+            plane.rotateY(y);
+            plane.rotateZ(z);
+
+            updateSpheres();
         }
         catch(InterruptedException e)
         {
-            return;
+            e.printStackTrace();
+        }
+        finally
+        {
+            brainSemaphore.release();
+        }
+    }
+
+    public static void rotate(SimpleVector axis, float angle)
+    {
+        try
+        {
+            brainSemaphore.acquire();
+            plane.rotateAxis(axis, angle);
+            updateSpheres();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            brainSemaphore.release();
+        }
+    }
+
+    public static void translate(float x, float y, float z)
+    {
+        try
+        {
+            brainSemaphore.acquire();
+            plane.translate(x, y, z);
+            updateSpheres();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            brainSemaphore.release();
         }
 
-        plane.rotateX(x);
-        plane.rotateY(y);
-        plane.rotateZ(z);
+    }
 
+    private static void updateSpheres()
+    {
+        // updates the sphere shaders so the gradient is drawn in the right location
         if (!spheresLoaded) return;
 
-        // updates the sphere shaders so the gradient is drawn in the right location
-        for(int i=0; i<spheres.size(); i++)
+        for (int i = 0; i < spheres.size(); i++)
         {
-            if(cam!=null && buf!=null)
+            if (cam != null && buf != null)
             {
                 SimpleVector vec = Interact2D.project3D2D(cam, buf, spheres.get(i).getTransformedCenter());
 
-                if(vec == null)
+                if (vec == null)
                     continue;
 
                 vec.y = buf.getHeight() - vec.y;
-                //GOT A NULL POINTER HERE ^, ON THIS LINE ABOVE WHEN TAPPING A PRETTY BUTTON
-                //ASSUMING IT WAS buf.getHeight(); ... Berrow?
-                ///fixed another nullptr expection as well. Double whoops
 
                 shads[i].setUniform("spherePos", vec);
             }
         }
-
-        brainSemaphore.release();
     }
 
     // moves the camera so it's a constant distance from the brain.
@@ -543,26 +582,28 @@ public class BrainModel {
         try
         {
             brainSemaphore.acquire();
+            if(scale <= 0)
+                return;
+
+            plane.scale(scale);
+
+            shader.setUniform("heightScale", 1.0f);
+            for(int i=0; i<spheres.size(); i++)
+            {
+                spheres.get(i).scale(1.0f / scale);
+            }
+
+            updateSpheres();
+
         }
         catch(InterruptedException e)
         {
-            return;
+            e.printStackTrace();
         }
-
-        if(scale <= 0)
+        finally
         {
             brainSemaphore.release();
-            return;
         }
-
-        plane.scale(scale);
-        shader.setUniform("heightScale", 1.0f);
-        for(int i=0; i<spheres.size(); i++)
-        {
-            spheres.get(i).scale(1.0f / scale);
-        }
-
-        brainSemaphore.release();
     }
 
     public static void smoothMoveToGeneric(SimpleVector simpleVector, int delay, final int duration)
@@ -596,17 +637,7 @@ public class BrainModel {
                 float stepMovementY = (float) (yEase.step(i) - yEase.step(i - stepTime));
                 float stepMovementZ = (float) (zEase.step(i) - zEase.step(i - stepTime));
 
-                try
-                {
-                    brainSemaphore.acquire();
-                } catch (InterruptedException e)
-                {
-                    return;
-                }
-
-                plane.translate(stepMovementX, stepMovementY, stepMovementZ);
-
-                brainSemaphore.release();
+                translate(stepMovementX, stepMovementY, stepMovementZ);
 
                 i += stepTime;
                 if (i >= duration) cancel();
@@ -639,6 +670,7 @@ public class BrainModel {
                     return;
 
                 scale((float) stepZoom);
+
                 i += stepTime;
                 if (i >= zoomTime) cancel();
             }
@@ -717,17 +749,9 @@ public class BrainModel {
                 if (Double.isInfinite(stepRotation))
                     return;
 
-                try {
-                    brainSemaphore.acquire();
-                } catch (InterruptedException e) {
-                    return;
-                }
-
                 // This is 100% necessary to prevent a bug where the brain model disappears
                 if (stepRotation != 0.0)
-                    plane.rotateAxis(axis, (float) stepRotation);
-
-                brainSemaphore.release();
+                    rotate(axis, (float) stepRotation);
 
                 i += stepTime;
                 if (i >= rotateTime) cancel();

@@ -20,7 +20,6 @@ import com.lemonslice.brainslice.event.Events;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -40,7 +39,7 @@ public class QuizController extends AbstractController implements EventListener 
     private LayoutInflater inflater;
 
     private boolean isQuizzing = false;
-    private Iterator<BrainSegment> segmentIterator;
+    private List<BrainSegment> segments;
 
     private BrainSegment checkedSegment;
 
@@ -91,7 +90,7 @@ public class QuizController extends AbstractController implements EventListener 
     private void startQuiz()
     {
         isQuizzing = true;
-        segmentIterator = BrainInfo.getSegments().values().iterator();
+        segments = new ArrayList<BrainSegment>(BrainInfo.getSegments().values());
         learnedSegments = new ArrayList<BrainSegment>();
         testedTasks = new HashSet<String>();
         topLabel.setText("");
@@ -108,15 +107,18 @@ public class QuizController extends AbstractController implements EventListener 
     {
         BrainSegment newSegment;
 
-        if (!segmentIterator.hasNext())
+        if (segments.size() == 0)
         {
             Toast.makeText(context, "Well done, you win quiz mode!", Toast.LENGTH_SHORT).show();
+            isQuizzing = false;
             return null;
         }
 
-        while (segmentIterator.hasNext())
+        Collections.shuffle(segments);
+
+        for (BrainSegment segment : segments)
         {
-            newSegment = segmentIterator.next();
+            newSegment = segment;
             if (newSegment.getPosition() == null) continue;
             Log.d("BRAINQUIZ", "new segment is " + newSegment.getName());
 
@@ -151,6 +153,7 @@ public class QuizController extends AbstractController implements EventListener 
             BrainModel.rotateToSegment(newSegment.getName());
 
             learnedSegments.add(newSegment);
+            segments.remove(newSegment);
             return newSegment;
         }
 

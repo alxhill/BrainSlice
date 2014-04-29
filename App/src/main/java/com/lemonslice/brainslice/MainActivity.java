@@ -61,6 +61,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
     // Frame overlaying 3d rendering for labels, instructions etc...
     private FrameLayout overlayingFrame;
+    private FrameLayout tutorialFrame;
     private Typeface fontAwesome;
 
     protected void onCreate(Bundle savedInstanceState)
@@ -71,6 +72,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         setContentView(R.layout.activity_main);
 
         overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
+        tutorialFrame = (FrameLayout)findViewById(R.id.tutorial_overlay);
         hideSystemBars();
 
         MyRenderer renderer = new MyRenderer();
@@ -85,7 +87,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         OverlayScreen.setContext(this);
         OverlayScreen.setFrameLayout(overlayingFrame);
         Tutorial.setContext(this);
-        Tutorial.setFrameLayout(overlayingFrame);
+        Tutorial.setFrameLayout(tutorialFrame);
         HomeScreen.setContext(this);
         HomeScreen.setFrameLayout(overlayingFrame);
 

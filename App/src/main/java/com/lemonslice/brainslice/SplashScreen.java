@@ -46,6 +46,7 @@ public class SplashScreen
     public static void finished_splash()
     {
         frameLayout.removeAllViews();
+        Tutorial.show();
         HomeScreen.show();
     }
 

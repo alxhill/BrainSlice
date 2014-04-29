@@ -119,10 +119,18 @@
         android:id="@+id/label_overlay"/>
 
     <FrameLayout
+        android:id="@+id/tutorial_overlay"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="false">
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/overlay_layout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:clickable="false">
+
     </FrameLayout>
 
 </FrameLayout>

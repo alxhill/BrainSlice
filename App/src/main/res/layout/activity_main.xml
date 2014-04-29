@@ -107,6 +107,12 @@
     </FrameLayout>
 
     <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="false"
+        android:id="@+id/quiz_overlay" />
+
+    <FrameLayout
         android:id="@+id/tutorial_overlay"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

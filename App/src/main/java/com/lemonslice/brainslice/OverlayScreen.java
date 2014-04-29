@@ -3,6 +3,8 @@ package com.lemonslice.brainslice;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
@@ -34,6 +36,10 @@ public class OverlayScreen
 
         assert calibrateScreen != null;
 
+        Animation fadeIn = AnimationUtils.loadAnimation(context, R.anim.fade_in);
+        fadeIn.setDuration(250);
+        calibrateScreen.startAnimation(fadeIn);
+
         Button calibrateBtn = (Button)calibrateScreen.findViewById(R.id.calibrateOverlayBtn);
         calibrateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +55,23 @@ public class OverlayScreen
 
     public static void hideScreen()
     {
-        frameLayout.removeAllViews();
+        Animation fadeOut = AnimationUtils.loadAnimation(context,R.anim.abc_fade_out);
+        fadeOut.setDuration(250);
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                frameLayout.removeAllViews();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        frameLayout.startAnimation(fadeOut);
     }
 }

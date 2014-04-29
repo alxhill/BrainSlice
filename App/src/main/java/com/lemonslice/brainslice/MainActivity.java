@@ -129,8 +129,9 @@ public class MainActivity extends FragmentActivity implements EventListener {
         visualiseController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
         visualiseController.setOverlayLabel(overlayLabel);
 
+        FrameLayout quizOverlay = (FrameLayout)findViewById(R.id.quiz_overlay);
         quizController = new QuizController(getApplicationContext());
-        quizController.setMainOverlay(overlayingFrame);
+        quizController.setMainOverlay(quizOverlay);
         quizController.setOverlayLabel(overlayLabel);
 
         // set up the button events

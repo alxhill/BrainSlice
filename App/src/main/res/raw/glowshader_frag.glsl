@@ -4,6 +4,8 @@ uniform vec3 centre;
 
 uniform int sw;
 uniform int sh;
+uniform float scale;
+uniform int is_back;
 
 ///480x800 is s2
 
@@ -44,8 +46,9 @@ void main()
 	dist.y += 20.0;
 	
 	float val = length(dist);
-	
-	val = abs(dist.x) + abs(dist.y);
+	float sadjust = scale/0.2;
+	val = abs(dist.x/sadjust) + abs(dist.y/sadjust);
+	//val /= scale/0.2;
 	
 	val /= 933.0;
 	
@@ -63,6 +66,9 @@ void main()
 	vec4 background_col = vec4(0.2, 0.2, 0.3, 1.0);
 	
 	vec4 fcol = vec4(col.xyz*val + background_col.xyz*(1.0-val), 1.0);
-	
-    gl_FragColor = fcol;
+
+	if(is_back == 1)
+        gl_FragColor = fcol;
+    else
+        gl_FragColor = vec4(0.1, 0.1, 0.2, 1.0);
 }

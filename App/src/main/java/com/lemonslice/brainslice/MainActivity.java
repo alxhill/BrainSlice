@@ -64,6 +64,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
     private FrameLayout tutorialFrame;
     private Typeface fontAwesome;
 
+    public static GLSurfaceView sMGLView;
+
     protected void onCreate(Bundle savedInstanceState)
     {
         Logger.log("onCreate");
@@ -100,10 +102,12 @@ public class MainActivity extends FragmentActivity implements EventListener {
         mGLView.setEGLContextClientVersion(2);
         mGLView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         mGLView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        mGLView.setZOrderOnTop(false);
+        //mGLView.setZOrderOnTop(true);
 
         // initialise and show the 3D renderer
         mGLView.setRenderer(renderer);
+
+        sMGLView = mGLView;
 
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
@@ -154,6 +158,20 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 throw new RuntimeException("Unable to load segment data, aborting.");
             }
         }
+        setZOnTop();
+    }
+
+    public static void setZOnTop()
+    {
+        //sMGLView.setZOrderOnTop(true);
+        //BrainModel.drawBackground = false;
+        BrainModel.drawBackground = true;
+    }
+
+    public static void setZOnBottom()
+    {
+        //sMGLView.setZOrderOnTop(false);
+        BrainModel.drawBackground = true;
     }
 
     private TextView iconifyView(int resId, int size)

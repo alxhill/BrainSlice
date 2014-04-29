@@ -32,7 +32,13 @@ public class BrainSegment {
     private String title;
     private String description;
     private SimpleVector position;
+
     private Set<String> tasks;
+
+    public Set<String> getTasks()
+    {
+        return tasks;
+    }
 
     public BrainSegment(String name)
     {

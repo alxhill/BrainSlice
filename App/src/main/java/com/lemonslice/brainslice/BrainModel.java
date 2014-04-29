@@ -220,6 +220,13 @@ public class BrainModel {
     public static void setCamera(Camera c)
     {
         cam = c;
+        if (camPos == null)
+        {
+            // get a vector pointing directly to the camera
+            camPos = cam.getDirection();
+            camPos = camPos.reflect(camPos);
+        }
+
         if(buf == null)
             return;
 
@@ -299,13 +306,6 @@ public class BrainModel {
 
         if(cam == null || buf == null || spheres == null)
             return;
-
-        if (camPos == null)
-        {
-            // get a vector pointing directly to the camera
-            camPos = cam.getDirection();
-            camPos = camPos.reflect(camPos);
-        }
 
         for(i = 0; i<spheres.size(); i++)
         {
@@ -619,6 +619,7 @@ public class BrainModel {
     {
         if (!isLoaded)
             return;
+
         Timer zoomTimer = new Timer();
         zoomTimer.schedule(new TimerTask() {
             final double scaleDiff = targetScale - getScale();

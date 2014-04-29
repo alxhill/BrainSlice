@@ -140,7 +140,7 @@ public class BrainInfo
                             reader.nextNull();
                         }
                     }
-                    else if (key.equals("responsibilities"))
+                    else if (key.equals("tasks"))
                     {
                         reader.beginArray();
                         while (reader.hasNext())

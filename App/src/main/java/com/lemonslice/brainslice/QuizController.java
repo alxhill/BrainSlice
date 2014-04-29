@@ -12,12 +12,14 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lemonslice.brainslice.event.EventListener;
 import com.lemonslice.brainslice.event.Events;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +36,7 @@ public class QuizController extends AbstractController implements EventListener 
 
     private Context context;
     private ArrayList<BrainSegment> learnedSegments;
+    private HashSet<String> testedTasks;
     private LayoutInflater inflater;
 
     private boolean isQuizzing = false;
@@ -90,6 +93,7 @@ public class QuizController extends AbstractController implements EventListener 
         isQuizzing = true;
         segmentIterator = BrainInfo.getSegments().values().iterator();
         learnedSegments = new ArrayList<BrainSegment>();
+        testedTasks = new HashSet<String>();
         topLabel.setText("");
 
         BrainModel.smoothMoveToGeneric(BrainModel.sidePosition, 0, 400);
@@ -103,6 +107,12 @@ public class QuizController extends AbstractController implements EventListener 
     private BrainSegment learnNewSegment(boolean lastSegment)
     {
         BrainSegment newSegment;
+
+        if (!segmentIterator.hasNext())
+        {
+            Toast.makeText(context, "Well done, you win quiz mode!", Toast.LENGTH_SHORT).show();
+            return null;
+        }
 
         while (segmentIterator.hasNext())
         {
@@ -165,8 +175,19 @@ public class QuizController extends AbstractController implements EventListener 
             {
                 Log.d("QUIZMODE", "testable segment found:" + learnedSection.getName());
                 testSegment = learnedSection;
-                testTask = (String) tasks.toArray()[0];
-                break;
+                Object[] taskArray = tasks.toArray();
+                for (Object task : taskArray)
+                {
+                    String taskStr = (String) task;
+                    if (!testedTasks.contains(taskStr))
+                    {
+                        testTask = taskStr;
+                        break;
+                    }
+                }
+
+                if (testTask != null)
+                    break;
             }
         }
 
@@ -195,8 +216,6 @@ public class QuizController extends AbstractController implements EventListener 
                         Log.d("QUIZMODE", "oncheckedchanged: " + segment.getTitle());
                         if (isChecked)
                             checkedSegment = segment;
-                        else
-                            checkedSegment = null;
                     }
                 });
 
@@ -210,17 +229,31 @@ public class QuizController extends AbstractController implements EventListener 
 
             quizButton.setText("Submit");
             quizButton.setVisibility(Button.VISIBLE);
+
             final BrainSegment finalTestSegment = testSegment;
+            final String finalTestTask = testTask;
+
             quizButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v)
                 {
                     if (checkedSegment != null)
                     {
-                        Log.d("QUIZMODE", "Submitted quiz question" + checkedSegment.getName());
                         if (checkedSegment == finalTestSegment)
-
-                        learnNewSegment(true);
+                        {
+                            testedTasks.add(finalTestTask);
+                            checkedSegment = null;
+                            learnNewSegment(true);
+                        }
+                        else
+                        {
+                            Toast.makeText(context, "Wrong answer, try again!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else
+                    {
+                        Log.d("QUIZMODE", "no section was checked");
+                        Toast.makeText(context, "Select an option to continue.", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

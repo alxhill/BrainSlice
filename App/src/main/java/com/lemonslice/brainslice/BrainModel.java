@@ -59,8 +59,9 @@ public class BrainModel {
 //    private static RGBColor sphereTouchedColor = new RGBColor(255, 255, 0);
 
     public static SimpleVector sidePosition = SimpleVector.create(-25,20,10);
-    public static SimpleVector homePosition = SimpleVector.create(-25,25,10);
-    public static SimpleVector startPosition = SimpleVector.create(0,20,10);
+    public static SimpleVector homePosition = SimpleVector.create(-30,-5,0);
+//    public static SimpleVector homePosition = SimpleVector.create(-25,25,10);
+    public static SimpleVector startPosition = SimpleVector.create(30,-5,0);
 
     private static Context context;
     private static AudioManager audioManager;
@@ -98,9 +99,9 @@ public class BrainModel {
         plane.setCulling(true);
 
         // Load the 3d model
-        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.new_ser));
+        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.fullmodel2));
         Log.d("BrainSlice", "Copied serialised brain model into memory");
-        subCortical = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.underbrain));
+        subCortical = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.subcor));
         Log.d("BrainSlice", "Copied serialised subcortical sections into memory");
 
         // compile and load shaders for plane
@@ -109,6 +110,24 @@ public class BrainModel {
         shader.setStaticUniform("invRadius", 0.0003f);
 
         // initialise brain sub-objs
+
+            /*Object array indices:
+            0: right parietal
+            1: right frontal
+            2: right cerebellum cortex (hidden)
+            3: right extra
+            4: left temporal
+            5: left occipital
+            6: left parietal
+            7: left extra
+            8: brain stem
+            9: left frontal
+            10: right temporal
+            11: right occipital
+            12: left cerebellum cortex (hidden)
+
+         */
+
         for (Object3D obj : objs)
         {
             obj.setCulling(true);
@@ -131,16 +150,16 @@ public class BrainModel {
             obj.setShader(shineyShader);
         }
 
-        setXRayMode(true);
+        setDisplayMode(true,false);
 
-        objs[0].setVisibility(false);
-        objs[1].setVisibility(false);
+        objs[2].setVisibility(false);
+        objs[12].setVisibility(false);
 
         brainShad.setUniform("transparent", 1);
 
         // Set the model's initial position
-        plane.rotateY((float) Math.PI);
-        plane.rotateX((float) -Math.PI / 2.0f);
+       // plane.rotateY((float) Math.PI);
+        plane.rotateX((float) Math.PI / 2.0f);
         plane.rotateZ((float) Math.PI);
         scale(0.5f);
 
@@ -199,15 +218,58 @@ public class BrainModel {
         spheresLoaded = true;
     }
 
-    public static void setXRayMode(boolean xRayMode)
+    public static void setDisplayMode(boolean xRayMode, boolean colourMode)
     {
-        if (xRayMode) {
-            objs[2].setShader(brainShad);
-            subCortical[4].setShader(brainShad);
+        if(colourMode && xRayMode) {
+            for (Object3D obj : subCortical)
+            {
+                obj.setShader(null);
+            }
+            for (Object3D obj : objs)
+            {
+                obj.setShader(null);
+            }
+            objs[4].setShader(brainShad);
+            objs[5].setShader(brainShad);
+            objs[6].setShader(brainShad);
+            objs[7].setShader(brainShad);
+            objs[9].setShader(brainShad);
+            subCortical[3].setShader(brainShad);
+        } else if (colourMode) {
+            for (Object3D obj : objs)
+            {
+                obj.setShader(null);
+            }
+            for (Object3D obj : subCortical)
+            {
+                obj.setShader(null);
+            }
+        } else if (xRayMode) {
+            for (Object3D obj : objs)
+            {
+                obj.setShader(shineyShader);
+            }
+            for (Object3D obj : subCortical)
+            {
+                obj.setShader(shineyShader);
+            }
+            objs[4].setShader(brainShad);
+            objs[5].setShader(brainShad);
+            objs[6].setShader(brainShad);
+            objs[7].setShader(brainShad);
+            objs[9].setShader(brainShad);
+            subCortical[3].setShader(brainShad);
         } else {
-            objs[2].setShader(shineyShader);
-            subCortical[4].setShader(shineyShader);
+            for (Object3D obj : objs)
+            {
+                obj.setShader(shineyShader);
+            }
+            for (Object3D obj : subCortical)
+            {
+                obj.setShader(shineyShader);
+            }
         }
+
     }
 
     public static ArrayList<Object3D> getSpheres()
@@ -430,15 +492,15 @@ public class BrainModel {
         }
     }
 
-    public static void addToTransp(World world)
-    {
-        if(subCortical == null || objs == null || !showBrain)
+    public static void addToTransp(World world) {
+        if (subCortical == null || objs == null || !showBrain)
             return;
-
-        world.addObject(subCortical[4]);
-        world.addObject(objs[2]);
+        world.addObject(subCortical[3]);
+        world.addObject(objs[4]);
+        world.addObject(objs[5]);
+        world.addObject(objs[6]);
+        world.addObject(objs[7]);
     }
-
     public static void removeAll(World world)
     {
         world.removeAll();

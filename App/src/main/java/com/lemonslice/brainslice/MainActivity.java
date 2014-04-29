@@ -100,7 +100,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         mGLView.setEGLContextClientVersion(2);
         mGLView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         mGLView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        mGLView.setZOrderOnTop(true);
+        mGLView.setZOrderOnTop(false);
 
         // initialise and show the 3D renderer
         mGLView.setRenderer(renderer);

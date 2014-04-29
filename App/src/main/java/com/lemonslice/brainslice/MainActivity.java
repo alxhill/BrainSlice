@@ -64,6 +64,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
     // Frame overlaying 3d rendering for labels, instructions etc...
     private FrameLayout overlayingFrame;
     private FrameLayout tutorialFrame;
+    private FrameLayout quizFrame;
     private Typeface fontAwesome;
 
     public static GLSurfaceView sMGLView;
@@ -129,9 +130,9 @@ public class MainActivity extends FragmentActivity implements EventListener {
         visualiseController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
         visualiseController.setOverlayLabel(overlayLabel);
 
-        FrameLayout quizOverlay = (FrameLayout)findViewById(R.id.quiz_overlay);
+        quizFrame = (FrameLayout)findViewById(R.id.quiz_overlay);
         quizController = new QuizController(getApplicationContext());
-        quizController.setMainOverlay(quizOverlay);
+        quizController.setMainOverlay(quizFrame);
         quizController.setOverlayLabel(overlayLabel);
 
         // set up the button events
@@ -306,7 +307,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
             else if (tapType.equals("home"))
             {
                 baseController = learnController;
-                BrainModel.onlyRotateY = true;
+                //BrainModel.onlyRotateY = true;
+                quizFrame.removeAllViews();
                 HomeScreen.show();
             }
             else if (tapType.equals("info"))

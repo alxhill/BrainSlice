@@ -142,7 +142,7 @@ public class BrainInfo
             {
                 Log.d("BRAININFO", "error parsing JSON");
                 e.printStackTrace();
-                return true;
+                return false;
             }
 
             segments.put(segmentName, segment);
@@ -150,12 +150,12 @@ public class BrainInfo
             reader.endObject();
         }
         reader.endObject();
-        return false;
+        return true;
     }
 
     private static class BrainApiTask extends AsyncTask<String, String, Boolean> {
 
-        private void getData(String apiUrl) throws IOException
+        private boolean getData(String apiUrl) throws IOException
         {
             // initialise the data request (assumes connectivity has already been checked)
             URL url = new URL(apiUrl);
@@ -172,7 +172,7 @@ public class BrainInfo
             InputStream in = conn.getInputStream();
             JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
 
-            parseJSON(reader);
+            boolean parsed = parseJSON(reader);
 
             Log.d("BRAININFO", "done reading");
 
@@ -182,6 +182,8 @@ public class BrainInfo
 
             Log.d("BRAININFO", "closed connections");
 
+            return parsed;
+
         }
 
         @Override
@@ -189,15 +191,13 @@ public class BrainInfo
         {
             try
             {
-                getData(API_ENDPOINT);
-                return true;
+                return getData(API_ENDPOINT);
             }
             catch (IOException e)
             {
                 e.printStackTrace();
+                return false;
             }
-
-            return false;
         }
 
         @Override

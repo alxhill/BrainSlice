@@ -190,7 +190,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         switch (event.getKeyCode()) {
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
-                BrainModel.onVolumeKey(keyCode, event);
+                //BrainModel.onVolumeKey(keyCode, event);
                 return true;
 
             default:
@@ -367,7 +367,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
             world = new World();
 
-            BrainModel.load(res, (AudioManager) getSystemService(Context.AUDIO_SERVICE), getApplicationContext());
+            BrainModel.load(res, getApplicationContext());
 
             BrainModel.addToScene(world);
 

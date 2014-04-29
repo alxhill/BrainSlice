@@ -99,7 +99,7 @@ public class HomeScreen {
         icon_holder.startAnimation(slideDown);
 
         BrainModel.showBrain = true;
-        BrainModel.smoothMoveToGeneric(BrainModel.homePosition, 120, 400);
+        //BrainModel.smoothMoveToGeneric(BrainModel.homePosition, 120, 400);
         BrainModel.smoothRotateToFront();
         BrainModel.smoothZoom(0.23f, 1200);
         BrainModel.setLabelsToDisplay(false);

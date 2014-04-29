@@ -11,8 +11,6 @@ varying vec3 n;
 varying vec3 vertex_to_light_vector;
 varying vec3 vertex_to_camera_vector;
 
-uniform vec3 lightPositions[8];
-
 uniform vec3 cameraPos;
 
 uniform vec4 additionalColor;
@@ -36,5 +34,5 @@ void main()
     // Calculating The Vector From The Vertex Position To The Light Position
     vertex_to_camera_vector = normalize(vec3(cameraPos - vertex_in_modelview_space.xyz));
 
-    vertex_to_light_vector = normalize(vec3(vec3(100, 0, 0) - vertex_in_modelview_space.xyz));
+    vertex_to_light_vector = normalize(vec3(vec3(-100, 0, 0) - vertex_in_modelview_space.xyz));
 }

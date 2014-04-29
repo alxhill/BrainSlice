@@ -6,12 +6,9 @@ uniform mat4 modelViewProjectionMatrix;
 attribute vec4 position;
 attribute vec3 normal;
 
-
 varying vec3 n;
-varying vec3 vertex_to_light_vector[8];
+varying vec3 vertex_to_light_vector[3];
 varying vec3 vertex_to_camera_vector;
-
-uniform vec3 lightPositions[8];
 
 uniform vec3 cameraPos;
 
@@ -41,9 +38,9 @@ void main()
     vertex_to_light_vector[1] = normalize(vec3(lightPositions[1] - vertex_in_modelview_space.xyz));
     vertex_to_light_vector[2] = normalize(vec3(lightPositions[2] - vertex_in_modelview_space.xyz));*/
 
-    vertex_to_light_vector[0] = normalize(vec3(vec3(-100.0, 100.0, 50.0) - vertex_in_modelview_space.xyz));
-    vertex_to_light_vector[1] = normalize(vec3(vec3(-100.0, -100.0, -50.0) - vertex_in_modelview_space.xyz));
-    vertex_to_light_vector[2] = normalize(vec3(vec3(100.0, 0.0, -200.0) - vertex_in_modelview_space.xyz));
+    vertex_to_light_vector[0] = normalize(vec3(vec3(100.0, 100.0, 50.0) - vertex_in_modelview_space.xyz));
+    vertex_to_light_vector[1] = normalize(vec3(vec3(100.0, -100.0, -50.0) - vertex_in_modelview_space.xyz));
+    vertex_to_light_vector[2] = normalize(vec3(vec3(-100.0, 0.0, -200.0) - vertex_in_modelview_space.xyz));
 
     vertex_to_camera_vector = normalize(vec3(cameraPos - vertex_in_modelview_space.xyz));
 }

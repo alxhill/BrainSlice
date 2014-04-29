@@ -21,10 +21,8 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import android.media.AudioManager;
-import android.view.KeyEvent;
-
 import java.util.concurrent.Semaphore;
+import java.util.Random;
 
 /**
  * Renders the brain to the screen and handles moving the model
@@ -34,19 +32,19 @@ public class BrainModel {
 
     // 3D stuff
     private static Object3D plane;
+    private static Object3D glowPlane;
     private static Object3D[] objs;
     private static Object3D[] subCortical;
 
     // Shaders
     private static GLSLShader shader = null;
+    private static GLSLShader[] shads;
     private static GLSLShader brainShad;
     private static GLSLShader shineyShader;
-    private static GLSLShader[] shads = new GLSLShader[0];
+    private static GLSLShader glowShader;
 
     // camera
     private static Camera camera = null;
-    private static SimpleVector camPos;
-
     private static FrameBuffer buf = null;
 
 
@@ -58,13 +56,16 @@ public class BrainModel {
 //    private static RGBColor sphereNormalColor = new RGBColor(255, 255, 255);
 //    private static RGBColor sphereTouchedColor = new RGBColor(255, 255, 0);
 
-    public static SimpleVector sidePosition = SimpleVector.create(-25,20,10);
-    public static SimpleVector homePosition = SimpleVector.create(-30,-5,0);
-//    public static SimpleVector homePosition = SimpleVector.create(-25,25,10);
-    public static SimpleVector startPosition = SimpleVector.create(30,-5,0);
 
+    // Positions
+    public static SimpleVector sidePosition = SimpleVector.create(-22,0,0);
+    //public static SimpleVector homePosition = SimpleVector.create(-30,-5,0); // Delete this
+    public static SimpleVector startPosition = SimpleVector.create(0,0,0);
+    private static SimpleVector camPos;
+
+
+    // Misc
     private static Context context;
-    private static AudioManager audioManager;
     private static final Semaphore brainSemaphore = new Semaphore(1);
 
     public static boolean isLoaded = false;
@@ -75,12 +76,11 @@ public class BrainModel {
     static boolean onlyRotateY = true;
     static boolean disableDoubleTap = true;
     static boolean infoShowing = false;
+    private static int screenWidth, screenHeight;
 
-    public static void load(Resources res, AudioManager audio, Context con)
+    public static void load(Resources res, Context con)
     {
         context = con;
-
-        audioManager = audio;
 
         shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_offset)),
                                 Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_spheres)));
@@ -91,10 +91,14 @@ public class BrainModel {
         shineyShader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.vertexshader_brain_shiny)),
                                 Loader.loadTextFile(res.openRawResource(R.raw.fragmentshader_brain_shiny)));
 
+        glowShader =  new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.glowshader_vert)),
+                                Loader.loadTextFile(res.openRawResource(R.raw.glowshader_frag)));
+
         shineyShader.setUniform("cameraPos", SimpleVector.create(0,0,0));
 
         // brain is parented to small plane
         plane = Primitives.getPlane(1, 1);
+        glowPlane = Primitives.getPlane(1, 500.0f);
 
         plane.setCulling(true);
 
@@ -106,8 +110,10 @@ public class BrainModel {
 
         // compile and load shaders for plane
         plane.setShader(shader);
-        plane.setSpecularLighting(true);
+        plane.setSpecularLighting(false);
         shader.setStaticUniform("invRadius", 0.0003f);
+
+        Random randomNumberGenerator = new Random();
 
         // initialise brain sub-objs
 
@@ -137,6 +143,16 @@ public class BrainModel {
             obj.strip();
             obj.addParent(plane);
             obj.setShader(shineyShader);
+
+            double amount = (randomNumberGenerator.nextGaussian()/20.0) + 1.0;
+
+            if(amount < 0.90)
+                amount = 0.90;
+
+            if(amount > 1.10)
+                amount = 1.10;
+
+            obj.setScale((float) amount);
         }
 
         for(Object3D obj : subCortical)
@@ -148,6 +164,16 @@ public class BrainModel {
             obj.strip();
             obj.addParent(plane);
             obj.setShader(shineyShader);
+
+            double amount = (randomNumberGenerator.nextGaussian()/20.0) + 1.0;
+
+            if(amount < 0.90)
+                amount = 0.90;
+
+            if(amount > 1.10)
+                amount = 1.10;
+
+            obj.setScale((float) amount);
         }
 
         setDisplayMode(true,false);
@@ -158,7 +184,6 @@ public class BrainModel {
         brainShad.setUniform("transparent", 1);
 
         // Set the model's initial position
-       // plane.rotateY((float) Math.PI);
         plane.rotateX((float) Math.PI / 2.0f);
         plane.rotateZ((float) Math.PI);
         scale(0.5f);
@@ -174,7 +199,14 @@ public class BrainModel {
         // removes scale from the rotation matrix
         frontMatrix.orthonormalize();
 
-        isLoaded = true;
+        glowPlane.setOrigin(SimpleVector.create(0, 0, 50));
+
+        glowPlane.setShader(glowShader);
+
+        glowShader.setUniform("sw", screenWidth);
+        glowShader.setUniform("sh", screenHeight);
+
+        isLoaded=true;
         Events.trigger("model:loaded");
         Log.d("Brainslice","BrainModel isLoaded");
     }
@@ -309,6 +341,9 @@ public class BrainModel {
         if(camera == null)
             return;
 
+        screenWidth = buf.getWidth();
+        screenHeight = buf.getHeight();
+
         if (!spheresLoaded) return;
 
         for(int i=0; i<spheres.size(); i++)
@@ -326,7 +361,7 @@ public class BrainModel {
 
     private static boolean isVisibilityHodgePodge(Object3D sphere)
     {
-        float hodgeFactor = 1.0f;
+        float hodgeFactor = 1.1f;
 
         SimpleVector bvec = plane.getTransformedCenter();
         SimpleVector cvec = camera.getPosition();
@@ -372,6 +407,9 @@ public class BrainModel {
             Object3D sphere = spheres.get(i);
 
             SimpleVector v = Interact2D.project3D2D(camera, buf, sphere.getTransformedCenter());
+
+            if(v == null)
+                continue;
 
             float xd = v.x - x;
             float yd = v.y - y;
@@ -467,8 +505,11 @@ public class BrainModel {
 
         for(int i=0; i<objs.length; i++)
         {
-            if(i == 2)
+            //if(i == 2)
+            //    continue;
+            if(i == 4 || i == 5 || i == 6 || i == 7 || i == 9)
                 continue;
+
             world.addObject(objs[i]);
         }
 
@@ -477,10 +518,33 @@ public class BrainModel {
 
         for(int i=0; i<subCortical.length; i++)
         {
-            if(i == 4)
+            //if(i == 4)
+            //    continue;
+            if(i == 3)
                 continue;
+            
             world.addObject(subCortical[i]);
         }
+
+
+
+        world.addObject(glowPlane);
+
+        if(plane == null || camera == null || buf == null)
+            return;
+
+        SimpleVector v = Interact2D.project3D2D(camera, buf, plane.getTransformedCenter());
+
+        if(v == null)
+            return;
+
+        glowShader.setUniform("centre", v);
+    }
+
+    public static void addToTransp(World world)
+    {
+        if (subCortical == null || objs == null || !showBrain)
+            return;
 
         if(spheres == null)
             return;
@@ -490,16 +554,13 @@ public class BrainModel {
             for (Object3D sphere : spheres)
                 world.addObject(sphere);
         }
-    }
 
-    public static void addToTransp(World world) {
-        if (subCortical == null || objs == null || !showBrain)
-            return;
         world.addObject(subCortical[3]);
         world.addObject(objs[4]);
         world.addObject(objs[5]);
         world.addObject(objs[6]);
         world.addObject(objs[7]);
+        world.addObject(objs[9]);
     }
     public static void removeAll(World world)
     {
@@ -752,20 +813,6 @@ public class BrainModel {
     public static float getScale()
     {
         return plane.getScale();
-    }
-
-    public static void onVolumeKey(int keyCode, KeyEvent event)
-    {
-        switch (keyCode)
-        {
-            case KeyEvent.KEYCODE_VOLUME_UP:
-                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-                break;
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-                break;
-        }
-
     }
 
 

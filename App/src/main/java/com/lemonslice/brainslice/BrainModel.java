@@ -59,9 +59,9 @@ public class BrainModel {
 //    private static RGBColor sphereTouchedColor = new RGBColor(255, 255, 0);
 
     public static SimpleVector sidePosition = SimpleVector.create(-25,20,10);
-    public static SimpleVector homePosition = SimpleVector.create(-25,-5,0);
+    public static SimpleVector homePosition = SimpleVector.create(-30,-5,0);
 //    public static SimpleVector homePosition = SimpleVector.create(-25,25,10);
-    public static SimpleVector startPosition = SimpleVector.create(0,-10,0);
+    public static SimpleVector startPosition = SimpleVector.create(30,-5,0);
 
     private static Context context;
     private static AudioManager audioManager;

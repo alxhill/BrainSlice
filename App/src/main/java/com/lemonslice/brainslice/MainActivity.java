@@ -288,7 +288,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 baseController.unloadView();
                 BrainModel.disableDoubleTap = false;
                 learnController.loadView();
-                overlayingFrame.removeAllViews();
+                //overlayingFrame.removeAllViews();
+                HomeScreen.hide();
                 baseController = learnController;
                 findViewById(R.id.info_button).setVisibility(View.VISIBLE);
             }
@@ -314,7 +315,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
             else if (tapType.equals("quiz"))
             {
                 baseController.unloadView();
-                overlayingFrame.removeAllViews();
+                //overlayingFrame.removeAllViews();
+                HomeScreen.hide();
                 quizController.loadView();
                 baseController = quizController;
                 findViewById(R.id.info_button).setVisibility(View.VISIBLE);

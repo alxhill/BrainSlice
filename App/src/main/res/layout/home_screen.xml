@@ -84,8 +84,8 @@
             android:layout_gravity="center_horizontal"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:gravity="bottom"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="20dp"
+            android:gravity="center_vertical">
 
             <LinearLayout
                 android:layout_width="240dp"

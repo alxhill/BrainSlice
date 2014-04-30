@@ -44,10 +44,12 @@ public class Tutorial {
     static ViewPager mViewPager;
     static CollectionPagerAdapter mCollectionPagerAdapter;
 
+    public static boolean showMainMenu;
+
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public static void show() {
-        int sdk = android.os.Build.VERSION.SDK_INT;
+    public static void show(int startPage, final boolean showMainMenu) {
+        Tutorial.showMainMenu = showMainMenu;
 
         frameLayout.removeAllViews();
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -61,28 +63,33 @@ public class Tutorial {
         {
             circles.add((LinearLayout)circleHolder.getChildAt(i));
         }
-        circles.get(0).setBackground(context.getResources().getDrawable(R.drawable.circle_gold));
+        circles.get(startPage).setBackground(context.getResources().getDrawable(R.drawable.circle_gold));
+        circles.get(0).setVisibility(View.INVISIBLE);
+        circles.get(NUMBER_OF_CARDS-1).setVisibility(View.INVISIBLE);
+        if (!showMainMenu)
+            circles.get(NUMBER_OF_CARDS-2).setVisibility(View.INVISIBLE);
 
         FragmentActivity main = (FragmentActivity)context;
         mCollectionPagerAdapter =
                 new CollectionPagerAdapter(
-                       main.getSupportFragmentManager());
+                        main.getSupportFragmentManager());
 
         mViewPager = (ViewPager) cardsScreen.findViewById(R.id.pager);
-        //int marginPixels = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, context.getResources().getDisplayMetrics());
-        //mViewPager.setPageMargin(marginPixels);
         mViewPager.setHorizontalFadingEdgeEnabled(true);
         mViewPager.setFadingEdgeLength(30);
         mViewPager.setOffscreenPageLimit(2);
         mViewPager.setAdapter(mCollectionPagerAdapter);
         mViewPager.setPageTransformer(false,new ZoomOutPageTransformer());
 
-        mViewPager.setCurrentItem(1, true);
+        mViewPager.setCurrentItem(startPage, true);
 
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if ((position+1==NUMBER_OF_CARDS) || (position+1==1))
+                if (((showMainMenu) && (position+1==NUMBER_OF_CARDS))
+                        || ((!showMainMenu) && (position+2==NUMBER_OF_CARDS))
+                        || (position+1==1)
+                        )
                     hide();
             }
 
@@ -177,7 +184,10 @@ class NewObjectFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         View rootView = null;
         Bundle args = getArguments();
-        switch(args.getInt(ARG_OBJECT))
+        int card = args.getInt(ARG_OBJECT);
+        if ((!Tutorial.showMainMenu)&&(card>=2))
+            card++;
+        switch(card)
         {
             case 1: rootView = inflater.inflate(R.layout.card_left, container, false); break;
             case 2: rootView = inflater.inflate(R.layout.card_first, container, false); break;
@@ -185,15 +195,8 @@ class NewObjectFragment extends Fragment {
             case 4: rootView = inflater.inflate(R.layout.card3, container, false); break;
             case 5: rootView = inflater.inflate(R.layout.card4, container, false); break;
             case 6: rootView = inflater.inflate(R.layout.card5, container, false); break;
-            case 7: rootView = inflater.inflate(R.layout.card_final, container, false);
-                assert rootView != null;
-                (rootView.findViewById(R.id.get_started)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Tutorial.hide();
-                    }
-                });
-                break;
+            case 7: rootView = inflater.inflate(R.layout.card_final, container, false); break;
+            default: break;
         }
 
         return rootView;

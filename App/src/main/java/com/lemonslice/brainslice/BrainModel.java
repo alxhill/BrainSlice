@@ -107,7 +107,7 @@ public class BrainModel {
         // Load the 3d model
         objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.fullmodel2));
         Log.d("BrainSlice", "Copied serialised brain model into memory");
-        subCortical = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.subcor));
+        subCortical = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.subcor2));
         Log.d("BrainSlice", "Copied serialised subcortical sections into memory");
 
         // compile and load shaders for plane
@@ -135,6 +135,18 @@ public class BrainModel {
             12: left cerebellum cortex (hidden)
 
          */
+
+        /* Sub-cortical indices
+        0: Left Thalamus
+        1: Left Hippocampus
+        2: Left Cerebellum Cortex
+        3: Brain Stem
+        4: Right Cerebellum cortex
+        5: Left Amygdala
+        6: Left Cerebellum white matter
+        7: Right cerebellum white matter
+
+            */
 
         for (Object3D obj : objs)
         {
@@ -270,7 +282,7 @@ public class BrainModel {
             objs[6].setShader(brainShad);
             objs[7].setShader(brainShad);
             objs[9].setShader(brainShad);
-            subCortical[3].setShader(brainShad);
+            subCortical[2].setShader(brainShad);
         } else if (colourMode) {
             for (Object3D obj : objs)
             {
@@ -294,7 +306,7 @@ public class BrainModel {
             objs[6].setShader(brainShad);
             objs[7].setShader(brainShad);
             objs[9].setShader(brainShad);
-            subCortical[3].setShader(brainShad);
+            subCortical[2].setShader(brainShad);
         } else {
             for (Object3D obj : objs)
             {
@@ -550,7 +562,7 @@ public class BrainModel {
         {
             //if(i == 4)
             //    continue;
-            if(i == 3)
+            if(i == 2)
                 continue;
 
             world.addObject(subCortical[i]);
@@ -586,7 +598,7 @@ public class BrainModel {
                 world.addObject(sphere);
         }
 
-        world.addObject(subCortical[3]);
+        world.addObject(subCortical[2]);
         world.addObject(objs[4]);
         world.addObject(objs[5]);
         world.addObject(objs[6]);

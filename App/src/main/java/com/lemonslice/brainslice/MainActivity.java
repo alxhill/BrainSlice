@@ -35,6 +35,7 @@ import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
 
+import java.io.FileReader;
 import java.io.IOException;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -298,7 +299,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 baseController.unloadView();
                 BrainModel.disableDoubleTap = false;
                 learnController.loadView();
-                //overlayingFrame.removeAllViews();
+                overlayingFrame.removeAllViews();
                 HomeScreen.hide();
                 baseController = learnController;
                 findViewById(R.id.info_button).setVisibility(View.VISIBLE);
@@ -307,6 +308,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
             {
                 // overlays the calibrate screen, only loads the visualise controller
                 // after the calibrate button has been pressed.
+                HomeScreen.hide();
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
                 baseController.unloadView();
                 baseController = visualiseController;
@@ -317,6 +319,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 baseController = learnController;
                 //BrainModel.onlyRotateY = true;
                 quizFrame.removeAllViews();
+                overlayingFrame.removeAllViews();
                 HomeScreen.show();
             }
             else if (tapType.equals("info"))

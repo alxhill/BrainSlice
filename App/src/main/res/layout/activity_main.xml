@@ -33,22 +33,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/info_button"
-        android:orientation="horizontal"
-        android:padding="10dp"
-        android:layout_marginRight="60dp"
-        android:layout_gravity="center|right"
-        android:background="@drawable/hs_button"
-        >
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/i"/>
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/hs_icon_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

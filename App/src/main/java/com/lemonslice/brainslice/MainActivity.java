@@ -155,9 +155,10 @@ public class MainActivity extends FragmentActivity implements EventListener {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         boolean loaded = false;
+        Log.d("LOADDATA", "attempting network loading");
         if (networkInfo != null && networkInfo.isConnected())
             loaded = BrainInfo.loadData();
-
+        Log.d("LOADDATA", "attempting local loading " + loaded);
         // if there's no internet or the loading failed, use the local data
         if (!loaded)
             BrainInfo.readData(getResources());

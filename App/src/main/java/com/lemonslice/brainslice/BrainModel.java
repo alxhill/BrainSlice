@@ -160,11 +160,11 @@ public class BrainModel {
 
             double amount = (randomNumberGenerator.nextGaussian()/20.0) + 1.0;
 
-            if(amount < 0.90)
-                amount = 0.90;
+            if(amount < 0.97)
+                amount = 0.97;
 
-            if(amount > 1.10)
-                amount = 1.10;
+            if(amount > 1.03)
+                amount = 1.03;
 
             obj.setScale((float) amount);
         }
@@ -181,11 +181,11 @@ public class BrainModel {
 
             double amount = (randomNumberGenerator.nextGaussian()/20.0) + 1.0;
 
-            if(amount < 0.90)
-                amount = 0.90;
+            if(amount < 0.97)
+                amount = 0.97;
 
-            if(amount > 1.10)
-                amount = 1.10;
+            if(amount > 1.03)
+                amount = 1.03;
 
             obj.setScale((float) amount);
         }

@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/bk1"
+        android:background="#3498db"
         android:orientation="vertical"
         android:id="@+id/hs_holder"
         android:clipChildren="false"
@@ -26,6 +26,16 @@
             android:layout_marginRight="40dp"
             android:layout_marginTop="10dp"
             >
+
+            <TextView
+                android:id="@+id/hs_about_button"
+                android:gravity="center"
+                android:text="@string/about_icon"
+                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="10dp"
+                android:textSize="25sp"
+                android:textColor="#fff" />
 
             <TextView
                 android:id="@+id/hs_settings_button_icon"
@@ -56,19 +66,26 @@
                 android:layout_marginRight="3dp"
                 android:textSize="25sp"
                 android:textColor="#fff"/>
-            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:src="@drawable/title"
+            android:layout_gravity="center" />
 
         <LinearLayout
             android:id="@+id/hs_button_holder"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:orientation="vertical"
-            android:paddingRight="40dp"
-            android:layout_marginTop="60dp"
-            android:layout_gravity="center_vertical|right"
+            android:layout_gravity="center_horizontal"
             android:clipChildren="false"
             android:clipToPadding="false"
-            >
+            android:gravity="bottom"
+            android:layout_marginBottom="20dp">
 
             <LinearLayout
                 android:layout_width="240dp"
@@ -80,15 +97,12 @@
                 android:clipChildren="false"
                 android:clipToPadding="false">
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:text="Learn Mode"
                     android:textSize="25sp"
                     android:textColor="#fff"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:layout_marginLeft="10dp"
-                    />
+                    android:gravity="center_vertical|center_horizontal" />
                 </LinearLayout>
 
             <LinearLayout
@@ -103,15 +117,12 @@
                 android:clipToPadding="false"
                 >
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:text="Window Mode"
                     android:textSize="25sp"
                     android:textColor="#fff"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:layout_marginLeft="10dp"
-                    />
+                    android:gravity="center_vertical|center_horizontal" />
             </LinearLayout>
 
             <LinearLayout
@@ -126,17 +137,15 @@
                 android:clipToPadding="false"
                 >
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:text="Brain Quiz"
                     android:textSize="25sp"
                     android:textColor="#fff"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:layout_marginLeft="10dp"
-                    />
+                    android:gravity="center_vertical|center_horizontal" />
             </LinearLayout>
         </LinearLayout>
-        </LinearLayout>
+
+    </LinearLayout>
 
 </FrameLayout>

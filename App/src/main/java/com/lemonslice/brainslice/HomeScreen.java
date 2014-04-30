@@ -47,6 +47,10 @@ public class HomeScreen {
         frameLayout.removeAllViews();
         frameLayout.addView(homeScreen);
 
+        Animation fadeIn = AnimationUtils.loadAnimation(context,R.anim.fade_in);
+        fadeIn.setDuration(250);
+        homeScreen.startAnimation(fadeIn);
+
         LinearLayout btn_holder = (LinearLayout)homeScreen.findViewById(R.id.hs_button_holder);
         LinearLayout btn1 = (LinearLayout)btn_holder.findViewById(R.id.hs_learnbtn);
         LinearLayout btn2 = (LinearLayout)btn_holder.findViewById(R.id.hs_visualizebtn);
@@ -58,14 +62,17 @@ public class HomeScreen {
 
         LinearLayout icon_holder = (LinearLayout)homeScreen.findViewById(R.id.hs_icon_holder);
 
-        btn1.setVisibility(View.INVISIBLE);
-        btn2.setVisibility(View.INVISIBLE);
-        btn3.setVisibility(View.INVISIBLE);
-        icon_holder.setVisibility(View.INVISIBLE);
 
         iconifyView(R.id.hs_help_button_icon, 25);
         iconifyView(R.id.hs_settings_button_icon, 25);
         iconifyView(R.id.hs_volume_button, 25);
+        iconifyView(R.id.hs_about_button,25);
+
+        /*
+        btn1.setVisibility(View.INVISIBLE);
+        btn2.setVisibility(View.INVISIBLE);
+        btn3.setVisibility(View.INVISIBLE);
+        icon_holder.setVisibility(View.INVISIBLE);
 
         Animation slideIn1 = AnimationUtils.loadAnimation(context, R.anim.slide_in);
         Animation slideIn2 = AnimationUtils.loadAnimation(context, R.anim.slide_in);
@@ -90,16 +97,38 @@ public class HomeScreen {
         slideDown.setFillAfter(true);
         slideDown.setInterpolator(new DecelerateInterpolator());
         slideDown.setStartOffset(600);
-        icon_holder.startAnimation(slideDown);
+        icon_holder.startAnimation(slideDown);*/
 
         BrainModel.showBrain = true;
         //BrainModel.smoothMoveToGeneric(BrainModel.homePosition, 120, 400);
-        BrainModel.smoothRotateToFront();
-        BrainModel.smoothZoom(0.23f, 1200);
+        //BrainModel.smoothRotateToFront();
+        //BrainModel.smoothZoom(0.23f, 1200);
         BrainModel.setLabelsToDisplay(false);
-        BrainModel.onlyRotateY = true;
-        BrainModel.disableDoubleTap = true;
+        //BrainModel.onlyRotateY = true;
+        //BrainModel.disableDoubleTap = true;
         MainActivity.setZOnTop();
+    }
+
+    public static void hide()
+    {
+        Animation fadeOut = AnimationUtils.loadAnimation(context,R.anim.abc_fade_out);
+        fadeOut.setDuration(500);
+        fadeOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                frameLayout.removeAllViews();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        frameLayout.startAnimation(fadeOut);
     }
 
     private static TextView iconifyView(int resId, int size)

@@ -24,6 +24,7 @@ android {
         release {
             runProguard false
             proguardFile getDefaultProguardFile('proguard-android.txt')
+            zipAlign true
         }
     }
     productFlavors {

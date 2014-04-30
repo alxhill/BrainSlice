@@ -54,6 +54,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
     private AudioManager mAudioManager;
     private SettingsMenu mSettingsMenu;
+    private AboutDialog mAboutDialog;
 
     // 3D stuff
     private GLSurfaceView mGLView;
@@ -64,6 +65,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
     // Frame overlaying 3d rendering for labels, instructions etc...
     private FrameLayout overlayingFrame;
     private FrameLayout tutorialFrame;
+    private FrameLayout quizFrame;
     private Typeface fontAwesome;
 
     public static GLSurfaceView sMGLView;
@@ -115,6 +117,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         mSettingsMenu = new SettingsMenu(this);
 
+        mAboutDialog = new AboutDialog(this);
+
         // set up listening for events
         Events.register(this);
 
@@ -129,13 +133,15 @@ public class MainActivity extends FragmentActivity implements EventListener {
         visualiseController = new VisualiseController((SensorManager) getSystemService(Context.SENSOR_SERVICE));
         visualiseController.setOverlayLabel(overlayLabel);
 
+        quizFrame = (FrameLayout)findViewById(R.id.quiz_overlay);
         quizController = new QuizController(getApplicationContext());
-        quizController.setMainOverlay(overlayingFrame);
+        quizController.setMainOverlay(quizFrame);
         quizController.setOverlayLabel(overlayLabel);
 
         // set up the button events
         iconifyView(R.id.help_button, 25);
         iconifyView(R.id.settings_button, 25);
+        iconifyView(R.id.about_button,25);
         soundButton = iconifyView(R.id.volume_button, 25);
 
         addButtonListener(R.id.help_button, "help");
@@ -143,6 +149,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         addButtonListener(soundButton, "volume");
         addButtonListener(R.id.home_button, "home");
         addButtonListener(R.id.info_button, "info");
+        addButtonListener(R.id.about_button,"about");
 
         // check for internet connectivity and load the data
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -288,7 +295,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 baseController.unloadView();
                 BrainModel.disableDoubleTap = false;
                 learnController.loadView();
-                overlayingFrame.removeAllViews();
+                //overlayingFrame.removeAllViews();
+                HomeScreen.hide();
                 baseController = learnController;
                 findViewById(R.id.info_button).setVisibility(View.VISIBLE);
             }
@@ -304,7 +312,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
             else if (tapType.equals("home"))
             {
                 baseController = learnController;
-                BrainModel.onlyRotateY = true;
+                //BrainModel.onlyRotateY = true;
+                quizFrame.removeAllViews();
                 HomeScreen.show();
             }
             else if (tapType.equals("info"))
@@ -314,7 +323,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
             else if (tapType.equals("quiz"))
             {
                 baseController.unloadView();
-                overlayingFrame.removeAllViews();
+                //overlayingFrame.removeAllViews();
+                HomeScreen.hide();
                 quizController.loadView();
                 baseController = quizController;
                 findViewById(R.id.info_button).setVisibility(View.VISIBLE);
@@ -344,6 +354,10 @@ public class MainActivity extends FragmentActivity implements EventListener {
             else if (tapType.equals("settings"))
             {
                 mSettingsMenu.show();
+            }
+            else if (tapType.equals("about"))
+            {
+                mAboutDialog.show();
             }
         }
         else if (name.equals("data:loaded"))

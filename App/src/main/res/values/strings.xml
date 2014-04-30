@@ -12,6 +12,7 @@
     <string name="volume_icon">&#xf028;</string>
     <string name="volume_icon_mute">&#xf026;</string>
     <string name="quiz_icon">&#xf14a;</string>
+    <string name="about_icon">&#xf129;</string>
     <string name="loadingMessage">Loading…</string>
     <string name="quiz_button_text">Quiz</string>
     <string name="learn_button_text">Learn</string>

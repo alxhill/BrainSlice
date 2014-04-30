@@ -1,6 +1,7 @@
 package com.lemonslice.brainslice;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -46,8 +47,8 @@ public class SplashScreen
     public static void finished_splash()
     {
         frameLayout.removeAllViews();
-        Tutorial.show(1,true);
         HomeScreen.show();
+        Tutorial.show(1,true);
     }
 
     public static void show()
@@ -59,84 +60,67 @@ public class SplashScreen
         final ImageView lemon = (ImageView)splashScreen.findViewById(R.id.lemon);
         final TextView teamName = (TextView)splashScreen.findViewById(R.id.team_lemon_slice);
 
-        lemon.setVisibility(View.INVISIBLE);
-        teamName.setVisibility(View.INVISIBLE);
+//        lemon.setVisibility(View.INVISIBLE);
+//        teamName.setVisibility(View.INVISIBLE);
 
-        //scale from 0 to 1.2
-        final Animation scaleLemon = AnimationUtils.loadAnimation(context, R.anim.scale_up);
-        final Animation scaleTeamName = AnimationUtils.loadAnimation(context, R.anim.scale_up);
-        scaleLemon.setFillAfter(true);
-        scaleTeamName.setFillAfter(true);
-        scaleLemon.setInterpolator(new AccelerateDecelerateInterpolator());
-        scaleTeamName.setInterpolator(new AccelerateDecelerateInterpolator());
+        Log.d("JAMES", "Here???");
 
-        //scale from 1.2 to 1
-        final Animation scaleBack = AnimationUtils.loadAnimation(context, R.anim.scale_back);
-        scaleBack.setFillAfter(true);
+//        //scale from 0 to 1.2
+//        final Animation scaleLemon = AnimationUtils.loadAnimation(context, R.anim.scale_up);
+//        final Animation scaleTeamName = AnimationUtils.loadAnimation(context, R.anim.scale_up);
+//        scaleLemon.setFillAfter(true);
+//        scaleTeamName.setFillAfter(true);
+//        scaleLemon.setInterpolator(new AccelerateDecelerateInterpolator());
+//        scaleTeamName.setInterpolator(new AccelerateDecelerateInterpolator());
+//
+//        //scale from 1.2 to 1
+//        final Animation scaleBack = AnimationUtils.loadAnimation(context, R.anim.scale_back);
+//        final Animation scaleBackText = AnimationUtils.loadAnimation(context, R.anim.scale_back);
+//        scaleBack.setFillAfter(true);
+//        scaleBackText.setFillAfter(true);
+//
+//
+//
+//        scaleLemon.setAnimationListener(new MyAnimationListener(lemon) {
+//            @Override
+//            public void onAnimationEnd(Animation animation) {
+//                Log.d("JAMES", "scale lemon up end");
+//                teamName.startAnimation(scaleTeamName);
+//                view.startAnimation(scaleBack);
+//            }
+//        });
+//        scaleTeamName.setAnimationListener(new MyAnimationListener(teamName) {
+//            @Override
+//            public void onAnimationEnd(Animation animation) {
+//                Log.d("JAMES", "scale text up end");
+//                view.startAnimation(scaleBackText);
+//            }
+//        });
+//
+//        scaleBackText.setAnimationListener(new MyAnimationListener(teamName) {
+//            @Override
+//            public void onAnimationEnd(Animation animation) {
+//                SplashScreen.finished_splash();
+//            }
+//        });
 
-        final Animation scaleExitLemon = AnimationUtils.loadAnimation(context, R.anim.scale_up_small);
-        final Animation scaleExitTeamName = AnimationUtils.loadAnimation(context, R.anim.scale_up_small);
-        scaleExitLemon.setFillAfter(true);
-        scaleExitTeamName.setFillAfter(true);
+//        scaleLemon.setStartOffset(3000);
 
-        final Animation scaleDown = AnimationUtils.loadAnimation(context, R.anim.scale_down);
-        scaleDown.setFillAfter(true);
-        scaleDown.setInterpolator(new AccelerateDecelerateInterpolator());
-
-        scaleLemon.setAnimationListener(new MyAnimationListener(lemon) {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
             @Override
-            public void onAnimationEnd(Animation animation) {
-                teamName.startAnimation(scaleTeamName);
-                view.startAnimation(scaleBack);
-            }
-        });
-        scaleTeamName.setAnimationListener(new MyAnimationListener(teamName) {
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                view.startAnimation(scaleBack);
-            }
-        });
-        scaleExitLemon.setAnimationListener(new MyAnimationListener(lemon) {
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                view.startAnimation(scaleDown);
-            }
-        });
-        scaleExitTeamName.setAnimationListener(new MyAnimationListener(teamName) {
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                view.startAnimation(scaleDown);
-            }
-        });
-
-        //NOBODY LOOK AT THIS CODE!!!
-        //wait for screen orient ro load properly
-        //REPLACE WITH START TIME OFFSETS
-        new Timer().schedule(new TimerTask()
-        {
-            @Override
-            public void run()
-            {
+            public void run() {
                 frameLayout.post(new Runnable() {
                     @Override
                     public void run() {
-                        lemon.startAnimation(scaleLemon);
-                        new Timer().schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                frameLayout.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        SplashScreen.finished_splash();
-                                    }
-                                });
-                            }
-                        }, 3000 /*Time for lemon animation*/);
-                        cancel();
+                        finished_splash();
                     }
                 });
+                cancel();
             }
-        }, 1000);
+        }, 3000);
+
+        Log.d("JAMES", "End of function???");
     }
 }
 

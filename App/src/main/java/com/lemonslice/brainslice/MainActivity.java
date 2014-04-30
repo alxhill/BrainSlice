@@ -19,8 +19,12 @@ import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.lemonslice.brainslice.event.Events;
 import com.lemonslice.brainslice.event.EventListener;
@@ -57,7 +61,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
     private TextView soundButton;
 
     private AudioManager mAudioManager;
-    private SettingsMenu mSettingsMenu;
     private AboutDialog mAboutDialog;
 
     // 3D stuff
@@ -94,7 +97,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         SplashScreen.setContext(this);
         SplashScreen.setFrameLayout(overlayingFrame);
         SplashScreen.setRenderer(renderer);
-        SplashScreen.show();
+//        SplashScreen.show();
 
         Labels.setContext(this);
         Labels.setFrameLayout(overlayingFrame);
@@ -123,8 +126,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
-        mSettingsMenu = new SettingsMenu(this);
-
         mAboutDialog = new AboutDialog(this);
 
         // set up listening for events
@@ -146,16 +147,32 @@ public class MainActivity extends FragmentActivity implements EventListener {
         quizController.setMainOverlay(quizFrame);
 
         // set up the button events
-        iconifyView(R.id.help_button, 35);
-        iconifyView(R.id.settings_button, 35);
-        iconifyView(R.id.about_button,35);
-        soundButton = iconifyView(R.id.volume_button, 35);
+        iconifyView(R.id.help_button, 25);
+        iconifyView(R.id.about_button,25);
+        soundButton = iconifyView(R.id.volume_button, 25);
 
         addButtonListener(R.id.help_button, "help");
-        addButtonListener(R.id.settings_button, "settings");
         addButtonListener(soundButton, "volume");
         addButtonListener(R.id.home_button, "home");
         addButtonListener(R.id.about_button,"about");
+
+
+        final CheckBox colourSwitch = (CheckBox)findViewById(R.id.colourSwitch);
+        final CheckBox xRaySwitch = (CheckBox)findViewById(R.id.xRaySwitch);
+
+        colourSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BrainModel.setDisplayMode(xRaySwitch.isChecked(), colourSwitch.isChecked());
+            }
+        });
+
+        xRaySwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BrainModel.setDisplayMode(xRaySwitch.isChecked(), colourSwitch.isChecked());
+            }
+        });
 
         // check for internet connectivity and load the data
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -170,6 +187,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
             BrainInfo.readData(getResources());
 
         setZOnTop();
+
+        SplashScreen.show();
     }
 
     public static void setZOnTop()
@@ -211,20 +230,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 Events.trigger(eventName);
             }
         });
-    }
-
-    // This is to prevent accidental presses of the volume keys
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        switch (event.getKeyCode()) {
-            case KeyEvent.KEYCODE_VOLUME_UP:
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                //BrainModel.onVolumeKey(keyCode, event);
-                return true;
-
-            default:
-                return super.onKeyDown(keyCode, event);
-        }
     }
 
     @Override
@@ -354,10 +359,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
             else if (tapType.equals("help"))
             {
                 Tutorial.show(1,false);
-            }
-            else if (tapType.equals("settings"))
-            {
-                mSettingsMenu.show();
             }
             else if (tapType.equals("about"))
             {

@@ -28,7 +28,7 @@
             android:typeface="sans"
             android:textSize="20sp"
             android:paddingBottom="10dp"
-            android:paddingTop="10dp"
+            android:paddingTop="40dp"
             android:paddingRight="10dp"
             android:paddingLeft="10dp"
             />

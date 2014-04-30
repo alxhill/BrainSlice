@@ -52,7 +52,8 @@
                android:layout_height="75dp"
                android:layout_weight="1"
                android:src="@drawable/hand_circle"
-               android:layout_gravity="right"/>
+               android:layout_gravity="center"
+               />
             </LinearLayout>
         <LinearLayout
             android:layout_width="fill_parent"

@@ -239,6 +239,7 @@ public class QuizController extends AbstractController {
                     {
                         if (checkedSegment == finalTestSegment)
                         {
+                            Toast.makeText(context, "Well done, that's right!", Toast.LENGTH_SHORT).show();
                             testedTasks.add(finalTestTask);
                             checkedSegment = null;
                             learnNewSegment(true);

@@ -72,6 +72,7 @@ public class QuizController extends AbstractController {
             public void onClick(View v)
             {
                 quizButton.setVisibility(Button.INVISIBLE);
+
                 startQuiz();
             }
         });

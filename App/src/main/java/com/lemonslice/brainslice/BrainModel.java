@@ -412,6 +412,7 @@ public class BrainModel {
 
     public static void notifyTap(float x, float y)
     {
+        Log.d("BrainSlice","notifyTap");
         boolean selected = false;
         int i;
         int pos = -1;
@@ -493,6 +494,7 @@ public class BrainModel {
 
     public static void infoTapped()
     {
+        Log.d("BrainSlice","infoTapped");
         if(!infoShowing && !disableDoubleTap)
         {
             infoShowing = true;

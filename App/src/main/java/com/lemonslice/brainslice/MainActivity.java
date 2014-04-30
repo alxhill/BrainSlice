@@ -66,6 +66,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
     private FrameLayout overlayingFrame;
     private FrameLayout tutorialFrame;
     private FrameLayout quizFrame;
+    private FrameLayout homescreenFrame;
     private Typeface fontAwesome;
 
     public static GLSurfaceView sMGLView;
@@ -79,6 +80,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
         tutorialFrame = (FrameLayout)findViewById(R.id.tutorial_overlay);
+        homescreenFrame = (FrameLayout)findViewById(R.id.homescreen_overlay);
         hideSystemBars();
 
         MyRenderer renderer = new MyRenderer();
@@ -95,7 +97,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         Tutorial.setContext(this);
         Tutorial.setFrameLayout(tutorialFrame);
         HomeScreen.setContext(this);
-        HomeScreen.setFrameLayout(overlayingFrame);
+        HomeScreen.setFrameLayout(homescreenFrame);
 
         VisualiseController.setContext(this);
 

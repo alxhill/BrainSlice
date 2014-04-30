@@ -3,6 +3,7 @@ package com.lemonslice.brainslice;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -36,14 +37,17 @@ public class SettingsMenu {
                         Log.d("BrainSlice","Dialog: save");
                     }
                 })
-                .setView(linearLayout)
-        .setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                BrainModel.setDisplayMode(xRaySwitch.isChecked(), colourSwitch.isChecked());
-                Log.d("BrainSlice","Dialog: dismiss/save");
-            }
-        });
+                .setView(linearLayout);
+
+        if (Build.VERSION.SDK_INT >= 17)
+            builder.setOnDismissListener(
+                    new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialogInterface) {
+                        BrainModel.setDisplayMode(xRaySwitch.isChecked(), colourSwitch.isChecked());
+                        Log.d("BrainSlice","Dialog: dismiss/save");
+                        }
+                    });
 
         settingsDialog = builder.create();
     }

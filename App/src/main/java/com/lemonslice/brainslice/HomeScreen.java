@@ -36,6 +36,7 @@ public class HomeScreen {
     private GestureDetector gestureDetector = null;
 
     private  static int btncount = 0;
+    private static Typeface comicNeue;
 
     public static void show() {
         btncount = 0;
@@ -67,6 +68,10 @@ public class HomeScreen {
         iconifyView(R.id.hs_settings_button_icon, 25);
         iconifyView(R.id.hs_volume_button, 25);
         iconifyView(R.id.hs_about_button,25);
+
+        comicNeue(R.id.TextViewLearn,30);
+        comicNeue(R.id.TextViewQuiz,30);
+        comicNeue(R.id.TextViewWindow,30);
 
         /*
         btn1.setVisibility(View.INVISIBLE);
@@ -140,5 +145,16 @@ public class HomeScreen {
         view.setTypeface(fontAwesome);
         view.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
         return view;
+    }
+
+    public static TextView comicNeue(int id, int size)
+    {
+        TextView textView = (TextView) frameLayout.findViewById(id);
+        if (comicNeue == null)
+            comicNeue = Typeface.createFromAsset(Tutorial.context.getAssets(), "fonts/ComicNeue-Angular-Regular.ttf");
+
+        textView.setTypeface(comicNeue);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
+        return textView;
     }
 }

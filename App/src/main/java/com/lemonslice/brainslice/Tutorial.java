@@ -2,6 +2,7 @@ package com.lemonslice.brainslice;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,7 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +18,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by James on 26/03/14.
@@ -45,6 +45,7 @@ public class Tutorial {
     static CollectionPagerAdapter mCollectionPagerAdapter;
 
     public static boolean showMainMenu;
+    private static Typeface comicNeue;
 
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -147,6 +148,16 @@ public class Tutorial {
         });
         frameLayout.startAnimation(fadeOut);
     }
+
+    public static TextView comicNeue(TextView textView, int size)
+    {
+        if (comicNeue == null)
+            comicNeue = Typeface.createFromAsset(Tutorial.context.getAssets(), "fonts/ComicNeue-Angular-Regular.ttf");
+
+        textView.setTypeface(comicNeue);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
+        return textView;
+    }
 }
 
 class CollectionPagerAdapter extends FragmentStatePagerAdapter {
@@ -190,7 +201,10 @@ class NewObjectFragment extends Fragment {
         switch(card)
         {
             case 1: rootView = inflater.inflate(R.layout.card_left, container, false); break;
-            case 2: rootView = inflater.inflate(R.layout.card_first, container, false); break;
+            case 2: rootView = inflater.inflate(R.layout.card_first, container, false);
+                Tutorial.comicNeue((TextView) rootView.findViewById(R.id.textView2),30);
+                Tutorial.comicNeue((TextView) rootView.findViewById(R.id.textView3),30);
+                break;
             case 3: rootView = inflater.inflate(R.layout.card2, container, false); break;
             case 4: rootView = inflater.inflate(R.layout.card3, container, false); break;
             case 5: rootView = inflater.inflate(R.layout.card4, container, false); break;

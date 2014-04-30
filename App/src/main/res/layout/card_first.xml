@@ -20,18 +20,12 @@
         android:background="@drawable/card_background_blue"
         android:gravity="center">
 
-        <TextView
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/welcome_message"
-            android:textSize="30sp"
-            android:padding="20dp"
-            android:textColor="#fff"
-            android:layout_gravity="center"
-            android:layout_alignWithParentIfMissing="false"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/textView" />
+            android:id="@+id/imageView"
+            android:src="@drawable/title"
+            android:layout_marginBottom="20dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -45,10 +39,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Swipe left to skip the tutorial"
+            android:text="Or swipe left to skip the tutorial"
             android:id="@+id/textView3"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:textIsSelectable="false" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"></LinearLayout>
 
 </LinearLayout>

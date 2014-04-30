@@ -295,7 +295,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
             String tapType = events[1];
             if (tapType.equals("learn"))
             {
-                baseController.unloadView();
                 BrainModel.disableDoubleTap = false;
                 learnController.loadView();
                 HomeScreen.hide();
@@ -305,13 +304,14 @@ public class MainActivity extends FragmentActivity implements EventListener {
             {
                 // overlays the calibrate screen, only loads the visualise controller
                 // after the calibrate button has been pressed.
+                BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
                 HomeScreen.hide();
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
-                baseController.unloadView();
                 baseController = visualiseController;
             }
             else if (tapType.equals("home"))
             {
+                baseController.unloadView();
                 baseController = learnController;
                 //BrainModel.onlyRotateY = true;
                 quizFrame.removeAllViews();
@@ -320,7 +320,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
             }
             else if (tapType.equals("quiz"))
             {
-                baseController.unloadView();
                 //overlayingFrame.removeAllViews();
                 HomeScreen.hide();
                 quizController.loadView();

@@ -5,8 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
@@ -29,7 +27,10 @@ public class QuizController extends AbstractController {
 
     private FrameLayout mainOverlay;
     private FrameLayout labelOverlay;
-    private Button quizButton;
+    private FrameLayout sidebarOverlay;
+    private LinearLayout sidebar;
+    private LinearLayout explainView;
+    private Button playButton;
 
     private Context context;
     private ArrayList<BrainSegment> learnedSegments;
@@ -40,7 +41,7 @@ public class QuizController extends AbstractController {
     private List<BrainSegment> segments;
 
     private BrainSegment checkedSegment;
-    private TextView quizTitle;
+    private FrameLayout quizView;
 
     public QuizController(Context context)
     {
@@ -48,6 +49,8 @@ public class QuizController extends AbstractController {
 
         inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        sidebar = (LinearLayout) inflater.inflate(R.layout.quiz_sidebar, null);
+        sidebarOverlay = (FrameLayout) sidebar.findViewById(R.id.sidebar);
     }
 
     @Override
@@ -55,34 +58,36 @@ public class QuizController extends AbstractController {
     {
         mainOverlay.removeAllViews();
 
-        final FrameLayout quizView = (FrameLayout) inflater.inflate(R.layout.quiz_screen, null);
+        quizView = (FrameLayout) inflater.inflate(R.layout.quiz_screen, null);
         assert quizView != null;
 
         labelOverlay = (FrameLayout) quizView.findViewById(R.id.quiz_overlay);
         Labels.setFrameLayout(labelOverlay);
 
+        final TextView quizTitle = (TextView) quizView.findViewById(R.id.quiz_intro);
+
         mainOverlay.addView(quizView);
 
-//        quizTitle = (TextView) mainOverlay.findViewById(R.id.question_title);
-        quizTitle.setText("Press play to start quizzing!");
-
-        quizButton = (Button) quizView.findViewById(R.id.play_button);
-        quizButton.setOnClickListener(new Button.OnClickListener() {
+        playButton = (Button) quizView.findViewById(R.id.play_button);
+        playButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                quizButton.setVisibility(Button.INVISIBLE);
-
+                quizTitle.setVisibility(TextView.INVISIBLE);
+                playButton.setVisibility(Button.INVISIBLE);
                 startQuiz();
             }
         });
+
+        BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
+        BrainModel.smoothZoom(0.5f, 400);
+        BrainModel.setLabelsToDisplay(true);
     }
 
     @Override
     public void unloadView()
     {
         mainOverlay.removeAllViews();
-        Labels.setFrameLayout(mainOverlay);
         learnedSegments = new ArrayList<BrainSegment>();
     }
 
@@ -95,9 +100,20 @@ public class QuizController extends AbstractController {
 
         BrainModel.smoothMoveToGeneric(BrainModel.sidePosition, 0, 400);
         BrainModel.smoothZoom(0.25f, 400);
-        BrainModel.setLabelsToDisplay(true);
+        showExplainView(
+                "Welcome to quiz mode!",
+                "We'll start by teaching you about two different sections of the brain, then ask you a question.",
+                "Get started!",
+                null,
+                new Button.OnClickListener() {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        learnNewSegment(false);
+                    }
+                },
+                null);
 
-        learnNewSegment(false);
     }
 
     // shows the user a segment of the brain they have not yet seen
@@ -122,12 +138,12 @@ public class QuizController extends AbstractController {
 
             if (lastSegment)
             {
-                quizButton.setText("Test me!");
-                quizButton.setOnClickListener(new Button.OnClickListener() {
+                playButton.setText("Test me!");
+                playButton.setOnClickListener(new Button.OnClickListener() {
                     @Override
                     public void onClick(View v)
                     {
-                        quizButton.setVisibility(Button.INVISIBLE);
+                        playButton.setVisibility(Button.INVISIBLE);
                         labelOverlay.removeAllViews();
                         startTest();
                     }
@@ -135,8 +151,8 @@ public class QuizController extends AbstractController {
             }
             else
             {
-                quizButton.setText("Next Segment...");
-                quizButton.setOnClickListener(new Button.OnClickListener() {
+                playButton.setText("Next Segment...");
+                playButton.setOnClickListener(new Button.OnClickListener() {
                     @Override
                     public void onClick(View v)
                     {
@@ -144,7 +160,10 @@ public class QuizController extends AbstractController {
                     }
                 });
             }
-            quizButton.setVisibility(Button.VISIBLE);
+            playButton.setVisibility(Button.VISIBLE);
+
+            mainOverlay.removeAllViews();
+            mainOverlay.addView(quizView);
 
             Labels.displayLabel(newSegment.getName());
 
@@ -192,7 +211,6 @@ public class QuizController extends AbstractController {
             }
         }
 
-        // TODO: make it work when there are no unique tasks
         if (testSegment != null)
         {
             String questionTask = "Which section of the brain is responsible for " + testTask + "?";
@@ -228,6 +246,7 @@ public class QuizController extends AbstractController {
             for (RadioButton radioButton : buttonsList)
                 buttonsGroup.addView(radioButton);
 
+            Button quizButton = (Button) optionsLayout.findViewById(R.id.submit_button);
             quizButton.setText("Submit");
             quizButton.setVisibility(Button.VISIBLE);
 
@@ -242,10 +261,25 @@ public class QuizController extends AbstractController {
                     {
                         if (checkedSegment == finalTestSegment)
                         {
-                            Toast.makeText(context, "Well done, that's right!", Toast.LENGTH_SHORT).show();
                             testedTasks.add(finalTestTask);
                             checkedSegment = null;
-                            learnNewSegment(true);
+                            showExplainView(
+                                    "Well done!",
+                                    "The " + finalTestSegment.getTitle() + " is responsible for " + finalTestTask + ".",
+                                    "< Keep Testing",
+                                    "Continue Learning >",
+                                    new Button.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v)
+                                        {startTest();
+                                        }
+                                    },
+                                    new Button.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v)
+                                        {learnNewSegment(true);
+                                        }
+                                    });
                         }
                         else
                         {
@@ -261,8 +295,70 @@ public class QuizController extends AbstractController {
             });
 
             questionsList.addView(buttonsGroup);
-            labelOverlay.addView(optionsLayout);
+            sidebarOverlay.removeAllViews();
+            sidebarOverlay.addView(optionsLayout);
+            mainOverlay.removeAllViews();
+            mainOverlay.addView(sidebar);
         }
+        else
+        {
+            showExplainView(
+                    "Well done!",
+                    "You've learnt everything in about those sections of the brain.",
+                    "Continue Learning >",
+                    null,
+                    new Button.OnClickListener() {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            learnNewSegment(true);
+                        }
+                    },
+                    null);
+        }
+    }
+
+    private void showExplainView(String top,
+                                 String middle,
+                                 String leftButtonTitle,
+                                 String rightButtonTitle,
+                                 Button.OnClickListener leftButtonListener,
+                                 Button.OnClickListener rightButtonListener)
+    {
+        if (explainView == null)
+            explainView = (LinearLayout) inflater.inflate(R.layout.quiz_explain_view, null);
+
+        final TextView topText = (TextView) explainView.findViewById(R.id.quiz_explain_top);
+        final TextView middleText = (TextView) explainView.findViewById(R.id.quiz_explain_middle);
+        final Button leftButton = (Button) explainView.findViewById(R.id.quiz_button_left);
+        final Button rightButton = (Button) explainView.findViewById(R.id.quiz_button_right);
+
+        topText.setText(top);
+        middleText.setText(middle);
+
+        leftButton.setVisibility(Button.VISIBLE);
+        rightButton.setVisibility(Button.VISIBLE);
+
+        if (leftButtonTitle == null)
+            leftButton.setVisibility(Button.GONE);
+        else
+        {
+            leftButton.setText(leftButtonTitle);
+            leftButton.setOnClickListener(leftButtonListener);
+        }
+
+        if (rightButtonTitle == null)
+            rightButton.setVisibility(Button.GONE);
+        else
+        {
+            rightButton.setText(rightButtonTitle);
+            rightButton.setOnClickListener(rightButtonListener);
+        }
+
+        mainOverlay.removeAllViews();
+        mainOverlay.addView(sidebar);
+        sidebarOverlay.removeAllViews();
+        sidebarOverlay.addView(explainView);
     }
 
     @Override
@@ -280,10 +376,5 @@ public class QuizController extends AbstractController {
     public void setMainOverlay(FrameLayout mainOverlay)
     {
         this.mainOverlay = mainOverlay;
-    }
-
-    public void setOverlayLabel(TextView overlayLabel)
-    {
-        this.quizTitle = overlayLabel;
     }
 }

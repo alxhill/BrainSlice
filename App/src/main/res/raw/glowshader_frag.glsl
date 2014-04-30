@@ -11,37 +11,6 @@ uniform int is_back;
 
 void main()
 {
-	/*vec4 background_col = vec4(0.1, 0.1, 0.3, 1.0);
-	vec4 glow_col = vec4(1.0, 1.0, 1.0, 1.0);
-
-	vec2 dist = gl_FragCoord.xy - centre.xy;
-	
-	dist.y += 20.0;*/
-	
-	//float size = 300.0;
-	
-	/*int isize = sw < sh ? sw : sh;
-	
-	float fsize = float(isize);
-	
-	float size = fsize / 1.0;
-		
-	float len = length(dist);
-	
-	len /= size;
-	
-	//len = 1.0 - len;
-	
-	if(len < 0.0)
-		len = 0.0;
-		
-	if(len > 1.0)
-		len = 1.0;
-	
-	len *= len;
-	
-	vec4 col = len*glow_col + (1.0-len)*background_col;*/
-	
 	vec2 dist = gl_FragCoord.xy - centre.xy;
 	dist.y += 20.0;
 	
@@ -62,8 +31,7 @@ void main()
 	val /= 1.0;
 	
 	vec4 col = vec4(1.0/1.2, 1.0/1.2,  1.0/1.2, 1.0);
-	
-	vec4 background_col = vec4(0.2, 0.2, 0.3, 1.0);
+	vec4 background_col = vec4(30.0/255.0, 87.0/255.0, 153.0/255.0, 1.0);
 	
 	vec4 fcol = vec4(col.xyz*val + background_col.xyz*(1.0-val), 1.0);
 

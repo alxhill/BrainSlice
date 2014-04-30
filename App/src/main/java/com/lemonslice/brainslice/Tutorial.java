@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -134,6 +135,12 @@ public class Tutorial {
         fadeOut.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
+                mViewPager.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        return false;
+                    }
+                });
             }
 
             @Override
@@ -202,7 +209,7 @@ class NewObjectFragment extends Fragment {
         {
             case 1: rootView = inflater.inflate(R.layout.card_left, container, false); break;
             case 2: rootView = inflater.inflate(R.layout.card_first, container, false);
-                Tutorial.comicNeue((TextView) rootView.findViewById(R.id.textView2),30);
+                Tutorial.comicNeue((TextView) rootView.findViewById(R.id.textView2), 30);
                 Tutorial.comicNeue((TextView) rootView.findViewById(R.id.textView3),30);
                 break;
             case 3: rootView = inflater.inflate(R.layout.card2, container, false); break;

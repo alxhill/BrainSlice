@@ -32,6 +32,26 @@
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textSize="24sp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/label_overlay"/>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="false"
+        android:id="@+id/quiz_overlay" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="false"
+        android:id="@+id/homescreen_overlay" />
+
     <LinearLayout
         android:id="@+id/hs_icon_holder"
         android:layout_width="wrap_content"
@@ -39,7 +59,7 @@
         android:orientation="horizontal"
         android:layout_gravity="bottom|left"
         android:padding="10dp"
-        android:layout_marginLeft="30dp">
+        android:layout_marginLeft="20dp">
 
         <TextView
             android:id="@+id/about_button"
@@ -76,20 +96,11 @@
             android:gravity="center"
             android:text="@string/volume_icon"
             android:layout_height="50dp"
-            android:layout_width="25dp"
-            android:layout_marginRight="3dp"
+            android:layout_width="35dp"
             android:textSize="25sp"
             android:textColor="#fff"/>
 
     </LinearLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="24sp"
-        android:layout_marginTop="10dp"
-        android:id="@+id/label_overlay"/>
 
     <FrameLayout
         android:id="@+id/overlay_layout"
@@ -98,18 +109,6 @@
         android:clickable="false">
 
     </FrameLayout>
-
-    <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:clickable="false"
-        android:id="@+id/quiz_overlay" />
-
-    <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:clickable="false"
-        android:id="@+id/homescreen_overlay" />
 
     <FrameLayout
         android:id="@+id/tutorial_overlay"

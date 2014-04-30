@@ -142,10 +142,10 @@ public class MainActivity extends FragmentActivity implements EventListener {
         quizController.setOverlayLabel(overlayLabel);
 
         // set up the button events
-        iconifyView(R.id.help_button, 25);
-        iconifyView(R.id.settings_button, 25);
-        iconifyView(R.id.about_button,25);
-        soundButton = iconifyView(R.id.volume_button, 25);
+        iconifyView(R.id.help_button, 35);
+        iconifyView(R.id.settings_button, 35);
+        iconifyView(R.id.about_button,35);
+        soundButton = iconifyView(R.id.volume_button, 35);
 
         addButtonListener(R.id.help_button, "help");
         addButtonListener(R.id.settings_button, "settings");

@@ -72,10 +72,10 @@ public class HomeScreen {
         LinearLayout icon_holder = (LinearLayout)homeScreen.findViewById(R.id.hs_icon_holder);
 
 
-        iconifyView(R.id.hs_help_button_icon, 25);
-        iconifyView(R.id.hs_settings_button_icon, 25);
-        iconifyView(R.id.hs_volume_button, 25);
-        iconifyView(R.id.hs_about_button,25);
+        //iconifyView(R.id.hs_help_button_icon, 25);
+        //iconifyView(R.id.hs_settings_button_icon, 25);
+        //iconifyView(R.id.hs_volume_button, 25);
+        //iconifyView(R.id.hs_about_button,25);
 
         comicNeue(R.id.TextViewLearn,25);
         comicNeue(R.id.TextViewQuiz,25);

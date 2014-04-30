@@ -60,52 +60,6 @@ public class SplashScreen
         final ImageView lemon = (ImageView)splashScreen.findViewById(R.id.lemon);
         final TextView teamName = (TextView)splashScreen.findViewById(R.id.team_lemon_slice);
 
-//        lemon.setVisibility(View.INVISIBLE);
-//        teamName.setVisibility(View.INVISIBLE);
-
-        Log.d("JAMES", "Here???");
-
-//        //scale from 0 to 1.2
-//        final Animation scaleLemon = AnimationUtils.loadAnimation(context, R.anim.scale_up);
-//        final Animation scaleTeamName = AnimationUtils.loadAnimation(context, R.anim.scale_up);
-//        scaleLemon.setFillAfter(true);
-//        scaleTeamName.setFillAfter(true);
-//        scaleLemon.setInterpolator(new AccelerateDecelerateInterpolator());
-//        scaleTeamName.setInterpolator(new AccelerateDecelerateInterpolator());
-//
-//        //scale from 1.2 to 1
-//        final Animation scaleBack = AnimationUtils.loadAnimation(context, R.anim.scale_back);
-//        final Animation scaleBackText = AnimationUtils.loadAnimation(context, R.anim.scale_back);
-//        scaleBack.setFillAfter(true);
-//        scaleBackText.setFillAfter(true);
-//
-//
-//
-//        scaleLemon.setAnimationListener(new MyAnimationListener(lemon) {
-//            @Override
-//            public void onAnimationEnd(Animation animation) {
-//                Log.d("JAMES", "scale lemon up end");
-//                teamName.startAnimation(scaleTeamName);
-//                view.startAnimation(scaleBack);
-//            }
-//        });
-//        scaleTeamName.setAnimationListener(new MyAnimationListener(teamName) {
-//            @Override
-//            public void onAnimationEnd(Animation animation) {
-//                Log.d("JAMES", "scale text up end");
-//                view.startAnimation(scaleBackText);
-//            }
-//        });
-//
-//        scaleBackText.setAnimationListener(new MyAnimationListener(teamName) {
-//            @Override
-//            public void onAnimationEnd(Animation animation) {
-//                SplashScreen.finished_splash();
-//            }
-//        });
-
-//        scaleLemon.setStartOffset(3000);
-
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override

@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/ColourCodingSetting"
-        android:id="@+id/colourSwitch"
+        android:id="@+id/colourSwitchDEPRICATED"
         android:textSize="18sp"
         android:layout_marginBottom="20dp" />
 
@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/XRayModeSetting"
-        android:id="@+id/xRaySwitch"
+        android:id="@+id/xRaySwitchDEPRICATED"
         android:checked="true"
         android:textSize="18sp" />
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.lemonslice.brainslice;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -62,6 +63,8 @@ public class SplashScreen
         lemon.setVisibility(View.INVISIBLE);
         teamName.setVisibility(View.INVISIBLE);
 
+        Log.d("JAMES", "Here???");
+
         //scale from 0 to 1.2
         final Animation scaleLemon = AnimationUtils.loadAnimation(context, R.anim.scale_up);
         final Animation scaleTeamName = AnimationUtils.loadAnimation(context, R.anim.scale_up);
@@ -74,11 +77,6 @@ public class SplashScreen
         final Animation scaleBack = AnimationUtils.loadAnimation(context, R.anim.scale_back);
         scaleBack.setFillAfter(true);
 
-        final Animation scaleExitLemon = AnimationUtils.loadAnimation(context, R.anim.scale_up_small);
-        final Animation scaleExitTeamName = AnimationUtils.loadAnimation(context, R.anim.scale_up_small);
-        scaleExitLemon.setFillAfter(true);
-        scaleExitTeamName.setFillAfter(true);
-
         final Animation scaleDown = AnimationUtils.loadAnimation(context, R.anim.scale_down);
         scaleDown.setFillAfter(true);
         scaleDown.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -86,6 +84,7 @@ public class SplashScreen
         scaleLemon.setAnimationListener(new MyAnimationListener(lemon) {
             @Override
             public void onAnimationEnd(Animation animation) {
+                Log.d("JAMES", "scale lemon up end");
                 teamName.startAnimation(scaleTeamName);
                 view.startAnimation(scaleBack);
             }
@@ -93,50 +92,27 @@ public class SplashScreen
         scaleTeamName.setAnimationListener(new MyAnimationListener(teamName) {
             @Override
             public void onAnimationEnd(Animation animation) {
+                Log.d("JAMES", "scale text up end");
                 view.startAnimation(scaleBack);
             }
         });
-        scaleExitLemon.setAnimationListener(new MyAnimationListener(lemon) {
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                view.startAnimation(scaleDown);
-            }
-        });
-        scaleExitTeamName.setAnimationListener(new MyAnimationListener(teamName) {
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                view.startAnimation(scaleDown);
-            }
-        });
+        Log.d("JAMES", "Before timer???");
 
-        //NOBODY LOOK AT THIS CODE!!!
-        //wait for screen orient ro load properly
-        //REPLACE WITH START TIME OFFSETS
-        new Timer().schedule(new TimerTask()
-        {
+        scaleLemon.setStartOffset(1000);
+
+        new Timer().schedule(new TimerTask() {
             @Override
-            public void run()
-            {
+            public void run() {
                 frameLayout.post(new Runnable() {
                     @Override
                     public void run() {
-                        lemon.startAnimation(scaleLemon);
-                        new Timer().schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                frameLayout.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        SplashScreen.finished_splash();
-                                    }
-                                });
-                            }
-                        }, 3000 /*Time for lemon animation*/);
-                        cancel();
+                        SplashScreen.finished_splash();
                     }
                 });
             }
-        }, 1000);
+        }, 4000 /*Time for lemon animation*/);
+
+        Log.d("JAMES", "End of function???");
     }
 }
 

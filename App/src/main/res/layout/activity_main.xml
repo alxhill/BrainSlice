@@ -1,10 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.lemonslice.brainslice.MainActivity"
     tools:ignore="MergeRootFrame"
-    android:background="@drawable/bk2">
+    >
 
 
     <android.opengl.GLSurfaceView android:id="@+id/openGlView"
@@ -81,6 +83,31 @@
             android:textSize="25sp"
             android:textColor="#fff"/>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:layout_gravity="bottom|right"
+        >
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Colour"
+            android:id="@+id/colourSwitch"
+            android:textSize="18sp"
+            android:layout_marginBottom="0dp" />
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="X-Ray"
+            android:id="@+id/xRaySwitch"
+            android:checked="true"
+            android:textSize="18sp" />
     </LinearLayout>
 
     <TextView

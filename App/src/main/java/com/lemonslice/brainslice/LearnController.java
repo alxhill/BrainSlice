@@ -59,9 +59,12 @@ public class LearnController extends AbstractController implements OnScaleGestur
     private ScaleGestureDetector scaleDetector = null;
     private GestureDetector gestureDetector = null;
 
+    private Context context;
+
 
     public LearnController(Context applicationContext)
     {
+        context = applicationContext;
         Events.register(this);
 
         //Resolution stuffs
@@ -80,17 +83,19 @@ public class LearnController extends AbstractController implements OnScaleGestur
             screenWidth = display.getWidth();
             screenHeight = display.getHeight();
         }
-        Log.d("res", "w " + screenWidth + " h " + screenHeight);
 
         //Initialise detectors
-        scaleDetector = new ScaleGestureDetector(applicationContext, this);
-        gestureDetector = new GestureDetector(applicationContext, this);
-        gestureDetector.setOnDoubleTapListener(this);
+//        scaleDetector = new ScaleGestureDetector(applicationContext, this);
+//        gestureDetector = new GestureDetector(applicationContext, this);
+//        gestureDetector.setOnDoubleTapListener(this);
     }
 
     @Override
     public void loadView()
     {
+        scaleDetector = new ScaleGestureDetector(context, this);
+        gestureDetector = new GestureDetector(context, this);
+        gestureDetector.setOnDoubleTapListener(this);
         BrainModel.onlyRotateY = false;
         velocityX = 0;
         velocityY = 0;
@@ -106,6 +111,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public void unloadView()
     {
+        scaleDetector = null;
+        gestureDetector = null;
         velocityX = 0;
         velocityY = 0;
         BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
@@ -274,12 +281,14 @@ public class LearnController extends AbstractController implements OnScaleGestur
     @Override
     public boolean touchEvent(MotionEvent me)
     {
-        scaleDetector.onTouchEvent(me);
-        if (scaleDetector.isInProgress())
-            return true;
+        if(scaleDetector != null){
+            scaleDetector.onTouchEvent(me);
+            if (scaleDetector.isInProgress())
+                return true;
 
-        if(me.getPointerCount() == 1)
-            gestureDetector.onTouchEvent(me);
+            if(me.getPointerCount() == 1)
+                gestureDetector.onTouchEvent(me);
+        }
 
         return true;
     }

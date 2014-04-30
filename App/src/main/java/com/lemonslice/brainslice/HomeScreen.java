@@ -45,6 +45,13 @@ public class HomeScreen {
 
         assert homeScreen != null;
 
+        homeScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                return;
+            }
+        });
+
         frameLayout.removeAllViews();
         frameLayout.addView(homeScreen);
 

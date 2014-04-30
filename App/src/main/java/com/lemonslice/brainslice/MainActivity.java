@@ -299,7 +299,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 baseController.unloadView();
                 BrainModel.disableDoubleTap = false;
                 learnController.loadView();
-                overlayingFrame.removeAllViews();
                 HomeScreen.hide();
                 baseController = learnController;
                 findViewById(R.id.info_button).setVisibility(View.VISIBLE);

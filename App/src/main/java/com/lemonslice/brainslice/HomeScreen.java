@@ -69,9 +69,9 @@ public class HomeScreen {
         iconifyView(R.id.hs_volume_button, 25);
         iconifyView(R.id.hs_about_button,25);
 
-        comicNeue(R.id.TextViewLearn,30);
-        comicNeue(R.id.TextViewQuiz,30);
-        comicNeue(R.id.TextViewWindow,30);
+        comicNeue(R.id.TextViewLearn,25);
+        comicNeue(R.id.TextViewQuiz,25);
+        comicNeue(R.id.TextViewWindow,25);
 
         /*
         btn1.setVisibility(View.INVISIBLE);
@@ -151,7 +151,7 @@ public class HomeScreen {
     {
         TextView textView = (TextView) frameLayout.findViewById(id);
         if (comicNeue == null)
-            comicNeue = Typeface.createFromAsset(Tutorial.context.getAssets(), "fonts/ComicNeue-Angular-Regular.ttf");
+            comicNeue = Typeface.createFromAsset(Tutorial.context.getAssets(), "fonts/ComicNeue-Angular-Bold.ttf");
 
         textView.setTypeface(comicNeue);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);

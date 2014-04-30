@@ -151,7 +151,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
         addButtonListener(R.id.settings_button, "settings");
         addButtonListener(soundButton, "volume");
         addButtonListener(R.id.home_button, "home");
-        addButtonListener(R.id.info_button, "info");
         addButtonListener(R.id.about_button,"about");
 
         // check for internet connectivity and load the data
@@ -301,7 +300,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 learnController.loadView();
                 HomeScreen.hide();
                 baseController = learnController;
-                findViewById(R.id.info_button).setVisibility(View.VISIBLE);
             }
             else if (tapType.equals("visualise"))
             {
@@ -311,7 +309,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
                 baseController.unloadView();
                 baseController = visualiseController;
-                findViewById(R.id.info_button).setVisibility(View.INVISIBLE);
             }
             else if (tapType.equals("home"))
             {
@@ -321,10 +318,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 overlayingFrame.removeAllViews();
                 HomeScreen.show();
             }
-            else if (tapType.equals("info"))
-            {
-                BrainModel.infoTapped();
-            }
             else if (tapType.equals("quiz"))
             {
                 baseController.unloadView();
@@ -332,7 +325,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 HomeScreen.hide();
                 quizController.loadView();
                 baseController = quizController;
-                findViewById(R.id.info_button).setVisibility(View.VISIBLE);
             }
             else if (tapType.equals("calibrate"))
             {

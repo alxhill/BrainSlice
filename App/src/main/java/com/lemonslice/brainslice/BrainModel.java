@@ -283,12 +283,20 @@ public class BrainModel {
         if(xRayMode)
         {
             objs[3].setShader(brainShad);
+//            subCortical[0].setShader(brainShad);
+//            subCortical[1].setShader(brainShad);
             subCortical[2].setShader(brainShad);
+//            subCortical[3].setShader(brainShad);
+//            subCortical[5].setShader(brainShad);
         }
         else
         {
             objs[3].setShader(shineyShader);
+//            subCortical[0].setShader(shineyShader);
+//            subCortical[1].setShader(shineyShader);
             subCortical[2].setShader(shineyShader);
+//            subCortical[3].setShader(shineyShader);
+//            subCortical[5].setShader(shineyShader);
         }
     }
 
@@ -534,10 +542,10 @@ public class BrainModel {
 
         for(int i=0; i<subCortical.length; i++)
         {
-            //if(i == 4)
-            //    continue;
             if(i == 2)
                 continue;
+//            if(i == 0 || i == 1 || i == 2 || i == 3)
+//                continue;
 
             world.addObject(subCortical[i]);
         }
@@ -572,7 +580,11 @@ public class BrainModel {
                 world.addObject(sphere);
         }
 
+//        world.addObject(subCortical[0]);
+//        world.addObject(subCortical[1]);
         world.addObject(subCortical[2]);
+//        world.addObject(subCortical[3]);
+        //world.addObject(subCortical[5]);
         world.addObject(objs[3]);
     }
     public static void removeAll(World world)

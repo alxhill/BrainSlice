@@ -12,6 +12,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="About"
-        android:id="@+id/textView" />
+        android:text="BrainSlice v1.0"
+        android:id="@+id/textView"
+        android:textSize="20sp"
+        android:layout_marginBottom="10dp"
+        android:singleLine="false" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="BrainSlice is an app to teach at children and adults alike about the brain."
+        android:id="@+id/textView2"
+        android:textSize="15sp"
+        android:layout_marginBottom="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="3D Brain Model by A. M. Winkler is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License. The original work can be found at http://brainder.ord/brain-for-blender"
+        android:id="@+id/textView3"
+        android:textSize="10sp" />
 </LinearLayout>

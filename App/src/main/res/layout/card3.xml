@@ -8,7 +8,7 @@
     android:layout_margin="20dp"
     android:layout_gravity="center"
     android:paddingLeft="20dp"
-    android:paddingTop="10dp"
+    android:paddingTop="0dp"
     android:paddingRight="20dp"
     android:paddingBottom="30dp">
     <LinearLayout
@@ -17,24 +17,54 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_gravity="center"
-        android:background="@drawable/card_background_blue">
+        android:background="@drawable/card_background_blue"
+        android:gravity="center"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:text="@string/card3text1"
+            android:textSize="30sp"
+            android:textColor="#fff"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/textView"
+            android:layout_weight="1"/>
+
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:text="3"
-                android:textSize="80sp"
-                android:padding="20dp"
-                android:textColor="#ecf0f1"
-                android:layout_gravity="center"
-                android:gravity="center" />
+            android:layout_height="0dp"
+            android:layout_weight="3"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingRight="10dp"
+                android:layout_weight="5">
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/card3text2"
+                    android:textAlignment="center"
+                    android:paddingBottom="20dp"/>
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/card3text3"
+                    android:textAlignment="center"/>
+            </LinearLayout>
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/phone_rotate"
+                android:layout_weight="1"/>
         </LinearLayout>
-    </LinearLayout>
 
+
+    </LinearLayout>
 </LinearLayout>

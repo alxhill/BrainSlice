@@ -66,7 +66,15 @@
                 android:layout_marginRight="3dp"
                 android:textSize="25sp"
                 android:textColor="#fff"/>
-            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:src="@drawable/title"
+            android:layout_gravity="center" />
 
         <LinearLayout
             android:id="@+id/hs_button_holder"

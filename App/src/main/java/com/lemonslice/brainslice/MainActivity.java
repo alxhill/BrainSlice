@@ -35,6 +35,7 @@ import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
 
+import java.io.FileReader;
 import java.io.IOException;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -66,6 +67,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
     private FrameLayout overlayingFrame;
     private FrameLayout tutorialFrame;
     private FrameLayout quizFrame;
+    private FrameLayout homescreenFrame;
     private Typeface fontAwesome;
 
     public static GLSurfaceView sMGLView;
@@ -79,6 +81,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
         tutorialFrame = (FrameLayout)findViewById(R.id.tutorial_overlay);
+        homescreenFrame = (FrameLayout)findViewById(R.id.homescreen_overlay);
         hideSystemBars();
 
         MyRenderer renderer = new MyRenderer();
@@ -95,7 +98,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         Tutorial.setContext(this);
         Tutorial.setFrameLayout(tutorialFrame);
         HomeScreen.setContext(this);
-        HomeScreen.setFrameLayout(overlayingFrame);
+        HomeScreen.setFrameLayout(homescreenFrame);
 
         VisualiseController.setContext(this);
 
@@ -155,9 +158,10 @@ public class MainActivity extends FragmentActivity implements EventListener {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         boolean loaded = false;
+        Log.d("LOADDATA", "attempting network loading");
         if (networkInfo != null && networkInfo.isConnected())
             loaded = BrainInfo.loadData();
-
+        Log.d("LOADDATA", "attempting local loading " + loaded);
         // if there's no internet or the loading failed, use the local data
         if (!loaded)
             BrainInfo.readData(getResources());
@@ -226,7 +230,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
         Logger.log("onPause");
         super.onPause();
         mGLView.onPause();
-        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     @Override
@@ -242,6 +245,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
     {
         Logger.log("onStop");
         super.onStop();
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     // activities are sent touch events,
@@ -295,7 +299,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 baseController.unloadView();
                 BrainModel.disableDoubleTap = false;
                 learnController.loadView();
-                //overlayingFrame.removeAllViews();
                 HomeScreen.hide();
                 baseController = learnController;
                 findViewById(R.id.info_button).setVisibility(View.VISIBLE);
@@ -304,6 +307,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
             {
                 // overlays the calibrate screen, only loads the visualise controller
                 // after the calibrate button has been pressed.
+                HomeScreen.hide();
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
                 baseController.unloadView();
                 baseController = visualiseController;
@@ -314,6 +318,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 baseController = learnController;
                 //BrainModel.onlyRotateY = true;
                 quizFrame.removeAllViews();
+                overlayingFrame.removeAllViews();
                 HomeScreen.show();
             }
             else if (tapType.equals("info"))
@@ -349,7 +354,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
             }
             else if (tapType.equals("help"))
             {
-                Tutorial.show();
+                Tutorial.show(1,false);
             }
             else if (tapType.equals("settings"))
             {

@@ -6,11 +6,10 @@
     android:id="@+id/home_screen"
     android:clipChildren="false"
     android:clipToPadding="false"
-    >
+    android:background="@drawable/homescreen_background">
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="#3498db"
         android:orientation="vertical"
         android:id="@+id/hs_holder"
         android:clipChildren="false"
@@ -84,8 +83,8 @@
             android:layout_gravity="center_horizontal"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:gravity="bottom"
-            android:layout_marginBottom="20dp">
+            android:layout_marginTop="15dp"
+            android:gravity="center_vertical">
 
             <LinearLayout
                 android:layout_width="240dp"
@@ -101,7 +100,7 @@
                     android:layout_height="fill_parent"
                     android:text="Learn Mode"
                     android:textSize="25sp"
-                    android:textColor="#fff"
+                    android:textColor="#ecf0f1"
                     android:gravity="center_vertical|center_horizontal" />
                 </LinearLayout>
 
@@ -121,7 +120,7 @@
                     android:layout_height="fill_parent"
                     android:text="Window Mode"
                     android:textSize="25sp"
-                    android:textColor="#fff"
+                    android:textColor="#ecf0f1"
                     android:gravity="center_vertical|center_horizontal" />
             </LinearLayout>
 
@@ -141,7 +140,7 @@
                     android:layout_height="fill_parent"
                     android:text="Brain Quiz"
                     android:textSize="25sp"
-                    android:textColor="#fff"
+                    android:textColor="#ecf0f1"
                     android:gravity="center_vertical|center_horizontal" />
             </LinearLayout>
         </LinearLayout>

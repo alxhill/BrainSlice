@@ -96,7 +96,7 @@ public class BrainInfo
 
     public static boolean parseJSON(JsonReader reader) throws IOException
     {
-        Log.d("BRAININFO", "opened reader");
+        Log.d("BRAININFO", "opened JSON reader");
 
         // this section parses the data based on what it expects to find.
         reader.beginObject();
@@ -166,7 +166,7 @@ public class BrainInfo
         }
         reader.endObject();
         reader.close();
-        return false;
+        return true;
     }
 
     private static class BrainApiTask extends AsyncTask<String, String, Boolean> {

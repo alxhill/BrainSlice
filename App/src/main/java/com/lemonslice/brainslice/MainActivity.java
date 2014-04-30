@@ -50,6 +50,9 @@ public class MainActivity extends FragmentActivity implements EventListener {
     private VisualiseController visualiseController;
     QuizController quizController;
 
+    private View infoButton;
+    private View overlayLabel;
+
     private TextView soundButton;
 
     private AudioManager mAudioManager;
@@ -79,6 +82,10 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         overlayingFrame = (FrameLayout)findViewById(R.id.overlay_layout);
         tutorialFrame = (FrameLayout)findViewById(R.id.tutorial_overlay);
+
+        infoButton = findViewById(R.id.info_button);
+        overlayLabel = findViewById(R.id.label_overlay);
+
         hideSystemBars();
 
         MyRenderer renderer = new MyRenderer();
@@ -136,7 +143,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
         quizFrame = (FrameLayout)findViewById(R.id.quiz_overlay);
         quizController = new QuizController(getApplicationContext());
         quizController.setMainOverlay(quizFrame);
-        quizController.setOverlayLabel(overlayLabel);
 
         // set up the button events
         iconifyView(R.id.help_button, 25);
@@ -158,7 +164,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         Log.d("LOADDATA", "attempting network loading");
         if (networkInfo != null && networkInfo.isConnected())
             loaded = BrainInfo.loadData();
-        Log.d("LOADDATA", "attempting local loading " + loaded);
+        Log.d("LOADDATA", loaded ? "network loading succeeded" : "attempting local loading ");
         // if there's no internet or the loading failed, use the local data
         if (!loaded)
             BrainInfo.readData(getResources());
@@ -299,7 +305,9 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 //overlayingFrame.removeAllViews();
                 HomeScreen.hide();
                 baseController = learnController;
-                findViewById(R.id.info_button).setVisibility(View.VISIBLE);
+                Labels.setFrameLayout(overlayingFrame);
+                infoButton.setVisibility(View.VISIBLE);
+                overlayLabel.setVisibility(View.VISIBLE);
             }
             else if (tapType.equals("visualise"))
             {
@@ -308,7 +316,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
                 baseController.unloadView();
                 baseController = visualiseController;
-                findViewById(R.id.info_button).setVisibility(View.INVISIBLE);
+                infoButton.setVisibility(View.INVISIBLE);
+                overlayLabel.setVisibility(View.VISIBLE);
             }
             else if (tapType.equals("home"))
             {
@@ -328,7 +337,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 HomeScreen.hide();
                 quizController.loadView();
                 baseController = quizController;
-                findViewById(R.id.info_button).setVisibility(View.VISIBLE);
+                infoButton.setVisibility(View.INVISIBLE);
+                overlayLabel.setVisibility(View.INVISIBLE);
             }
             else if (tapType.equals("calibrate"))
             {

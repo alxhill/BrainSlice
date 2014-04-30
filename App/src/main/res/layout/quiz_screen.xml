@@ -4,13 +4,24 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:gravity="center">
+
+    <TextView
+        android:layout_gravity="center_horizontal|top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:id="@+id/quiz_intro"
+        android:textSize="20sp"
+        android:text="Press play to go on a tour of of the brain!"/>
+
     <Button
         android:layout_gravity="center|bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Play Now!"
         android:id="@+id/play_button"
-        android:layout_marginBottom="60sp"/>
+        android:layout_marginBottom="60dp"
+        android:padding="20dp"/>
 
     <FrameLayout
         android:id="@+id/quiz_overlay"

@@ -46,7 +46,7 @@ public class Tutorial {
 
     public static boolean showMainMenu;
     private static Typeface comicNeue;
-
+    private static Typeface fontAwesome;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static void show(int startPage, final boolean showMainMenu) {
@@ -158,6 +158,13 @@ public class Tutorial {
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
         return textView;
     }
+
+    public static void fontAwesome(TextView tv) {
+        if(fontAwesome == null)
+            fontAwesome = Typeface.createFromAsset(Tutorial.context.getAssets(), "fonts/fontawesome-webfont.ttf");
+
+        tv.setTypeface(fontAwesome);
+    }
 }
 
 class CollectionPagerAdapter extends FragmentStatePagerAdapter {
@@ -208,7 +215,10 @@ class NewObjectFragment extends Fragment {
             case 3: rootView = inflater.inflate(R.layout.card2, container, false); break;
             case 4: rootView = inflater.inflate(R.layout.card3, container, false); break;
             case 5: rootView = inflater.inflate(R.layout.card4, container, false); break;
-            case 6: rootView = inflater.inflate(R.layout.card5, container, false); break;
+            case 6: rootView = inflater.inflate(R.layout.card5, container, false);
+                Tutorial.fontAwesome((TextView) rootView.findViewById(R.id.settings_icon_text));
+                Tutorial.fontAwesome((TextView) rootView.findViewById(R.id.volume_button_text));
+                break;
             case 7: rootView = inflater.inflate(R.layout.card_final, container, false); break;
             default: break;
         }

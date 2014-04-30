@@ -28,6 +28,16 @@
             >
 
             <TextView
+                android:id="@+id/hs_about_button"
+                android:gravity="center"
+                android:text="@string/about_icon"
+                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="10dp"
+                android:textSize="25sp"
+                android:textColor="#fff" />
+
+            <TextView
                 android:id="@+id/hs_settings_button_icon"
                 android:gravity="center"
                 android:text="@string/settings_icon"

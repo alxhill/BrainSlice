@@ -66,6 +66,7 @@ public class HomeScreen {
         iconifyView(R.id.hs_help_button_icon, 25);
         iconifyView(R.id.hs_settings_button_icon, 25);
         iconifyView(R.id.hs_volume_button, 25);
+        iconifyView(R.id.hs_about_button,25);
 
         /*
         btn1.setVisibility(View.INVISIBLE);

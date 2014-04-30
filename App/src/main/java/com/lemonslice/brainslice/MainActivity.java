@@ -54,6 +54,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
     private AudioManager mAudioManager;
     private SettingsMenu mSettingsMenu;
+    private AboutDialog mAboutDialog;
 
     // 3D stuff
     private GLSurfaceView mGLView;
@@ -116,6 +117,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         mSettingsMenu = new SettingsMenu(this);
 
+        mAboutDialog = new AboutDialog(this);
+
         // set up listening for events
         Events.register(this);
 
@@ -138,6 +141,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         // set up the button events
         iconifyView(R.id.help_button, 25);
         iconifyView(R.id.settings_button, 25);
+        iconifyView(R.id.about_button,25);
         soundButton = iconifyView(R.id.volume_button, 25);
 
         addButtonListener(R.id.help_button, "help");
@@ -145,6 +149,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         addButtonListener(soundButton, "volume");
         addButtonListener(R.id.home_button, "home");
         addButtonListener(R.id.info_button, "info");
+        addButtonListener(R.id.about_button,"about");
 
         // check for internet connectivity and load the data
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -349,6 +354,10 @@ public class MainActivity extends FragmentActivity implements EventListener {
             else if (tapType.equals("settings"))
             {
                 mSettingsMenu.show();
+            }
+            else if (tapType.equals("about"))
+            {
+                mAboutDialog.show();
             }
         }
         else if (name.equals("data:loaded"))

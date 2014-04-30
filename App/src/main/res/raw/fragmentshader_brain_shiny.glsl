@@ -8,6 +8,12 @@ uniform int transparent;
 
 uniform vec3 cameraPos;
 
+uniform sampler2D textureUnit0;
+
+varying vec2 texCoord;
+
+uniform int is_colour;
+
 void main()
 {
     // Defining The Material Colors
@@ -46,6 +52,11 @@ void main()
 
     final_col = final_col / 3.0;
 
+    vec4 tex_col = texture2D(textureUnit0, texCoord);
+
     // Calculating The Final Color
-    gl_FragColor = vec4(final_col + aS*AmbientColor.xyz, 1.0);// + aS*AmbientColor;
+    if(is_colour == 1)
+        gl_FragColor = vec4(final_col + aS*AmbientColor.xyz, 1.0)*vec4(tex_col.xyz, 1.0)*1.2;// + aS*AmbientColor;
+    else
+        gl_FragColor = vec4(final_col + aS*AmbientColor.xyz, 1.0);
 }

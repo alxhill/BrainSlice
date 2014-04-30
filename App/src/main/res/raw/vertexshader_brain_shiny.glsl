@@ -17,9 +17,17 @@ uniform vec4 ambientColor;
 
 varying vec4 vertexColor;
 
+varying vec2 texCoord;
+uniform mat4 textureMatrix;
+
+attribute vec2 texture0;
+
 void main()
 {
     vertexColor = ambientColor + additionalColor;
+
+    texCoord = (textureMatrix * vec4(texture0, 0.0, 1.0)).xy;
+
 
     // Transforming The Vertex
     gl_Position = modelViewProjectionMatrix * position;
@@ -43,4 +51,6 @@ void main()
     vertex_to_light_vector[2] = normalize(vec3(vec3(-100.0, 0.0, -200.0) - vertex_in_modelview_space.xyz));
 
     vertex_to_camera_vector = normalize(vec3(cameraPos - vertex_in_modelview_space.xyz));
+
+    //gl_TexCoord[0] = gl_MultiTexCoord0;
 }

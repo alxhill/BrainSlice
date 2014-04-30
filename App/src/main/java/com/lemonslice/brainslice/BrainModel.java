@@ -97,6 +97,7 @@ public class BrainModel {
                                 Loader.loadTextFile(res.openRawResource(R.raw.glowshader_frag)));
 
 
+        shineyShader.setUniform("is_colour", 0);
 
         shineyShader.setUniform("cameraPos", SimpleVector.create(0,0,0));
 
@@ -270,48 +271,25 @@ public class BrainModel {
 
     public static void setDisplayMode(boolean xRayMode, boolean colourMode)
     {
-        if(colourMode && xRayMode) {
-            for (Object3D obj : subCortical)
-            {
-                obj.clearShader();
-            }
-            for (Object3D obj : objs)
-            {
-                obj.clearShader();
-            }
-            objs[3].setShader(brainShad);
-            subCortical[2].setShader(brainShad);
-        } else if (colourMode) {
-            for (Object3D obj : objs)
-            {
-                obj.clearShader();
-            }
-            for (Object3D obj : subCortical)
-            {
-                obj.clearShader();
-            }
-        } else if (xRayMode) {
-            for (Object3D obj : objs)
-            {
-                obj.setShader(shineyShader);
-            }
-            for (Object3D obj : subCortical)
-            {
-                obj.setShader(shineyShader);
-            }
-            objs[3].setShader(brainShad);
-            subCortical[2].setShader(brainShad);
-        } else {
-            for (Object3D obj : objs)
-            {
-                obj.setShader(shineyShader);
-            }
-            for (Object3D obj : subCortical)
-            {
-                obj.setShader(shineyShader);
-            }
+        if(colourMode)
+        {
+            shineyShader.setUniform("is_colour", 1);
+        }
+        else
+        {
+            shineyShader.setUniform("is_colour", 0);
         }
 
+        if(xRayMode)
+        {
+            objs[3].setShader(brainShad);
+            subCortical[2].setShader(brainShad);
+        }
+        else
+        {
+            objs[3].setShader(shineyShader);
+            subCortical[2].setShader(shineyShader);
+        }
     }
 
     public static ArrayList<Object3D> getSpheres()

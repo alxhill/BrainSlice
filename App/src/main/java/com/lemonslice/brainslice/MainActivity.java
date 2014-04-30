@@ -227,7 +227,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
         Logger.log("onPause");
         super.onPause();
         mGLView.onPause();
-        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     @Override
@@ -243,6 +242,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
     {
         Logger.log("onStop");
         super.onStop();
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     // activities are sent touch events,
@@ -350,7 +350,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
             }
             else if (tapType.equals("help"))
             {
-                Tutorial.show();
+                Tutorial.show(1,false);
             }
             else if (tapType.equals("settings"))
             {

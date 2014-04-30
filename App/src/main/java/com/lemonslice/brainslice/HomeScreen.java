@@ -35,8 +35,9 @@ public class HomeScreen {
     private static Typeface fontAwesome;
     private GestureDetector gestureDetector = null;
 
-    private  static int btncount = 0;
+    private static int btncount = 0;
     private static Typeface comicNeue;
+    private static Typeface germanBeauty;
 
     public static void show() {
         btncount = 0;
@@ -79,6 +80,8 @@ public class HomeScreen {
         comicNeue(R.id.TextViewLearn,25);
         comicNeue(R.id.TextViewQuiz,25);
         comicNeue(R.id.TextViewWindow,25);
+
+        germanBeauty(R.id.MainMenuTitle, 80);
 
         /*
         btn1.setVisibility(View.INVISIBLE);
@@ -152,6 +155,17 @@ public class HomeScreen {
         view.setTypeface(fontAwesome);
         view.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
         return view;
+    }
+
+    public static TextView germanBeauty(int id, int size)
+    {
+        TextView textView = (TextView) frameLayout.findViewById(id);
+        if (germanBeauty == null)
+            germanBeauty = Typeface.createFromAsset(Tutorial.context.getAssets(), "fonts/German-Beauty.ttf");
+
+        textView.setTypeface(germanBeauty);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
+        return textView;
     }
 
     public static TextView comicNeue(int id, int size)

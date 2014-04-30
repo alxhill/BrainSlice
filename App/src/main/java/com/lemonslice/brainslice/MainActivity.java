@@ -92,7 +92,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         SplashScreen.setContext(this);
         SplashScreen.setFrameLayout(overlayingFrame);
         SplashScreen.setRenderer(renderer);
-        SplashScreen.show();
+//        SplashScreen.show();
 
         Labels.setContext(this);
         Labels.setFrameLayout(overlayingFrame);
@@ -183,6 +183,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
             BrainInfo.readData(getResources());
 
         setZOnTop();
+
+        SplashScreen.show();
     }
 
     public static void setZOnTop()

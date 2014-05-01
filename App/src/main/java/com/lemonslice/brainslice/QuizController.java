@@ -69,6 +69,8 @@ public class QuizController extends AbstractController {
         mainOverlay.addView(quizView);
 
         playButton = (Button) quizView.findViewById(R.id.play_button);
+//        HomeScreen.comicNeue(playButton, 20);
+
         playButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -80,7 +82,8 @@ public class QuizController extends AbstractController {
         });
 
         BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
-        BrainModel.smoothZoom(0.5f, 400);
+        BrainModel.smoothRotateToFront();
+        BrainModel.smoothZoom(0.2f, 400);
         BrainModel.setLabelsToDisplay(true);
     }
 

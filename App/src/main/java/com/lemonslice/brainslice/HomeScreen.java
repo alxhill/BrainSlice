@@ -13,6 +13,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -129,6 +130,16 @@ public class HomeScreen {
         textView.setTypeface(germanBeauty);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
         return textView;
+    }
+
+    public static Button comicNeue(Button btn, int size)
+    {
+        if (comicNeue == null)
+            comicNeue = Typeface.createFromAsset(Tutorial.context.getAssets(), "fonts/ComicNeue-Angular-Bold.ttf");
+
+        btn.setTypeface(comicNeue);
+        btn.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
+        return btn;
     }
 
     public static TextView comicNeue(int id, int size)

@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="BrainSlice v1.0"
+        android:text="@string/App_name_version_number"
         android:id="@+id/textView"
         android:textSize="20sp"
         android:layout_marginBottom="10dp"
@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="BrainSlice is an app to teach at children and adults alike about the brain."
+        android:text="@string/About_description"
         android:id="@+id/textView2"
         android:textSize="15sp"
         android:layout_marginBottom="10dp" />

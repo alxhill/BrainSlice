@@ -195,7 +195,6 @@ class CollectionPagerAdapter extends FragmentStatePagerAdapter {
 }
 
 class NewObjectFragment extends Fragment {
-    static int resID;
     public static final String ARG_OBJECT = "object";
 
     @Override

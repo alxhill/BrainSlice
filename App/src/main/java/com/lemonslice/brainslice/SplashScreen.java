@@ -1,10 +1,8 @@
 package com.lemonslice.brainslice;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.FrameLayout;
 
 import java.util.Timer;
@@ -50,9 +48,7 @@ public class SplashScreen
         BrainModel.showBrain = false;
         BrainModel.disableDoubleTap = true;
         //inflate and show the xml loading screen
-        FrameLayout splashScreen = (FrameLayout)inflateView();
-        //final ImageView lemon = (ImageView)splashScreen.findViewById(R.id.lemon);
-        //final TextView teamName = (TextView)splashScreen.findViewById(R.id.team_lemon_slice);
+        inflateView();
 
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -67,21 +63,5 @@ public class SplashScreen
                 cancel();
             }
         }, 3000);
-
-        Log.d("JAMES", "End of function???");
-    }
-}
-
-class MyAnimationListener implements Animation.AnimationListener {
-    View view;
-    public MyAnimationListener(View view)
-    {
-        this.view = view;
-    }
-    public void onAnimationEnd(Animation animation) {
-    }
-    public void onAnimationRepeat(Animation animation) {
-    }
-    public void onAnimationStart(Animation animation) {
     }
 }

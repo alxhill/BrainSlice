@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 
 /**
  * Created by andy on 19/04/14.
+ * This file implements a very simple dialog to show the information about the app
  */
 public class AboutDialog {
 

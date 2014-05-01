@@ -289,7 +289,7 @@ public class BrainModel {
         }
         catch(InterruptedException e)
         {
-
+            // do nothing
         }
         finally
         {

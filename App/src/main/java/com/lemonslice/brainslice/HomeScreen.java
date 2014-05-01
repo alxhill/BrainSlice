@@ -63,7 +63,6 @@ public class HomeScreen {
 
         final Animation rotateSpiral = AnimationUtils.loadAnimation(context, R.anim.rotate);
         spiral.setDrawingCacheEnabled(true);
-        spiral.setDrawingCacheQuality(1);
         spiral.startAnimation(rotateSpiral);
 
 

@@ -2,18 +2,10 @@
 <resources>
 
     <string name="app_name">BrainSlice</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="learn_icon">&#xf0a6;</string>
-    <string name="visualise_icon">&#xf030;</string>
     <string name="help_icon">&#xf128;</string>
-    <string name="settings_icon">&#xf013;</string>
-    <string name="centre_icon">&#xf05b;</string>
     <string name="volume_icon">&#xf028;</string>
     <string name="volume_icon_mute">&#xf026;</string>
     <string name="about_icon">&#xf129;</string>
-    <string name="ColourCodingSetting">Colour coding</string>
-    <string name="XRayModeSetting">X-ray mode</string>
     <string name="welcome_message">Welcome to BrainSlice</string>
     <string name="card1text2">Swipe right to start the tutorial</string>
     <string name="card1text3">Swipe left to skip the tutorial</string>
@@ -38,5 +30,11 @@
     <string name="WindowMode">Window Mode</string>
     <string name="BrainQuiz">Brain Quiz</string>
     <string name="Quiz_Play_Button">Play!</string>
+    <string name="App_name_version_number">BrainSlice v1.0</string>
+    <string name="Quiz_intro_message">Press play to go on a tour of of the brain!</string>
+    <string name="About_description">BrainSlice is an app to teach at children and adults alike about the brain.</string>
+    <string name="Labels_default_value">Temporal Lobe</string>
+    <string name="Card_final_message">You\'re all set!</string>
+    <string name="Labels_content_default_value">No description recieved</string>
 
 </resources>

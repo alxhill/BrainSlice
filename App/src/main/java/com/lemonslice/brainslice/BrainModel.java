@@ -471,22 +471,31 @@ public class BrainModel {
         }
     }
 
-    public static void infoTapped()
+    public static String getSection(int maxDist)
     {
-        Log.d("BrainSlice","infoTapped");
-        if(!infoShowing && !disableDoubleTap)
+        SimpleVector camPos = BrainModel.getCamera().getPosition();
+        SimpleVector minPos = null;
+
+        ArrayList<Object3D> spheres = BrainModel.getSpheres();
+        String segmentName = null;
+
+        for (Object3D sphere : spheres)
         {
-            infoShowing = true;
-            smoothMoveToGeneric(sidePosition, 0, 400);
-            smoothZoom(0.25f,400);
-        }
-        else
-        {
-            if(!disableDoubleTap) {
-                infoShowing = false;
-                smoothMoveToGeneric(startPosition, 0, 400);
+            SimpleVector spherePos = sphere.getTransformedCenter();
+            if (minPos == null || minPos.distance(camPos) > spherePos.distance(camPos))
+            {
+                minPos = spherePos;
+                segmentName = sphere.getName();
             }
         }
+
+        if (segmentName == null) return null;
+
+        if (minPos.distance(camPos) > maxDist)
+            return "";
+
+        return segmentName;
+
     }
 
     public static void rotateToSegment(String name)

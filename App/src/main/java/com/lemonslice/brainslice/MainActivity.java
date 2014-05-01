@@ -357,6 +357,9 @@ public class MainActivity extends FragmentActivity implements EventListener {
                     baseController = quizController;
                     overlayLabel.setVisibility(View.GONE);
                     switchHolder.setVisibility(View.GONE);
+                    BrainModel.setDisplayMode(false, true);
+                    xRaySwitch.setChecked(false);
+                    colourSwitch.setChecked(true);
                     renderer.setShouldDraw(true);
                 }
             }

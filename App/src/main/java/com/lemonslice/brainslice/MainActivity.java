@@ -80,6 +80,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
     public static GLSurfaceView sMGLView;
     private View switchHolder;
+    private CheckBox colourSwitch;
+    private CheckBox xRaySwitch;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -161,8 +163,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
         // set up the switches on the visualise and learn views
         switchHolder = findViewById(R.id.switchHolder);
 
-        final CheckBox colourSwitch = (CheckBox)findViewById(R.id.colourSwitch);
-        final CheckBox xRaySwitch = (CheckBox)findViewById(R.id.xRaySwitch);
+        colourSwitch = (CheckBox)findViewById(R.id.colourSwitch);
+        xRaySwitch = (CheckBox)findViewById(R.id.xRaySwitch);
 
         colourSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -291,7 +293,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
             getWindow().getDecorView().setSystemUiVisibility(uiOptions);
             getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
                 @Override
-                public void onSystemUiVisibilityChange(int i) {
+                public void onSystemUiVisibilityChange(int i)
+                {
                     getWindow().getDecorView().setSystemUiVisibility(uiOptions);
                 }
             });
@@ -352,6 +355,8 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 baseController = quizController;
                 overlayLabel.setVisibility(View.GONE);
                 switchHolder.setVisibility(View.GONE);
+                colourSwitch.setChecked(true);
+                xRaySwitch.setChecked(false);
 
             }
             else if (tapType.equals("calibrate"))

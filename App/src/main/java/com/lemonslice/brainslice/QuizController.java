@@ -87,7 +87,6 @@ public class QuizController extends AbstractController {
         BrainModel.smoothZoom(0.25f, 400);
         BrainModel.setLabelsToDisplay(true);
         BrainModel.enableBackgroundGlow();
-        BrainModel.setDisplayMode(false, true);
     }
 
     @Override

@@ -50,7 +50,7 @@ public class SplashScreen
         BrainModel.showBrain = false;
         BrainModel.disableDoubleTap = true;
         //inflate and show the xml loading screen
-        //FrameLayout splashScreen = (FrameLayout)inflateView();
+        FrameLayout splashScreen = (FrameLayout)inflateView();
         //final ImageView lemon = (ImageView)splashScreen.findViewById(R.id.lemon);
         //final TextView teamName = (TextView)splashScreen.findViewById(R.id.team_lemon_slice);
 

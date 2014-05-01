@@ -96,7 +96,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         SplashScreen.setContext(this);
         SplashScreen.setFrameLayout(overlayingFrame);
-        SplashScreen.show();
+        //SplashScreen.show();
 
         Labels.setContext(this);
         Labels.setFrameLayout(overlayingFrame);

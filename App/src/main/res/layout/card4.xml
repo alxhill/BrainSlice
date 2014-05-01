@@ -31,33 +31,35 @@
             android:layout_weight="1"/>
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:layout_weight="5"
             android:orientation="horizontal"
             android:gravity="center_vertical">
-            <TextView
-                android:layout_weight="8"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text=""
-                android:layout_gravity="center_vertical"
-                android:paddingRight="0dp"
-                android:textAlignment="center"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-            <TextView
-                android:layout_weight="4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text=""
-                android:layout_gravity="center_horizontal"
-                android:paddingRight="20dp"
-                android:textAlignment="center"/>
+                android:orientation="vertical"
+                android:paddingRight="10dp"
+                android:layout_weight="5">
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/card4text2"
+                    android:textAlignment="center"
+                    android:paddingBottom="15dp"/>
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="@string/card4text3"
+                    android:textAlignment="center"/>
+            </LinearLayout>
+            <!--<ImageView-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/question_brain"-->
+                <!--android:layout_weight="1"/>-->
         </LinearLayout>
 
 

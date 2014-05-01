@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -156,9 +157,8 @@ public class QuizController extends AbstractController {
             return;
         }
 
-        Collections.shuffle(segments);
-
-        newSegment = segments.get(0);
+        Random index = new Random(1234);
+        newSegment = segments.get(index.nextInt(segments.size()));
         Log.d("BRAINQUIZ", "new segment is " + newSegment.getName());
 
         if (lastSegment)
@@ -205,6 +205,7 @@ public class QuizController extends AbstractController {
         BrainSegment testSegment = null;
         String testTask = null;
 
+        // shuffles the order to make the questions less predictable
         Collections.shuffle(learnedSegments);
 
         for (BrainSegment learnedSection : learnedSegments)

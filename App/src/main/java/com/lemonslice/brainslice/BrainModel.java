@@ -96,7 +96,6 @@ public class BrainModel {
         glowShader =  new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.glowshader_vert)),
                                 Loader.loadTextFile(res.openRawResource(R.raw.glowshader_frag)));
 
-
         shineyShader.setUniform("is_colour", 0);
 
         shineyShader.setUniform("cameraPos", SimpleVector.create(0,0,0));

@@ -87,6 +87,7 @@ public class QuizController extends AbstractController {
         BrainModel.smoothZoom(0.25f, 400);
         BrainModel.setLabelsToDisplay(true);
         BrainModel.enableBackgroundGlow();
+        BrainModel.setDisplayMode(false, true);
     }
 
     @Override
@@ -127,7 +128,7 @@ public class QuizController extends AbstractController {
     }
 
     // shows the user a segment of the brain they have not yet seen
-    private BrainSegment learnNewSegment(boolean lastSegment)
+    private void learnNewSegment(boolean lastSegment)
     {
         BrainSegment newSegment;
 
@@ -136,71 +137,66 @@ public class QuizController extends AbstractController {
             showExplainView(
                     "Well done, you've completed quiz mode!",
                     "",
-                    "< Continue Testing",
                     "Return to Menu",
-                    new Button.OnClickListener() {
-                        @Override
-                        public void onClick(View v)
-                        {
-                            startTest();
-                        }
-                    },
+                    "Continue Testing",
                     new Button.OnClickListener() {
                         @Override
                         public void onClick(View v)
                         {
                             Events.trigger("tap:home");
                         }
+                    },
+                    new Button.OnClickListener() {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            startTest();
+                        }
                     });
-            return null;
+            return;
         }
 
         Collections.shuffle(segments);
 
-        for (BrainSegment segment : segments)
+        newSegment = segments.get(0);
+        Log.d("BRAINQUIZ", "new segment is " + newSegment.getName());
+
+        if (lastSegment)
         {
-            newSegment = segment;
-            Log.d("BRAINQUIZ", "new segment is " + newSegment.getName());
-
-            if (lastSegment)
-            {
-                playButton.setText("Test me!");
-                playButton.setOnClickListener(new Button.OnClickListener() {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        playButton.setVisibility(Button.INVISIBLE);
-                        labelOverlay.removeAllViews();
-                        startTest();
-                    }
-                });
-            }
-            else
-            {
-                playButton.setText("Next Segment...");
-                playButton.setOnClickListener(new Button.OnClickListener() {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        learnNewSegment(true);
-                    }
-                });
-            }
-            playButton.setVisibility(Button.VISIBLE);
-
-            mainOverlay.removeAllViews();
-            mainOverlay.addView(quizView);
-
-            Labels.displayLabel(newSegment.getName());
-
-            BrainModel.rotateToSegment(newSegment.getName());
-
-            learnedSegments.add(newSegment);
-            segments.remove(newSegment);
-            return newSegment;
+            playButton.setText("Test me!");
+            playButton.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View v)
+                {
+                    playButton.setVisibility(Button.INVISIBLE);
+                    labelOverlay.removeAllViews();
+                    startTest();
+                }
+            });
         }
+        else
+        {
+            playButton.setText("Next Segment...");
+            playButton.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View v)
+                {
+                    learnNewSegment(true);
+                }
+            });
+        }
+        playButton.setVisibility(Button.VISIBLE);
 
-        return null;
+        mainOverlay.removeAllViews();
+        mainOverlay.addView(quizView);
+
+        Labels.displayLabel(newSegment.getName());
+
+        BrainModel.rotateToSegment(newSegment.getName());
+
+        learnedSegments.add(newSegment);
+        segments.remove(newSegment);
+
     }
 
     private void startTest()
@@ -208,6 +204,9 @@ public class QuizController extends AbstractController {
         // find the unique attribute to test
         BrainSegment testSegment = null;
         String testTask = null;
+
+        Collections.shuffle(learnedSegments);
+
         for (BrainSegment learnedSection : learnedSegments)
         {
             Set<String> tasks = learnedSection.getTasks();
@@ -298,23 +297,22 @@ public class QuizController extends AbstractController {
                             showExplainView(
                                     "Well done!",
                                     "The " + finalTestSegment.getTitle() + " is responsible for " + finalTestTask + ".",
-                                    "< Keep Testing",
-                                    "Continue Learning >",
-                                    new Button.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v)
-                                        {
-                                            startTest();
-                                        }
-                                    },
+                                    "Continue Learning",
+                                    "Keep Testing",
                                     new Button.OnClickListener() {
                                         @Override
                                         public void onClick(View v)
                                         {
                                             learnNewSegment(true);
                                         }
-                                    }
-                            );
+                                    },
+                                    new Button.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v)
+                                        {
+                                            startTest();
+                                        }
+                                    });
                         }
                         else
                         {
@@ -339,8 +337,8 @@ public class QuizController extends AbstractController {
         {
             showExplainView(
                     "Well done!",
-                    "You've learnt everything in about those sections of the brain.",
-                    "Continue Learning >",
+                    "You've learnt everything about those sections of the brain.",
+                    "Continue Learning",
                     null,
                     new Button.OnClickListener() {
                         @Override

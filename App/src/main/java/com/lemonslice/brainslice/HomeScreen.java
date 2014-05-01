@@ -30,7 +30,10 @@ public class HomeScreen {
     private static Typeface comicNeue;
     private static Typeface germanBeauty;
 
+    public static boolean buttonCatcher = false;
+
     public static void show() {
+        buttonCatcher = false;
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         FrameLayout homeScreen = (FrameLayout)inflater.inflate(R.layout.home_screen, null);
 

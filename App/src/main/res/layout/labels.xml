@@ -8,7 +8,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="12"/>
+            android:layout_weight="10"/>
 
         <LinearLayout
             android:layout_weight="10"

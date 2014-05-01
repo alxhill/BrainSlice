@@ -324,10 +324,13 @@ public class MainActivity extends FragmentActivity implements EventListener {
             {
                 // overlays the calibrate screen, only loads the visualise controller
                 // after the calibrate button has been pressed.
-                BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
+                BrainModel.disableBackgroundGlow();
                 HomeScreen.hide();
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
                 baseController = visualiseController;
+                BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
+                BrainModel.smoothRotateToFront();
+                BrainModel.smoothZoom(0.2f, 1200);
                 overlayLabel.setVisibility(View.VISIBLE);
                 switchHolder.setVisibility(View.VISIBLE);
             }

@@ -296,7 +296,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
             uiOptions = View.SYSTEM_UI_FLAG_LOW_PROFILE;
             getWindow().getDecorView().setSystemUiVisibility(uiOptions);
         }
-
     }
 
     @Override

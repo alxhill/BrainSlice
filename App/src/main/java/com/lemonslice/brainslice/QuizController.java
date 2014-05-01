@@ -14,6 +14,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.lemonslice.brainslice.event.Events;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -37,7 +39,6 @@ public class QuizController extends AbstractController {
     private HashSet<String> testedTasks;
     private LayoutInflater inflater;
 
-    private boolean isQuizzing = false;
     private List<BrainSegment> segments;
 
     private BrainSegment checkedSegment;
@@ -83,9 +84,10 @@ public class QuizController extends AbstractController {
 
         BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
         BrainModel.smoothRotateToFront();
-        BrainModel.smoothZoom(0.2f, 400);
+        BrainModel.smoothZoom(0.25f, 400);
         BrainModel.setLabelsToDisplay(true);
         BrainModel.enableBackgroundGlow();
+        BrainModel.setDisplayMode(false, true);
     }
 
     @Override
@@ -97,10 +99,15 @@ public class QuizController extends AbstractController {
 
     private void startQuiz()
     {
-        isQuizzing = true;
-        segments = new ArrayList<BrainSegment>(BrainInfo.getSegments().values());
+        // initialise the lists needed for testing
+        segments = new ArrayList<BrainSegment>();
         learnedSegments = new ArrayList<BrainSegment>();
         testedTasks = new HashSet<String>();
+
+        // populate the list of segments with only those that have valid positions
+        for (BrainSegment segment : BrainInfo.getSegments().values())
+            if (segment.getPosition() != null)
+                segments.add(segment);
 
         BrainModel.smoothMoveToGeneric(BrainModel.sidePosition, 0, 400);
         BrainModel.smoothZoom(0.20f, 400);
@@ -127,8 +134,25 @@ public class QuizController extends AbstractController {
 
         if (segments.size() == 0)
         {
-            Toast.makeText(context, "Well done, you win quiz mode!", Toast.LENGTH_SHORT).show();
-            isQuizzing = false;
+            showExplainView(
+                    "Well done, you've completed quiz mode!",
+                    "",
+                    "< Continue Testing",
+                    "Return to Menu",
+                    new Button.OnClickListener() {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            startTest();
+                        }
+                    },
+                    new Button.OnClickListener() {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            Events.trigger("tap:home");
+                        }
+                    });
             return null;
         }
 
@@ -137,7 +161,6 @@ public class QuizController extends AbstractController {
         for (BrainSegment segment : segments)
         {
             newSegment = segment;
-            if (newSegment.getPosition() == null) continue;
             Log.d("BRAINQUIZ", "new segment is " + newSegment.getName());
 
             if (lastSegment)
@@ -215,7 +238,7 @@ public class QuizController extends AbstractController {
             }
         }
 
-        if (testSegment != null)
+        if (testSegment != null && testTask != null)
         {
             String questionTask = "Which section of the brain is responsible for " + testTask + "?";
             LinearLayout optionsLayout = (LinearLayout) inflater.inflate(R.layout.quiz_options, null);
@@ -238,7 +261,10 @@ public class QuizController extends AbstractController {
                     {
                         Log.d("QUIZMODE", "oncheckedchanged: " + segment.getTitle());
                         if (isChecked)
+                        {
                             checkedSegment = segment;
+                            BrainModel.rotateToSegment(segment.getName());
+                        }
                     }
                 });
 
@@ -266,7 +292,10 @@ public class QuizController extends AbstractController {
                         if (checkedSegment == finalTestSegment)
                         {
                             testedTasks.add(finalTestTask);
+                            Log.d("QUIZMODE", "making explain view for " + checkedSegment.getTitle());
+                            Log.d("QUIZMODE", "learnedsize:" + learnedSegments.size() + ", segmentsize:" + segments.size());
                             checkedSegment = null;
+
                             showExplainView(
                                     "Well done!",
                                     "The " + finalTestSegment.getTitle() + " is responsible for " + finalTestTask + ".",
@@ -275,15 +304,18 @@ public class QuizController extends AbstractController {
                                     new Button.OnClickListener() {
                                         @Override
                                         public void onClick(View v)
-                                        {startTest();
+                                        {
+                                            startTest();
                                         }
                                     },
                                     new Button.OnClickListener() {
                                         @Override
                                         public void onClick(View v)
-                                        {learnNewSegment(true);
+                                        {
+                                            learnNewSegment(true);
                                         }
-                                    });
+                                    }
+                            );
                         }
                         else
                         {

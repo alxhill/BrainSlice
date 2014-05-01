@@ -67,7 +67,6 @@
                     android:textColor="#ecf0f1"
                     android:gravity="center_vertical|center_horizontal"
                     android:id="@+id/TextViewLearn" />
-
             </LinearLayout>
 
             <LinearLayout

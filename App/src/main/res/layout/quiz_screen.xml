@@ -30,6 +30,8 @@
         android:textColor="#ffffff"
         />
 
+
+
     <FrameLayout
         android:id="@+id/quiz_overlay"
         android:layout_width="fill_parent"

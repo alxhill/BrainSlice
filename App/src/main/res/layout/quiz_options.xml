@@ -30,8 +30,10 @@
     </ScrollView>
 
     <Button
+        android:id="@+id/submit_button"
+        android:textColor="#ffffff"
+        android:background="@drawable/hs_button"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/submit_button"/>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

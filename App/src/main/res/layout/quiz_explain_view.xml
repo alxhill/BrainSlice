@@ -26,22 +26,30 @@
         android:layout_gravity="center"/>
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:paddingBottom="30dp"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:gravity="bottom"
         android:layout_gravity="center_horizontal">
         <Button
             android:id="@+id/quiz_button_left"
+            android:textColor="#ffffff"
+            android:background="@drawable/hs_button"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"/>
+            android:layout_height="wrap_content"/>
 
         <Button
             android:id="@+id/quiz_button_right"
+            android:textColor="#ffffff"
+            android:background="@drawable/hs_button"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginTop="20dp"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </LinearLayout>

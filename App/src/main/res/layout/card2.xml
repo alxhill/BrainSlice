@@ -36,7 +36,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
             <TextView
                 android:layout_weight="4"
                 android:layout_width="0dp"
@@ -51,13 +53,14 @@
                android:layout_height="75dp"
                android:layout_weight="1"
                android:src="@drawable/hand_circle"
-               android:layout_gravity="center"
-               />
+               android:layout_gravity="center"/>
             </LinearLayout>
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
             <TextView
                 android:layout_weight="4"
                 android:layout_width="0dp"

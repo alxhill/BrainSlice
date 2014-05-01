@@ -279,10 +279,9 @@ public class MainActivity extends FragmentActivity implements EventListener {
     private void hideSystemBars()
     {
         //API 14 = android 4.0 (ICS), API 19 = 4.4 (Kitkat)
-        int uiOptions;
+        final int uiOptions;
         if (Build.VERSION.SDK_INT >= 19)
         {
-
             uiOptions = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -290,6 +289,12 @@ public class MainActivity extends FragmentActivity implements EventListener {
                     | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
             getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+            getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+                @Override
+                public void onSystemUiVisibilityChange(int i) {
+                    getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+                }
+            });
         }
         else if(Build.VERSION.SDK_INT >= 14)
         {
@@ -319,10 +324,13 @@ public class MainActivity extends FragmentActivity implements EventListener {
             {
                 // overlays the calibrate screen, only loads the visualise controller
                 // after the calibrate button has been pressed.
-                BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
+                BrainModel.disableBackgroundGlow();
                 HomeScreen.hide();
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
                 baseController = visualiseController;
+                BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
+                BrainModel.smoothRotateToFront();
+                BrainModel.smoothZoom(0.2f, 1200);
                 overlayLabel.setVisibility(View.VISIBLE);
                 switchHolder.setVisibility(View.VISIBLE);
             }

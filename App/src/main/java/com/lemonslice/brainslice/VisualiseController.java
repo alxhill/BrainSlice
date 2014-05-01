@@ -62,7 +62,6 @@ public class VisualiseController extends AbstractController implements SensorEve
         BrainModel.smoothRotateToFront();
         BrainModel.smoothZoom(0.58f, 1200);
         BrainModel.setLabelsToDisplay(false);
-        BrainModel.disableBackgroundGlow();
         MainActivity.setZOnBottom();
     }
 

@@ -38,5 +38,5 @@ void main()
 	if(is_back == 1)
         gl_FragColor = fcol;
     else
-        gl_FragColor = vec4(0.1, 0.1, 0.2, 1.0);
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
 }

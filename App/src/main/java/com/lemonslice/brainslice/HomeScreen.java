@@ -2,6 +2,8 @@ package com.lemonslice.brainslice;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,7 +69,11 @@ public class HomeScreen {
 
 
         MainActivity.addButtonListener(btn1, "learn");
-        MainActivity.addButtonListener(btn2, "visualise");
+        SensorManager sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null)
+            MainActivity.addButtonListener(btn2, "visualise");
+        else
+            btn2.setVisibility(View.GONE);
         MainActivity.addButtonListener(btn3, "quiz");
 
         comicNeue(R.id.TextViewLearn,25);

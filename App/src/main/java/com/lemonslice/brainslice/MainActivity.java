@@ -77,6 +77,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
     private Typeface fontAwesome;
 
     public static GLSurfaceView sMGLView;
+    private View switchHolder;
 
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -146,16 +147,13 @@ public class MainActivity extends FragmentActivity implements EventListener {
         quizController = new QuizController(getApplicationContext());
         quizController.setMainOverlay(quizFrame);
 
-        // set up the button events
-        iconifyView(R.id.help_button, 25);
-        iconifyView(R.id.about_button,25);
-        soundButton = iconifyView(R.id.volume_button, 25);
-
-        addButtonListener(R.id.help_button, "help");
+        // set up the buttons with events
+        soundButton = iconifyView(R.id.volume_button, 30);
         addButtonListener(soundButton, "volume");
         addButtonListener(R.id.home_button, "home");
-        addButtonListener(R.id.about_button,"about");
 
+        // set up the switches on the visualise and learn views
+        switchHolder = findViewById(R.id.switchHolder);
 
         final CheckBox colourSwitch = (CheckBox)findViewById(R.id.colourSwitch);
         final CheckBox xRaySwitch = (CheckBox)findViewById(R.id.xRaySwitch);
@@ -310,6 +308,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 baseController = learnController;
                 Labels.setFrameLayout(overlayingFrame);
                 overlayLabel.setVisibility(View.VISIBLE);
+                switchHolder.setVisibility(View.VISIBLE);
             }
             else if (tapType.equals("visualise"))
             {
@@ -320,6 +319,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 OverlayScreen.showScreen(R.layout.calibrate_screen);
                 baseController = visualiseController;
                 overlayLabel.setVisibility(View.VISIBLE);
+                switchHolder.setVisibility(View.VISIBLE);
             }
             else if (tapType.equals("home"))
             {
@@ -329,6 +329,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 quizFrame.removeAllViews();
                 overlayingFrame.removeAllViews();
                 HomeScreen.show();
+                BrainInfo.speaker.stop();
             }
             else if (tapType.equals("quiz"))
             {
@@ -336,7 +337,9 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 HomeScreen.hide();
                 quizController.loadView();
                 baseController = quizController;
-                overlayLabel.setVisibility(View.INVISIBLE);
+                overlayLabel.setVisibility(View.GONE);
+                switchHolder.setVisibility(View.GONE);
+
             }
             else if (tapType.equals("calibrate"))
             {

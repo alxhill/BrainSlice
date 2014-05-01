@@ -14,6 +14,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,7 +34,6 @@ public class HomeScreen {
     }
     public static void setFrameLayout(FrameLayout l){frameLayout = l; }
     private static Typeface fontAwesome;
-    private GestureDetector gestureDetector = null;
 
     private static int btncount = 0;
     private static Typeface comicNeue;
@@ -46,10 +46,11 @@ public class HomeScreen {
 
         assert homeScreen != null;
 
+        //catch taps falling through view into activity main
         homeScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                return;
+//                return;
             }
         });
 
@@ -61,21 +62,19 @@ public class HomeScreen {
         homeScreen.startAnimation(fadeIn);
 
         LinearLayout btn_holder = (LinearLayout)homeScreen.findViewById(R.id.hs_button_holder);
-        LinearLayout btn1 = (LinearLayout)btn_holder.findViewById(R.id.hs_learnbtn);
+        final LinearLayout btn1 = (LinearLayout)btn_holder.findViewById(R.id.hs_learnbtn);
         LinearLayout btn2 = (LinearLayout)btn_holder.findViewById(R.id.hs_visualizebtn);
         LinearLayout btn3 = (LinearLayout)btn_holder.findViewById(R.id.hs_quizbtn);
+
+        ImageView spiral = (ImageView) homeScreen.findViewById(R.id.imageView);
+
+        final Animation rotateSpiral = AnimationUtils.loadAnimation(context, R.anim.rotate);
+        spiral.startAnimation(rotateSpiral);
+
 
         MainActivity.addButtonListener(btn1, "learn");
         MainActivity.addButtonListener(btn2, "visualise");
         MainActivity.addButtonListener(btn3, "quiz");
-
-        LinearLayout icon_holder = (LinearLayout)homeScreen.findViewById(R.id.hs_icon_holder);
-
-
-        //iconifyView(R.id.hs_help_button_icon, 25);
-        //iconifyView(R.id.hs_settings_button_icon, 25);
-        //iconifyView(R.id.hs_volume_button, 25);
-        //iconifyView(R.id.hs_about_button,25);
 
         comicNeue(R.id.TextViewLearn,25);
         comicNeue(R.id.TextViewQuiz,25);
@@ -83,44 +82,15 @@ public class HomeScreen {
 
         germanBeauty(R.id.MainMenuTitle, 80);
 
-        /*
-        btn1.setVisibility(View.INVISIBLE);
-        btn2.setVisibility(View.INVISIBLE);
-        btn3.setVisibility(View.INVISIBLE);
-        icon_holder.setVisibility(View.INVISIBLE);
+        iconifyView(R.id.help_button, 30);
+        iconifyView(R.id.about_button,30);
 
-        Animation slideIn1 = AnimationUtils.loadAnimation(context, R.anim.slide_in);
-        Animation slideIn2 = AnimationUtils.loadAnimation(context, R.anim.slide_in);
-        Animation slideIn3 = AnimationUtils.loadAnimation(context, R.anim.slide_in);
-        slideIn1.setFillAfter(true);
-        slideIn2.setFillAfter(true);
-        slideIn3.setFillAfter(true);
-        slideIn1.setInterpolator(new AccelerateInterpolator());
-        slideIn2.setInterpolator(new AccelerateInterpolator());
-        slideIn3.setInterpolator(new AccelerateInterpolator());
+        MainActivity.addButtonListener(frameLayout.findViewById(R.id.help_button), "help");
+        MainActivity.addButtonListener(frameLayout.findViewById(R.id.about_button), "about");
 
-        slideIn1.setStartOffset(500);
-        btn1.startAnimation(slideIn1);
-
-        slideIn2.setStartOffset(600);
-        btn2.startAnimation(slideIn2);
-
-        slideIn3.setStartOffset(700);
-        btn3.startAnimation(slideIn3);
-
-        Animation slideDown = AnimationUtils.loadAnimation(context, R.anim.slide_down);
-        slideDown.setFillAfter(true);
-        slideDown.setInterpolator(new DecelerateInterpolator());
-        slideDown.setStartOffset(600);
-        icon_holder.startAnimation(slideDown);*/
 
         BrainModel.showBrain = true;
-        //BrainModel.smoothMoveToGeneric(BrainModel.homePosition, 120, 400);
-        //BrainModel.smoothRotateToFront();
-        //BrainModel.smoothZoom(0.23f, 1200);
         BrainModel.setLabelsToDisplay(false);
-        //BrainModel.onlyRotateY = true;
-        //BrainModel.disableDoubleTap = true;
         MainActivity.setZOnTop();
     }
 

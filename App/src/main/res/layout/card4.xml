@@ -58,7 +58,7 @@
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:src="@drawable/question_brain"
+                android:src="@drawable/questionbrain"
                 android:layout_weight="1"/>
         </LinearLayout>
 

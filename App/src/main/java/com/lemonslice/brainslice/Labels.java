@@ -18,6 +18,8 @@ public class Labels
 {
     private static FrameLayout frameLayout;
     private static Context context;
+    private static FrameLayout parent;
+    private static TextView labelOverlay;
 
     private static View createLabel(LayoutInflater inflater, BrainSegment brainSegment)
     {
@@ -29,7 +31,8 @@ public class Labels
         LinearLayout label = (LinearLayout)inflater.inflate(R.layout.labels, null);
 
         //Set the text of the title of the Segment (in small Caps)
-        TextView titleView = (TextView) label.findViewById(R.id.segment_title);
+        assert label != null;
+        TextView titleView = (TextView)label.findViewById(R.id.segment_title);
         titleView.setText(title);
 
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40);
@@ -64,17 +67,29 @@ public class Labels
         frameLayout.removeAllViews();
 
         if(Labels.getLabel(inflater, brainSegment) != null)
+        {
             frameLayout.addView(Labels.getLabel(inflater, brainSegment));
+
+            if(labelOverlay != null)
+                labelOverlay.setVisibility(View.INVISIBLE);
+        }
     }
 
     public static void removeLabels()
     {
         frameLayout.removeAllViews();
+
+        assert labelOverlay != null;
+        labelOverlay.setVisibility(View.VISIBLE);
+
     }
 
     public static void setFrameLayout(FrameLayout l)
     {
         frameLayout = l;
+        parent = (FrameLayout)frameLayout.getParent();
+        assert parent != null;
+        labelOverlay = (TextView)parent.findViewById(R.id.label_overlay);
     }
 
     public static void setContext(Context c)

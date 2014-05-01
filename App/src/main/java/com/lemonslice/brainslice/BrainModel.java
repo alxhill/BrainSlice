@@ -96,7 +96,6 @@ public class BrainModel {
         glowShader =  new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.glowshader_vert)),
                                 Loader.loadTextFile(res.openRawResource(R.raw.glowshader_frag)));
 
-
         shineyShader.setUniform("is_colour", 0);
 
         shineyShader.setUniform("cameraPos", SimpleVector.create(0,0,0));
@@ -108,7 +107,7 @@ public class BrainModel {
         plane.setCulling(false);
 
         // Load the 3d model
-        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.fullharder));
+        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.fullharder4));
         Log.d("BrainSlice", "Copied serialised brain model into memory");
         subCortical = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.subcor2));
         Log.d("BrainSlice", "Copied serialised subcortical sections into memory");
@@ -434,7 +433,6 @@ public class BrainModel {
 
                 selection = i;
                 Labels.displayLabel(name);
-
                 BrainInfo.getSegment(name).playAudio(context);
 
                 rotateToSphere(sphere);
@@ -472,22 +470,31 @@ public class BrainModel {
         }
     }
 
-    public static void infoTapped()
+    public static String getSection(int maxDist)
     {
-        Log.d("BrainSlice","infoTapped");
-        if(!infoShowing && !disableDoubleTap)
+        SimpleVector camPos = BrainModel.getCamera().getPosition();
+        SimpleVector minPos = null;
+
+        ArrayList<Object3D> spheres = BrainModel.getSpheres();
+        String segmentName = null;
+
+        for (Object3D sphere : spheres)
         {
-            infoShowing = true;
-            smoothMoveToGeneric(sidePosition, 0, 400);
-            smoothZoom(0.25f,400);
-        }
-        else
-        {
-            if(!disableDoubleTap) {
-                infoShowing = false;
-                smoothMoveToGeneric(startPosition, 0, 400);
+            SimpleVector spherePos = sphere.getTransformedCenter();
+            if (minPos == null || minPos.distance(camPos) > spherePos.distance(camPos))
+            {
+                minPos = spherePos;
+                segmentName = sphere.getName();
             }
         }
+
+        if (segmentName == null) return null;
+
+        if (minPos.distance(camPos) > maxDist)
+            return "";
+
+        return segmentName;
+
     }
 
     public static void rotateToSegment(String name)

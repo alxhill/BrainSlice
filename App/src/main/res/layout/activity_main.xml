@@ -39,38 +39,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_gravity="bottom|left"
+        android:layout_gravity="top|right"
         android:padding="10dp"
-        android:layout_marginLeft="20dp">
-
-        <TextView
-            android:id="@+id/about_button"
-            android:gravity="center"
-            android:text="@string/about_icon"
-            android:layout_height="50dp"
-            android:layout_width="wrap_content"
-            android:layout_marginRight="10dp"
-            android:textSize="25sp"
-            android:textColor="#fff" />
-
-        <TextView
-            android:id="@+id/help_button"
-            android:gravity="center"
-            android:text="@string/help_icon"
-            android:layout_height="50dp"
-            android:layout_width="wrap_content"
-            android:layout_marginRight="10dp"
-            android:textSize="25sp"
-            android:textColor="#fff"/>
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="10dp">
 
         <TextView
             android:id="@+id/volume_button"
             android:gravity="center"
             android:text="@string/volume_icon"
             android:layout_height="50dp"
-            android:layout_width="35dp"
+            android:layout_width="50dp"
             android:textSize="25sp"
-            android:textColor="#fff"/>
+            android:textColor="#fff"
+            android:padding="10dp"/>
 
     </LinearLayout>
 
@@ -125,7 +107,28 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:clickable="false"
-        android:id="@+id/homescreen_overlay" />
+        android:id="@+id/homescreen_overlay">
+
+            <TextView
+                android:id="@+id/about_button"
+                android:gravity="center"
+                android:text="@string/about_icon"
+                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="10dp"
+                android:textSize="25sp"
+                android:textColor="#fff" />
+
+            <TextView
+                android:id="@+id/help_button"
+                android:gravity="center"
+                android:text="@string/help_icon"
+                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="10dp"
+                android:textSize="25sp"
+                android:textColor="#fff"/>
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/tutorial_overlay"

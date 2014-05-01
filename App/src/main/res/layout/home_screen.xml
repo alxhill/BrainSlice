@@ -9,10 +9,13 @@
     android:background="@drawable/homescreen_background">
 
     <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
+        android:layout_width="1000dp"
+        android:layout_height="1000dp"
         android:id="@+id/imageView"
-        android:src="@drawable/spiral" />
+        android:src="@drawable/spiral"
+        android:scaleType="fitXY"
+        android:layout_gravity="center"
+        android:alpha="0.25" />
 
     <TextView
         android:id="@+id/MainMenuTitle"

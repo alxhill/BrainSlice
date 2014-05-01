@@ -329,6 +329,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 quizFrame.removeAllViews();
                 overlayingFrame.removeAllViews();
                 HomeScreen.show();
+                BrainInfo.speaker.stop();
             }
             else if (tapType.equals("quiz"))
             {

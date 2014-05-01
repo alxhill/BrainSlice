@@ -117,25 +117,11 @@ public class VisualiseController extends AbstractController implements SensorEve
 
     public void showSection()
     {
-        SimpleVector camPos = BrainModel.getCamera().getPosition();
-        SimpleVector minPos = null;
-
-        ArrayList<Object3D> spheres = BrainModel.getSpheres();
-        String segmentName = null;
-
-        for (Object3D sphere : spheres)
-        {
-            SimpleVector spherePos = sphere.getTransformedCenter();
-            if (minPos == null || minPos.distance(camPos) > spherePos.distance(camPos))
-            {
-                minPos = spherePos;
-                segmentName = sphere.getName();
-            }
-        }
+        String segmentName = BrainModel.getSection(55);
 
         if (segmentName == null) return;
 
-        if (minPos.distance(camPos) > 55)
+        if (segmentName.equals(""))
         {
             overlayLabel.post(new Runnable() {
                 @Override

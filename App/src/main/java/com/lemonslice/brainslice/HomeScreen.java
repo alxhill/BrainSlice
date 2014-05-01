@@ -2,24 +2,15 @@ package com.lemonslice.brainslice;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.util.TypedValue;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.threed.jpct.SimpleVector;
 
 
 /**
@@ -36,12 +27,10 @@ public class HomeScreen {
     public static void setFrameLayout(FrameLayout l){frameLayout = l; }
     private static Typeface fontAwesome;
 
-    private static int btncount = 0;
     private static Typeface comicNeue;
     private static Typeface germanBeauty;
 
     public static void show() {
-        btncount = 0;
         inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         FrameLayout homeScreen = (FrameLayout)inflater.inflate(R.layout.home_screen, null);
 
@@ -137,16 +126,6 @@ public class HomeScreen {
         textView.setTypeface(germanBeauty);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
         return textView;
-    }
-
-    public static Button comicNeue(Button btn, int size)
-    {
-        if (comicNeue == null)
-            comicNeue = Typeface.createFromAsset(Tutorial.context.getAssets(), "fonts/ComicNeue-Angular-Bold.ttf");
-
-        btn.setTypeface(comicNeue);
-        btn.setTextSize(TypedValue.COMPLEX_UNIT_SP, size);
-        return btn;
     }
 
     public static TextView comicNeue(int id, int size)

@@ -4,12 +4,8 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,7 +18,6 @@ public class SplashScreen
     static Context context;
     static FrameLayout frameLayout;
     static LayoutInflater inflater;
-    static MainActivity.MyRenderer renderer;
     public static void setContext(Context c)
     {
         context = c;
@@ -31,7 +26,6 @@ public class SplashScreen
     {
         frameLayout = l;
     }
-    public static void setRenderer(MainActivity.MyRenderer r) {renderer = r; }
 
     public static View inflateView()
     {
@@ -56,7 +50,7 @@ public class SplashScreen
         BrainModel.showBrain = false;
         BrainModel.disableDoubleTap = true;
         //inflate and show the xml loading screen
-        FrameLayout splashScreen = (FrameLayout)inflateView();
+        //FrameLayout splashScreen = (FrameLayout)inflateView();
         //final ImageView lemon = (ImageView)splashScreen.findViewById(R.id.lemon);
         //final TextView teamName = (TextView)splashScreen.findViewById(R.id.team_lemon_slice);
 

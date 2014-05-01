@@ -47,7 +47,6 @@ public class Tutorial {
 
     public static boolean showMainMenu;
     private static Typeface comicNeue;
-    private static Typeface fontAwesome;
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static void show(int startPage, final boolean showMainMenu) {

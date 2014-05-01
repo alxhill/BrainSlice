@@ -14,6 +14,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -61,9 +62,15 @@ public class HomeScreen {
         homeScreen.startAnimation(fadeIn);
 
         LinearLayout btn_holder = (LinearLayout)homeScreen.findViewById(R.id.hs_button_holder);
-        LinearLayout btn1 = (LinearLayout)btn_holder.findViewById(R.id.hs_learnbtn);
+        final LinearLayout btn1 = (LinearLayout)btn_holder.findViewById(R.id.hs_learnbtn);
         LinearLayout btn2 = (LinearLayout)btn_holder.findViewById(R.id.hs_visualizebtn);
         LinearLayout btn3 = (LinearLayout)btn_holder.findViewById(R.id.hs_quizbtn);
+
+        ImageView spiral = (ImageView) homeScreen.findViewById(R.id.imageView);
+
+        final Animation rotateSpiral = AnimationUtils.loadAnimation(context, R.anim.rotate);
+        spiral.startAnimation(rotateSpiral);
+
 
         MainActivity.addButtonListener(btn1, "learn");
         MainActivity.addButtonListener(btn2, "visualise");

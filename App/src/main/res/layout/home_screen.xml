@@ -8,6 +8,12 @@
     android:clipToPadding="false"
     android:background="@drawable/homescreen_background">
 
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imageView"
+        android:src="@drawable/spiral" />
+
     <TextView
         android:id="@+id/MainMenuTitle"
         android:layout_marginTop="50dp"

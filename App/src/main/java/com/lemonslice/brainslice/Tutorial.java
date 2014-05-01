@@ -88,16 +88,17 @@ public class Tutorial {
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (((showMainMenu) && (position+1==NUMBER_OF_CARDS))
+                /*if (((showMainMenu) && (position+1==NUMBER_OF_CARDS))
                         || ((!showMainMenu) && (position+2==NUMBER_OF_CARDS))
                         || (position+1==1)
                         )
-                    hide();
+                    hide();*/
             }
 
             @Override
             public void onPageSelected(int position) {
-
+                if(position == 0 || position == NUMBER_OF_CARDS - 1 || (position == NUMBER_OF_CARDS - 2 && !showMainMenu))
+                    hide();
             }
 
             @Override

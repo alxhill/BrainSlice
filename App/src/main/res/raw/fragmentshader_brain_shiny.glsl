@@ -1,7 +1,7 @@
 precision mediump float;
 
 varying vec3 n;
-varying vec3 vertex_to_light_vector[3];
+varying vec3 vertex_to_light_vector[6];
 varying vec3 vertex_to_camera_vector;
 
 uniform int transparent;
@@ -17,16 +17,18 @@ uniform int is_colour;
 void main()
 {
     // Defining The Material Colors
-    const vec4 AmbientColor = vec4(0.48, 0.35, 0.35, 1.0);
+    const vec4 AmbientColor = vec4(0.58, 0.35, 0.35, 1.0);
     const vec4 DiffuseColor = vec4(0.62, 0.4, 0.4, 1.0);
     const vec4 specularColor = vec4(0.2, 0.2, 0.2, 1.0);
 
-    const float aS = 0.5;
+    const float aS = 0.6;
     const float dS = 2.7;
     const float kS = 3.5;
 
     // Scaling The Input Vector To Length 1
     vec3 normalized_normal = normalize(n);
+    normalized_normal.y = abs(normalized_normal.y);
+    normalized_normal.x = abs(normalized_normal.x);
 
     vec3 final_col = vec3(0.0,0.0,0.0);
 
@@ -35,6 +37,8 @@ void main()
         //vec3 new_vec = vec3(-vertex_to_light_vector[i].x, vertex_to_light_vector[i].yz);
 
         vec3 normalized_vertex_to_light_vector = normalize(vertex_to_light_vector[i]);
+
+        //vec3 normalized_vertex_to_light_vector = normalize(vertex_to_light_vector[i]);
 
         vec3 H = normalize(vertex_to_light_vector[i] + vertex_to_camera_vector);
 

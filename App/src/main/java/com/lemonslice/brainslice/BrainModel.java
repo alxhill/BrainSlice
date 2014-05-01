@@ -58,7 +58,7 @@ public class BrainModel {
 
 
     // Positions
-    public static SimpleVector sidePosition = SimpleVector.create(-22,0,0);
+    public static SimpleVector sidePosition = SimpleVector.create(-18,0,0);
     //public static SimpleVector homePosition = SimpleVector.create(-30,-5,0); // Delete this
     public static SimpleVector startPosition = SimpleVector.create(0,0,0);
     private static SimpleVector camPos;

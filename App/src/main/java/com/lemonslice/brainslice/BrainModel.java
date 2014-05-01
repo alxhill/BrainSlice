@@ -108,7 +108,7 @@ public class BrainModel {
         plane.setCulling(false);
 
         // Load the 3d model
-        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.fullharder));
+        objs = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.fullharder4));
         Log.d("BrainSlice", "Copied serialised brain model into memory");
         subCortical = Loader.loadSerializedObjectArray(res.openRawResource(R.raw.subcor2));
         Log.d("BrainSlice", "Copied serialised subcortical sections into memory");

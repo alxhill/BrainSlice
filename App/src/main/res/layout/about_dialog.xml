@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="3D Brain Model by A. M. Winkler is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License. The original work can be found at http://brainder.ord/brain-for-blender"
+        android:text="@string/Brainder_License_Message"
         android:id="@+id/textView3"
         android:textSize="10sp" />
 </LinearLayout>

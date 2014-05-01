@@ -38,5 +38,13 @@
     <string name="card5text2">You can use the buttons in the bottom right to make half the brain see-through or to colour in the brain!</string>
     <string name="colour">Colour</string>
     <string name="xray">X-Ray</string>
+    <string name="Calibrate">Calibrate</string>
+    <string name="TeamName">Team Lemon Slice</string>
+    <string name="HomeScreen_Title">BRAIN SLICE</string>
+    <string name="Brainder_License_Message">3D Brain Model by A. M. Winkler is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License. The original work can be found at http://brainder.ord/brain-for-blender</string>
+    <string name="LearnMode">Learn Mode</string>
+    <string name="WindowMode">Window Mode</string>
+    <string name="BrainQuiz">Brain Quiz</string>
+    <string name="Quiz_Play_Button">Play!</string>
 
 </resources>

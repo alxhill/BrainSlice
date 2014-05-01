@@ -105,6 +105,7 @@ public class VisualiseController extends AbstractController implements SensorEve
 
         if (rotation==Surface.ROTATION_0 || rotation==Surface.ROTATION_180) {
             // this is a tablet
+            //noinspection SuspiciousNameCombination
             BrainModel.rotate(y, -x, z);
         } else {
             BrainModel.rotate(x,y,z);

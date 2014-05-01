@@ -79,7 +79,7 @@ public class BrainInfo
         Log.d("BRAININFO", "Loading data from file");
         InputStream data = resources.openRawResource(R.raw.data);
 
-        JsonReader reader = null;
+        JsonReader reader;
         try
         {
             reader = new JsonReader(new InputStreamReader(data, "UTF-8"));

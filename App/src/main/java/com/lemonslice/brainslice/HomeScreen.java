@@ -59,6 +59,8 @@ public class HomeScreen {
         ImageView spiral = (ImageView) homeScreen.findViewById(R.id.imageView);
 
         final Animation rotateSpiral = AnimationUtils.loadAnimation(context, R.anim.rotate);
+        spiral.setDrawingCacheEnabled(true);
+        spiral.setDrawingCacheQuality(1);
         spiral.startAnimation(rotateSpiral);
 
 

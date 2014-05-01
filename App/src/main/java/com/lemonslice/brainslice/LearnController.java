@@ -38,8 +38,8 @@ public class LearnController extends AbstractController implements OnScaleGestur
     private static final float moveMult = 0.005f;
     private static final float scaleMult = 0.001f;
     //Limits for scaling
-    private static final float minScale = 0.2f;
-    private static final float maxScale = 0.69f;
+    private static final float minScale = 0.1f;
+    private static final float maxScale = 0.6f;
     //Trying to prevent issues with screen resolution
     private static final int resMultX = 960;
     private static final int resMultY = 540;

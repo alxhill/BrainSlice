@@ -222,10 +222,7 @@ class NewObjectFragment extends Fragment {
             case 3: rootView = inflater.inflate(R.layout.card2, container, false); break;
             case 4: rootView = inflater.inflate(R.layout.card3, container, false); break;
             case 5: rootView = inflater.inflate(R.layout.card4, container, false); break;
-            case 6: rootView = inflater.inflate(R.layout.card5, container, false);
-                Tutorial.fontAwesome((TextView) rootView.findViewById(R.id.settings_icon_text));
-                Tutorial.fontAwesome((TextView) rootView.findViewById(R.id.volume_button_text));
-                break;
+            case 6: rootView = inflater.inflate(R.layout.card5, container, false); break;
             case 7: rootView = inflater.inflate(R.layout.card_final, container, false); break;
             default: break;
         }

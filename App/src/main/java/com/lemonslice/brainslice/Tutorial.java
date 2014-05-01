@@ -210,14 +210,22 @@ class NewObjectFragment extends Fragment {
         {
             case 1: rootView = inflater.inflate(R.layout.card_left, container, false); break;
             case 2: rootView = inflater.inflate(R.layout.card_first, container, false);
-                Tutorial.comicNeue((TextView) rootView.findViewById(R.id.textView2), 30);
-                Tutorial.comicNeue((TextView) rootView.findViewById(R.id.textView3),30);
+                Tutorial.comicNeue((TextView) rootView.findViewById(R.id.welcome_message), 50);
                 break;
-            case 3: rootView = inflater.inflate(R.layout.card2, container, false); break;
-            case 4: rootView = inflater.inflate(R.layout.card3, container, false); break;
-            case 5: rootView = inflater.inflate(R.layout.card4, container, false); break;
-            case 6: rootView = inflater.inflate(R.layout.card5, container, false); break;
-            case 7: rootView = inflater.inflate(R.layout.card_final, container, false); break;
+            case 3: rootView = inflater.inflate(R.layout.card2, container, false);
+                Tutorial.comicNeue((TextView) rootView.findViewById(R.id.tutorial_learn_title), 40);
+                break;
+            case 4: rootView = inflater.inflate(R.layout.card3, container, false);
+                Tutorial.comicNeue((TextView) rootView.findViewById(R.id.tutorial_visualize_title), 40);
+                break;
+            case 5: rootView = inflater.inflate(R.layout.card4, container, false);
+                Tutorial.comicNeue((TextView) rootView.findViewById(R.id.tutorial_quiz_title), 40);
+                break;
+            case 6: rootView = inflater.inflate(R.layout.card5, container, false);
+                Tutorial.comicNeue((TextView) rootView.findViewById(R.id.tutorial_settings_title), 40);
+                break;
+            case 7: rootView = inflater.inflate(R.layout.card_final, container, false);
+                break;
             default: break;
         }
 

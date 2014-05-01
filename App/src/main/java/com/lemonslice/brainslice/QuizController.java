@@ -110,7 +110,7 @@ public class QuizController extends AbstractController {
                 segments.add(segment);
 
         BrainModel.smoothMoveToGeneric(BrainModel.sidePosition, 0, 400);
-        BrainModel.smoothZoom(0.2f, 400);
+        BrainModel.smoothZoom(0.20f, 400);
         showExplainView(
                 "Welcome to quiz mode!",
                 "We'll start by teaching you about two different sections of the brain, then ask you a question.",

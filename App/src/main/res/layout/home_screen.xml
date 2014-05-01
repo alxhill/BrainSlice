@@ -8,14 +8,20 @@
     android:clipToPadding="false"
     android:background="@drawable/homescreen_background">
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"></LinearLayout>
+
     <ImageView
-        android:layout_width="1000dp"
-        android:layout_height="1000dp"
+        android:layout_width="1500dp"
+        android:layout_height="1500dp"
         android:id="@+id/imageView"
         android:src="@drawable/spiral"
         android:scaleType="fitXY"
         android:layout_gravity="center"
-        android:alpha="0.25" />
+        android:alpha="0.25"
+        android:layout_marginTop="225dp" />
 
     <TextView
         android:id="@+id/MainMenuTitle"

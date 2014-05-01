@@ -460,7 +460,7 @@ public class BrainModel {
         {
             shads[pos].setUniform("isSelected", 1);
             smoothMoveToGeneric(sidePosition, 0, 400);
-            smoothZoom(0.25f,400);
+            smoothZoom(0.20f,400);
         }
         else
         {

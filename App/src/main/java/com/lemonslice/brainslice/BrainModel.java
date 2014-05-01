@@ -433,7 +433,6 @@ public class BrainModel {
 
                 selection = i;
                 Labels.displayLabel(name);
-
                 BrainInfo.getSegment(name).playAudio(context);
 
                 rotateToSphere(sphere);

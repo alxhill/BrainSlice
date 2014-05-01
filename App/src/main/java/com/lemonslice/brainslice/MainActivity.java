@@ -147,14 +147,11 @@ public class MainActivity extends FragmentActivity implements EventListener {
         quizController.setMainOverlay(quizFrame);
 
         // set up the button events
-        iconifyView(R.id.help_button, 30);
-        iconifyView(R.id.about_button,30);
         soundButton = iconifyView(R.id.volume_button, 30);
 
-        addButtonListener(R.id.help_button, "help");
+
         addButtonListener(soundButton, "volume");
         addButtonListener(R.id.home_button, "home");
-        addButtonListener(R.id.about_button,"about");
 
 
         final CheckBox colourSwitch = (CheckBox)findViewById(R.id.colourSwitch);

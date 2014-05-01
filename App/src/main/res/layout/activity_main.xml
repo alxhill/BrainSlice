@@ -111,35 +111,6 @@
 
     </FrameLayout>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left"
-        android:layout_marginLeft="30dp"
-        android:id="@+id/hs_icon_holder">
-
-        <TextView
-            android:id="@+id/about_button"
-            android:gravity="center"
-            android:text="@string/about_icon"
-            android:layout_height="50dp"
-            android:layout_width="wrap_content"
-            android:layout_marginRight="10dp"
-            android:textSize="25sp"
-            android:textColor="#fff" />
-
-        <TextView
-                android:id="@+id/help_button"
-                android:gravity="center"
-                android:text="@string/help_icon"
-                android:layout_height="50dp"
-                android:layout_width="wrap_content"
-                android:layout_marginRight="10dp"
-                android:textSize="25sp"
-                android:textColor="#fff"/>
-    </LinearLayout>
-
     <FrameLayout
         android:id="@+id/tutorial_overlay"
         android:layout_width="fill_parent"

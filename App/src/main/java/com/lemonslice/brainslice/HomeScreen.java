@@ -75,6 +75,13 @@ public class HomeScreen {
 
         germanBeauty(R.id.MainMenuTitle, 80);
 
+        iconifyView(R.id.help_button, 30);
+        iconifyView(R.id.about_button,30);
+
+        MainActivity.addButtonListener(frameLayout.findViewById(R.id.help_button), "help");
+        MainActivity.addButtonListener(frameLayout.findViewById(R.id.about_button), "about");
+
+
         BrainModel.showBrain = true;
         BrainModel.setLabelsToDisplay(false);
         MainActivity.setZOnTop();

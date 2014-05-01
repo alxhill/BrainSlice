@@ -19,6 +19,8 @@ import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -83,6 +85,10 @@ public class MainActivity extends FragmentActivity implements EventListener {
     {
         Logger.log("onCreate");
         Logger.setLogLevel(Logger.LL_DEBUG);
+
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);    // Removes title bar
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_main);
 

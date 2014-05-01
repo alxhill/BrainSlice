@@ -32,5 +32,10 @@
     <string name="card3text2">Place the device on a friend\'s forehead to start</string>
     <string name="card3text3">Move the device around your friend\'s head to see their brain!</string>
     <string name="card4text1">Quiz Mode:</string>
+    <string name="card5text1">Settings:</string>
+    <string name="card4text2">Just follow the instructions in this mode to test your knowledge on the brain</string>
+    <string name="card4text3">Be sure to pay attention and try and get as many correct as you can!</string>
+    <string name="card5text2">Press this button to turn on x-ray and colour mode</string>
+    <string name="card5text3">Press this button to turn the sound off and on</string>
 
 </resources>

@@ -280,8 +280,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
             getWindow().getDecorView().setSystemUiVisibility(uiOptions);
             getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
                 @Override
-                public void onSystemUiVisibilityChange(int i)
-                {
+                public void onSystemUiVisibilityChange(int i) {
                     getWindow().getDecorView().setSystemUiVisibility(uiOptions);
                 }
             });
@@ -379,7 +378,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 if(!HomeScreen.buttonCatcher)
                 {
                     HomeScreen.buttonCatcher = true;
-                    Tutorial.show(1,false);
+                    Tutorial.show(1, false);
                 }
             }
             else if (tapType.equals("about"))
@@ -470,27 +469,38 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         public void onDrawFrame(GL10 gl)
         {
-            baseController.updateScene();
-            GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-            GLES20.glEnable(GLES20.GL_BLEND);
-            GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-            GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-            BrainModel.updateCameraPos();
-            fb.clear(back);
+            try {
+                BrainModel.displaySemaphore.acquire();
+                baseController.updateScene();
+                GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+                GLES20.glEnable(GLES20.GL_BLEND);
+                GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+                GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+                BrainModel.updateCameraPos();
+                fb.clear(back);
 
-            BrainModel.removeAll(world);
-            BrainModel.addToScene(world);
+                BrainModel.removeAll(world);
+                BrainModel.addToScene(world);
 
-            world.renderScene(fb);
-            world.draw(fb);
+                world.renderScene(fb);
+                world.draw(fb);
 
-            BrainModel.removeAll(world);
-            BrainModel.addToTransp(world);
+                BrainModel.removeAll(world);
+                BrainModel.addToTransp(world);
 
-            world.renderScene(fb);
-            world.draw(fb);
+                world.renderScene(fb);
+                world.draw(fb);
 
-            fb.display();
+                fb.display();
+            }
+            catch(InterruptedException e)
+            {
+
+            }
+            finally
+            {
+                BrainModel.displaySemaphore.release();
+            }
         }
     }
 

@@ -67,6 +67,7 @@ public class BrainModel {
     // Misc
     private static Context context;
     private static final Semaphore brainSemaphore = new Semaphore(1);
+    public static Semaphore displaySemaphore = new Semaphore(1);
 
     public static boolean isLoaded = false;
     private static int selection = -1;
@@ -269,32 +270,30 @@ public class BrainModel {
 
     public static void setDisplayMode(boolean xRayMode, boolean colourMode)
     {
-        if(colourMode)
-        {
-            shineyShader.setUniform("is_colour", 1);
-        }
-        else
-        {
-            shineyShader.setUniform("is_colour", 0);
-        }
+        try {
+            displaySemaphore.acquire();
+            if (colourMode) {
+                shineyShader.setUniform("is_colour", 1);
+            } else {
+                shineyShader.setUniform("is_colour", 0);
+            }
 
-        if(xRayMode)
-        {
-            objs[3].setShader(brainShad);
-//            subCortical[0].setShader(brainShad);
-//            subCortical[1].setShader(brainShad);
-            subCortical[2].setShader(brainShad);
-//            subCortical[3].setShader(brainShad);
-//            subCortical[5].setShader(brainShad);
+            if (xRayMode) {
+                objs[3].setShader(brainShad);
+                subCortical[2].setShader(brainShad);
+
+            } else {
+                objs[3].setShader(shineyShader);
+                subCortical[2].setShader(shineyShader);
+            }
         }
-        else
+        catch(InterruptedException e)
         {
-            objs[3].setShader(shineyShader);
-//            subCortical[0].setShader(shineyShader);
-//            subCortical[1].setShader(shineyShader);
-            subCortical[2].setShader(shineyShader);
-//            subCortical[3].setShader(shineyShader);
-//            subCortical[5].setShader(shineyShader);
+
+        }
+        finally
+        {
+            displaySemaphore.release();
         }
     }
 

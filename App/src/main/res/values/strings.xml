@@ -37,5 +37,7 @@
     <string name="card4text3">Be sure to pay attention and try and get as many correct as you can!</string>
     <string name="card5text2">Press this button to turn on x-ray and colour mode</string>
     <string name="card5text3">Press this button to turn the sound off and on</string>
+    <string name="colour">Colour</string>
+    <string name="xray">X-Ray</string>
 
 </resources>

@@ -312,30 +312,39 @@ public class MainActivity extends FragmentActivity implements EventListener {
             String tapType = events[1];
             if (tapType.equals("learn"))
             {
-                BrainModel.disableDoubleTap = false;
-                learnController.loadView();
-                HomeScreen.hide();
-                baseController = learnController;
-                Labels.setFrameLayout(overlayingFrame);
-                overlayLabel.setVisibility(View.VISIBLE);
-                switchHolder.setVisibility(View.VISIBLE);
+                if(!HomeScreen.buttonCatcher)
+                {
+                    HomeScreen.buttonCatcher = true;
+                    BrainModel.disableDoubleTap = false;
+                    learnController.loadView();
+                    HomeScreen.hide();
+                    baseController = learnController;
+                    Labels.setFrameLayout(overlayingFrame);
+                    overlayLabel.setVisibility(View.VISIBLE);
+                    switchHolder.setVisibility(View.VISIBLE);
+                }
             }
             else if (tapType.equals("visualise"))
             {
-                // overlays the calibrate screen, only loads the visualise controller
-                // after the calibrate button has been pressed.
-                BrainModel.disableBackgroundGlow();
-                HomeScreen.hide();
-                OverlayScreen.showScreen(R.layout.calibrate_screen);
-                baseController = visualiseController;
-                BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
-                BrainModel.smoothRotateToFront();
-                BrainModel.smoothZoom(0.2f, 1200);
-                overlayLabel.setVisibility(View.VISIBLE);
-                switchHolder.setVisibility(View.VISIBLE);
+                if(!HomeScreen.buttonCatcher)
+                {
+                    HomeScreen.buttonCatcher = true;
+                    // overlays the calibrate screen, only loads the visualise controller
+                    // after the calibrate button has been pressed.
+                    BrainModel.disableBackgroundGlow();
+                    HomeScreen.hide();
+                    OverlayScreen.showScreen(R.layout.calibrate_screen);
+                    baseController = visualiseController;
+                    BrainModel.smoothMoveToGeneric(BrainModel.startPosition, 0, 400);
+                    BrainModel.smoothRotateToFront();
+                    BrainModel.smoothZoom(0.2f, 1200);
+                    overlayLabel.setVisibility(View.VISIBLE);
+                    switchHolder.setVisibility(View.VISIBLE);
+                }
             }
             else if (tapType.equals("home"))
             {
+                HomeScreen.buttonCatcher = false;
                 baseController.unloadView();
                 baseController = learnController;
                 //BrainModel.onlyRotateY = true;
@@ -346,12 +355,16 @@ public class MainActivity extends FragmentActivity implements EventListener {
             }
             else if (tapType.equals("quiz"))
             {
-                //overlayingFrame.removeAllViews();
-                HomeScreen.hide();
-                quizController.loadView();
-                baseController = quizController;
-                overlayLabel.setVisibility(View.GONE);
-                switchHolder.setVisibility(View.GONE);
+                if(!HomeScreen.buttonCatcher)
+                {
+                    HomeScreen.buttonCatcher = true;
+                    //overlayingFrame.removeAllViews();
+                    HomeScreen.hide();
+                    quizController.loadView();
+                    baseController = quizController;
+                    overlayLabel.setVisibility(View.GONE);
+                    switchHolder.setVisibility(View.GONE);
+                }
 
             }
             else if (tapType.equals("calibrate"))
@@ -374,7 +387,11 @@ public class MainActivity extends FragmentActivity implements EventListener {
             }
             else if (tapType.equals("help"))
             {
-                Tutorial.show(1,false);
+                if(!HomeScreen.buttonCatcher)
+                {
+                    HomeScreen.buttonCatcher = true;
+                    Tutorial.show(1,false);
+                }
             }
             else if (tapType.equals("about"))
             {

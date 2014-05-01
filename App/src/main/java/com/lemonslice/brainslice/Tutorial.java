@@ -154,6 +154,7 @@ public class Tutorial {
             }
         });
         frameLayout.startAnimation(fadeOut);
+        HomeScreen.buttonCatcher = false;
     }
 
     public static TextView comicNeue(TextView textView, int size)

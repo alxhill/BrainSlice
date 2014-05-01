@@ -58,6 +58,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
     private AboutDialog mAboutDialog;
 
     // 3D stuff
+    private MyRenderer renderer;
     private GLSurfaceView mGLView;
     private FrameBuffer fb = null;
     private World world = null;
@@ -92,7 +93,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         hideSystemBars();
 
-        MyRenderer renderer = new MyRenderer();
+        renderer = new MyRenderer();
 
         SplashScreen.setContext(this);
         SplashScreen.setFrameLayout(overlayingFrame);
@@ -312,6 +313,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
                     Labels.setFrameLayout(overlayingFrame);
                     overlayLabel.setVisibility(View.VISIBLE);
                     switchHolder.setVisibility(View.VISIBLE);
+                    renderer.setShouldDraw(true);
                 }
             }
             else if (tapType.equals("visualise"))
@@ -330,6 +332,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
                     BrainModel.smoothZoom(0.2f, 1200);
                     overlayLabel.setVisibility(View.VISIBLE);
                     switchHolder.setVisibility(View.VISIBLE);
+                    renderer.setShouldDraw(true);
                 }
             }
             else if (tapType.equals("home"))
@@ -342,6 +345,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 overlayingFrame.removeAllViews();
                 HomeScreen.show();
                 BrainInfo.speaker.stop();
+                renderer.setShouldDraw(false);
             }
             else if (tapType.equals("quiz"))
             {
@@ -354,11 +358,13 @@ public class MainActivity extends FragmentActivity implements EventListener {
                     baseController = quizController;
                     overlayLabel.setVisibility(View.GONE);
                     switchHolder.setVisibility(View.GONE);
+                    renderer.setShouldDraw(true);
                 }
             }
             else if (tapType.equals("calibrate"))
             {
                 visualiseController.loadView();
+                renderer.setShouldDraw(true);
             }
             else if (tapType.equals("volume"))
             {
@@ -380,6 +386,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
                 {
                     HomeScreen.buttonCatcher = true;
                     Tutorial.show(1,false);
+                    renderer.setShouldDraw(false);
                 }
             }
             else if (tapType.equals("about"))
@@ -402,6 +409,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
     class MyRenderer implements GLSurfaceView.Renderer {
         private boolean isLoaded = false;
+        private boolean shouldDraw = true;
 
         public MyRenderer()
         {
@@ -461,6 +469,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
             MemoryHelper.compact();
 
             isLoaded=true;
+            onDrawFrame(gl);
         }
 
         public void onSurfaceCreated(GL10 gl, EGLConfig config)
@@ -470,27 +479,34 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         public void onDrawFrame(GL10 gl)
         {
-            baseController.updateScene();
-            GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-            GLES20.glEnable(GLES20.GL_BLEND);
-            GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
-            GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-            BrainModel.updateCameraPos();
-            fb.clear(back);
+            if (shouldDraw) {
+                //Log.d("BrainSlice","onDrawFrame");
+                baseController.updateScene();
+                GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+                GLES20.glEnable(GLES20.GL_BLEND);
+                GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
+                GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+                BrainModel.updateCameraPos();
+                fb.clear(back);
 
-            BrainModel.removeAll(world);
-            BrainModel.addToScene(world);
+                BrainModel.removeAll(world);
+                BrainModel.addToScene(world);
 
-            world.renderScene(fb);
-            world.draw(fb);
+                world.renderScene(fb);
+                world.draw(fb);
 
-            BrainModel.removeAll(world);
-            BrainModel.addToTransp(world);
+                BrainModel.removeAll(world);
+                BrainModel.addToTransp(world);
 
-            world.renderScene(fb);
-            world.draw(fb);
+                world.renderScene(fb);
+                world.draw(fb);
 
-            fb.display();
+                fb.display();
+            }
+        }
+
+        public void setShouldDraw(boolean shouldDraw) {
+            this.shouldDraw = shouldDraw;
         }
     }
 

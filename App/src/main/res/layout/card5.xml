@@ -87,11 +87,11 @@
                         android:layout_gravity="center"/>
                 </LinearLayout>
             </LinearLayout>
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/disappeared"
-                android:layout_weight="1.5"/>
+            <!--<ImageView-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:src="@drawable/disappeared"-->
+                <!--android:layout_weight="1.5"/>-->
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

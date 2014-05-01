@@ -445,6 +445,7 @@ public class BrainModel {
             {
                 shads[i].setUniform("isSelected", 0);
                 Labels.removeLabels();
+                BrainInfo.speaker.stop();
             }
         }
 

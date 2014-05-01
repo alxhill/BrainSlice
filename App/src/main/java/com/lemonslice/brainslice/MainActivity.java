@@ -16,17 +16,13 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.lemonslice.brainslice.event.Events;
 import com.lemonslice.brainslice.event.EventListener;
@@ -41,9 +37,6 @@ import com.threed.jpct.World;
 import com.threed.jpct.util.MemoryHelper;
 
 
-import java.io.FileReader;
-import java.io.IOException;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -57,7 +50,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
     private VisualiseController visualiseController;
     QuizController quizController;
 
-    private View infoButton;
     private View overlayLabel;
 
     private TextView soundButton;
@@ -78,7 +70,6 @@ public class MainActivity extends FragmentActivity implements EventListener {
     private FrameLayout homescreenFrame;
     private Typeface fontAwesome;
 
-    public static GLSurfaceView sMGLView;
     private View switchHolder;
     private CheckBox colourSwitch;
     private CheckBox xRaySwitch;
@@ -105,8 +96,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
 
         SplashScreen.setContext(this);
         SplashScreen.setFrameLayout(overlayingFrame);
-        SplashScreen.setRenderer(renderer);
-//        SplashScreen.show();
+        SplashScreen.show();
 
         Labels.setContext(this);
         Labels.setFrameLayout(overlayingFrame);
@@ -126,12 +116,9 @@ public class MainActivity extends FragmentActivity implements EventListener {
         mGLView.setEGLContextClientVersion(2);
         mGLView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         mGLView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        //mGLView.setZOrderOnTop(true);
 
         // initialise and show the 3D renderer
         mGLView.setRenderer(renderer);
-
-        sMGLView = mGLView;
 
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 

@@ -75,7 +75,6 @@ public class BrainModel {
     static boolean showBrain = false;
     static boolean onlyRotateY = true;
     static boolean disableDoubleTap = true;
-    static boolean infoShowing = false;
     private static int screenWidth, screenHeight;
 
     public static Boolean drawBackground;
@@ -465,7 +464,6 @@ public class BrainModel {
         else
         {
             if(!disableDoubleTap) {
-                infoShowing = false;
                 smoothMoveToGeneric(startPosition, 0, 400);
             }
         }

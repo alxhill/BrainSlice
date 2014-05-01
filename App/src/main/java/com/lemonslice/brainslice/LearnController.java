@@ -1,6 +1,5 @@
 package com.lemonslice.brainslice;
 
-import android.util.Log;
 import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -12,10 +11,6 @@ import android.view.Display;
 import android.graphics.Point;
 import android.os.Build;
 import android.widget.TextView;
-import com.threed.jpct.Object3D;
-import com.threed.jpct.SimpleVector;
-
-import java.util.ArrayList;
 
 import com.lemonslice.brainslice.event.Events;
 import com.lemonslice.brainslice.event.EventListener;

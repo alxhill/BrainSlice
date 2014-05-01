@@ -11,10 +11,6 @@ import android.view.WindowManager;
 import android.view.Display;
 import android.widget.TextView;
 
-import com.threed.jpct.Object3D;
-import com.threed.jpct.SimpleVector;
-
-import java.util.ArrayList;
 
 /**
  * Handles gyro input and passes it to the brain model
@@ -31,9 +27,6 @@ public class VisualiseController extends AbstractController implements SensorEve
     private boolean isLoaded;
 
     private TextView overlayLabel;
-
-    private WindowManager mWindowManager;
-    private float[] startRotation;
 
     public VisualiseController(SensorManager manager)
     {

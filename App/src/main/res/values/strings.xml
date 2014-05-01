@@ -11,15 +11,7 @@
     <string name="centre_icon">&#xf05b;</string>
     <string name="volume_icon">&#xf028;</string>
     <string name="volume_icon_mute">&#xf026;</string>
-    <string name="quiz_icon">&#xf14a;</string>
     <string name="about_icon">&#xf129;</string>
-    <string name="loadingMessage">Loading…</string>
-    <string name="quiz_button_text">Quiz</string>
-    <string name="learn_button_text">Learn</string>
-    <string name="visualise_button_text">Visualise</string>
-    <string name="help_button_text">Help</string>
-    <string name="sound_button_text_unmuted">Sound ON</string>
-    <string name="sound_button_text_muted">Sound OFF</string>
     <string name="ColourCodingSetting">Colour coding</string>
     <string name="XRayModeSetting">X-ray mode</string>
     <string name="welcome_message">Welcome to BrainSlice</string>

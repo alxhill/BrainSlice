@@ -156,7 +156,7 @@ public class QuizController extends AbstractController {
             return;
         }
 
-        Random index = new Random(1234);
+        Random index = new Random();
         newSegment = segments.get(index.nextInt(segments.size()));
         Log.d("BRAINQUIZ", "new segment is " + newSegment.getName());
 

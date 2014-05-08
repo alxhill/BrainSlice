@@ -25,14 +25,14 @@
     <string name="Calibrate">Calibrate</string>
     <string name="TeamName">Team Lemon Slice</string>
     <string name="HomeScreen_Title">BRAIN SLICE</string>
-    <string name="Brainder_License_Message">3D Brain Model by A. M. Winkler is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License. The original work can be found at http://brainder.ord/brain-for-blender</string>
+    <string name="Brainder_License_Message">3D Brain Model by A. M. Winkler is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License. The original work can be found at http://brainder.org/brain-for-blender</string>
     <string name="LearnMode">Learn Mode</string>
     <string name="WindowMode">Window Mode</string>
     <string name="BrainQuiz">Brain Quiz</string>
     <string name="Quiz_Play_Button">Play!</string>
     <string name="App_name_version_number">BrainSlice v1.0</string>
     <string name="Quiz_intro_message">Press play to go on a tour of of the brain!</string>
-    <string name="About_description">BrainSlice is an app to teach at children and adults alike about the brain.</string>
+    <string name="About_description">BrainSlice is an app to teach children and adults alike about the brain.</string>
     <string name="Labels_default_value">Temporal Lobe</string>
     <string name="Card_final_message">You\'re all set!</string>
     <string name="Labels_content_default_value">No description recieved</string>

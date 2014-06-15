@@ -107,6 +107,7 @@ public class MainActivity extends FragmentActivity implements EventListener {
         Tutorial.setFrameLayout(tutorialFrame);
         HomeScreen.setContext(this);
         HomeScreen.setFrameLayout(homescreenFrame);
+        BrainInfo.setContext(this);
 
         VisualiseController.setContext(this);
 
@@ -168,17 +169,17 @@ public class MainActivity extends FragmentActivity implements EventListener {
             }
         });
 
-        // check for internet connectivity and load the data
+        // check for internet connectivity and download the data
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         boolean loaded = false;
         Log.d("LOADDATA", "attempting network loading");
         if (networkInfo != null && networkInfo.isConnected())
             loaded = BrainInfo.loadData();
+
         Log.d("LOADDATA", loaded ? "network loading succeeded" : "attempting local loading ");
-        // if there's no internet or the loading failed, use the local data
-        if (!loaded)
-            BrainInfo.readData(getResources());
+        //Read local copy, which should be updated.
+        BrainInfo.readData(getResources());
 
         setZOnTop();
 

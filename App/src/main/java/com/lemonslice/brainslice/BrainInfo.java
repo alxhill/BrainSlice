@@ -1,5 +1,6 @@
 package com.lemonslice.brainslice;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.util.JsonReader;
@@ -11,9 +12,13 @@ import android.media.MediaPlayer;
 
 import com.threed.jpct.SimpleVector;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -24,9 +29,14 @@ import java.util.concurrent.ExecutionException;
  */
 public class BrainInfo
 {
+    private static Context context;
     public static final String API_ENDPOINT = "http://162.243.46.77:3333/api/all";
 
     private static HashMap<String, BrainSegment> segments = new HashMap<String, BrainSegment>();
+
+    public static void setContext(Context con){
+        context = con;
+    }
 
     public static boolean isDataIsLoaded()
     {
@@ -76,7 +86,24 @@ public class BrainInfo
     public static void readData(Resources resources)
     {
         Log.d("BRAININFO", "Loading data from file");
-        InputStream data = resources.openRawResource(R.raw.data);
+        File file = new File(context.getFilesDir(), "local.json");
+        InputStream data;
+        if(file.exists())
+        {
+            try
+            {
+                data = new FileInputStream(file);
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                data = resources.openRawResource(R.raw.data);
+            }
+        }
+        else
+        {
+            data = resources.openRawResource(R.raw.data);
+        }
 
         JsonReader reader;
         try
@@ -87,9 +114,9 @@ public class BrainInfo
         } catch (IOException e)
         {
             e.printStackTrace();
+
             throw new RuntimeException("Unable to load segment data, aborting.");
         }
-
         BrainInfo.setDataIsLoaded(true);
     }
 
@@ -172,6 +199,8 @@ public class BrainInfo
 
         private boolean getData(String apiUrl) throws IOException
         {
+            boolean saved = true;
+
             // initialise the data request (assumes connectivity has already been checked)
             URL url = new URL(apiUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -184,20 +213,36 @@ public class BrainInfo
 
             Log.d("BRAININFO", "Connected");
 
-            InputStream in = conn.getInputStream();
-            JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
+            try
+            {
+                InputStreamReader in = new InputStreamReader(conn.getInputStream());
+                OutputStreamWriter fileOut = new OutputStreamWriter(context.openFileOutput("local.json", Context.MODE_PRIVATE), "UTF-8");
+                char[] buffer = new char[100];
+                int read;
 
-            boolean parsed = parseJSON(reader);
+                read = in.read(buffer);
+                while (read != -1) {
+                    Log.d("ALEXWRITE", buffer.toString());
+                    fileOut.write(buffer);
+                    read = in.read(buffer);
+                }
 
-            Log.d("BRAININFO", "done reading");
+                fileOut.flush();
 
-            conn.disconnect();
-            in.close();
+                conn.disconnect();
+                in.close();
+                fileOut.close();
 
-            Log.d("BRAININFO", "closed connections");
+                Log.d("BRAININFO", "closed connections");
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+                saved = false;
+            }
 
-            return parsed;
-
+            //FIX
+            return saved;
         }
 
         @Override

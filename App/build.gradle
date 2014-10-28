@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:0.12.2'
     }
 }
 apply plugin: 'android'
@@ -14,14 +14,27 @@ repositories {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.3'
+    buildToolsVersion '19.1.0'
 
     defaultConfig {
         minSdkVersion 11
         targetSdkVersion 19
     }
+
+    signingConfigs {
+        release {
+            storeFile file("C:\\Users\\James\\Documents\\university\\year2\\SPE\\keystore.jks")
+            storePassword "teamlemonslice"
+            keyAlias "keyalias"
+            keyPassword "teamlemonslice"
+        }
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
+            debuggable false
+            zipAlign true
             runProguard false
             proguardFile getDefaultProguardFile('proguard-android.txt')
         }
@@ -34,6 +47,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:+'
+    compile 'com.android.support:appcompat-v7:19.0.0'
+    compile 'com.android.support:support-v4:21.0.0'
     compile files('src/main/java/libs/jpct_ae.jar')
 }

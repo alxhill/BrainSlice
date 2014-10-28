@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="C:\Users\James\Documents\university\year2\SPE\BrainSlice\App\build\intermediates\pre-dexed\defaultFlavor\debug\jpct_ae-305d861e48dc7f136e3a5ad3ad693bb90dbd5f18.jar"
+        jar="C:\Users\James\Documents\university\year2\SPE\BrainSlice\App\src\main\java\libs\jpct_ae.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="a090fd6262b109da14a14da0e2b5afb65c484ce2"/>
+    <item
+        dex="C:\Users\James\Documents\university\year2\SPE\BrainSlice\App\build\intermediates\pre-dexed\defaultFlavor\debug\internal_impl-21.0.0-f5b6dde9bbc4b8c0e121402bd72439ea7657681b.jar"
+        jar="C:\Users\James\Documents\university\year2\SPE\BrainSlice\App\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0\libs\internal_impl-21.0.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="1609e6d42d0480b0f4188e2c29f75388fa12a8f0"/>
+    <item
+        dex="C:\Users\James\Documents\university\year2\SPE\BrainSlice\App\build\intermediates\pre-dexed\defaultFlavor\debug\classes-88dce21df25f7310aeca0087daa02ac13f29f192.jar"
+        jar="C:\Users\James\Documents\university\year2\SPE\BrainSlice\App\build\intermediates\exploded-aar\com.android.support\appcompat-v7\19.0.0\classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="eb69b5c2e53e59d82f7439f3217f46f9d98f0c89"/>
+    <item
+        dex="C:\Users\James\Documents\university\year2\SPE\BrainSlice\App\build\intermediates\pre-dexed\defaultFlavor\debug\classes-c7ed0100630930da6a021bd9d55ca1f25807d562.jar"
+        jar="C:\Users\James\Documents\university\year2\SPE\BrainSlice\App\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0\classes.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="686344a780033e4ba22b926cd225f8d4941247e6"/>
+    <item
+        dex="C:\Users\James\Documents\university\year2\SPE\BrainSlice\App\build\intermediates\pre-dexed\defaultFlavor\debug\support-annotations-21.0.0-43798d4b6f1f18239257f406bff7560d9198f15e.jar"
+        jar="C:\Users\James\AppData\Local\Android\android-studio1\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.0\support-annotations-21.0.0.jar"
+        jumboMode="false"
+        revision="19.1.0"
+        sha1="1a578b9607b36266c63d43a4fa0ab5664dbe911e"/>
+
+</pre-dex-items>
